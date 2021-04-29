@@ -14,9 +14,7 @@ namespace XDataFlow.Parts
         IEnumerable<IDataFlowPart> Children { get; }
 
         IList<IRaiseUpBehaviour> OnRaiseUp { get; }
-
-        IList<IPublishTunnel> PublishTunnels { get; }
-        IList<IConsumeTunnel> ConsumeTunnels { get; }
+        
         IList<IStartBehaviour> OnStarted { get; }
         IList<IStopBehaviour> OnStopped { get; }
     }

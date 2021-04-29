@@ -14,9 +14,5 @@ namespace XDataFlow.Extensions
             
             appRegistry.Add(partId, partInstance);
         }
-        
-       
-      
-      
     }
 }

@@ -85,7 +85,7 @@ namespace XDataFlow.Tests
                 _queue = queue;
             }
              
-            public byte[] Receive() => _queue.Dequeue();
+            public byte[] Consume() => _queue.Dequeue();
         }
         
         private class SampleExecuteSequentiallyRaiseUpBehavior : IRaiseUpBehaviour
@@ -96,7 +96,7 @@ namespace XDataFlow.Tests
             }
         }
         
-        private class SampleAppA : DataFlowPart
+        private class SampleAppA : BytesFlowPart
         {
             public string PropertyA { get; set; }
 
@@ -108,13 +108,13 @@ namespace XDataFlow.Tests
             }
         }
         
-        private class SampleAppB : DataFlowPart
+        private class SampleAppB : BytesFlowPart
         {
             public string PropertyB { get; set; }
 
             protected override void OnEntry()
             {
-                this.Receive(data =>
+                this.Consume(data =>
                 {
                     PropertyB = data.FromBytes<string>();
                 });
