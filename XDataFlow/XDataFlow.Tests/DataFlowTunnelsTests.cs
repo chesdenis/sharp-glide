@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FluentAssertions;
 using XDataFlow.Behaviours;
@@ -8,7 +9,7 @@ using Xunit;
 
 namespace XDataFlow.Tests
 {
-    public class TypedDataFlowTunnelsTests
+    public class DataFlowTunnelsTests
     {
         [Fact]
         public void ShouldPartPublishDataOncePublisherHasBeenRegistered()
@@ -20,7 +21,7 @@ namespace XDataFlow.Tests
             var sut = new SampleAppA();
             partRegistry.RegisterPart("app1", sut);
             sut.RegisterRaiseUpBehaviour<SampleExecuteSequentiallyRaiseUpBehavior>();
-            sut.RegisterPublishTunnel(() => new SampleInMemoryTypedPublishTunnel<SampleData>(testQueue));
+            sut.RegisterPublishTunnel(() => new SampleInMemoryPublishTunnel<SampleData>(testQueue));
  
             // Act
             sut.Start();
@@ -48,8 +49,8 @@ namespace XDataFlow.Tests
             sampleAppA.RegisterRaiseUpBehaviour<SampleExecuteSequentiallyRaiseUpBehavior>();
             sampleAppB.RegisterRaiseUpBehaviour<SampleExecuteSequentiallyRaiseUpBehavior>();
 
-            sampleAppA.RegisterPublishTunnel(() => new SampleInMemoryTypedPublishTunnel<SampleData>(testQueue));
-            sampleAppB.RegisterConsumeTunnel(() => new SampleInMemoryTypedConsumeTunnel<SampleData>(testQueue));
+            sampleAppA.RegisterPublishTunnel(() => new SampleInMemoryPublishTunnel<SampleData>(testQueue));
+            sampleAppB.RegisterConsumeTunnel(() => new SampleInMemoryConsumeTunnel<SampleData>(testQueue));
             
             // Act
             sampleAppA.Start();
@@ -77,8 +78,8 @@ namespace XDataFlow.Tests
             partRegistry.RegisterPart("app1", sampleAppC);
             sampleAppC.RegisterRaiseUpBehaviour<SampleExecuteSequentiallyRaiseUpBehavior>();
             
-            sampleAppC.RegisterPublishTunnel(() => new SampleInMemoryTypedPublishTunnel<SampleData>(testQueueOut));
-            sampleAppC.RegisterConsumeTunnel(() => new SampleInMemoryTypedConsumeTunnel<int>(testQueueIn));
+            sampleAppC.RegisterPublishTunnel(() => new SampleInMemoryPublishTunnel<SampleData>(testQueueOut));
+            sampleAppC.RegisterConsumeTunnel(() => new SampleInMemoryConsumeTunnel<int>(testQueueIn));
             
             testQueueIn.Enqueue(1);
             
@@ -97,32 +98,34 @@ namespace XDataFlow.Tests
             public int PropertyZ { get; set; }
         }
         
-        private class SampleInMemoryTypedPublishTunnel<T> : ITypedPublishTunnel<T>
+        private class SampleInMemoryPublishTunnel<T> : PublishTunnel<T>
         {
             private readonly Queue<T> _queue;
 
-            public SampleInMemoryTypedPublishTunnel(Queue<T> queue)
+            public SampleInMemoryPublishTunnel(Queue<T> queue)
             {
                 _queue = queue;
             }
-            public bool CanPublishThis(T data) => true;
 
-            public void Publish(T data)
+            public override Action<T> PublishPointer() => (data) =>
             {
                 _queue.Enqueue(data);
-            }
+            };
         }
         
-        private class SampleInMemoryTypedConsumeTunnel<T> : ITypedConsumeTunnel<T>
+        private class SampleInMemoryConsumeTunnel<T> : ConsumeTunnel<T>
         {
             private readonly Queue<T> _queue;
 
-            public SampleInMemoryTypedConsumeTunnel(Queue<T> queue)
+            public SampleInMemoryConsumeTunnel(Queue<T> queue)
             {
                 _queue = queue;
             }
-             
-            public T Consume() => _queue.Dequeue();
+
+            public override Func<T> ConsumePointer()
+            {
+                return () => _queue.Dequeue();
+            }
         }
          
         private class SampleExecuteSequentiallyRaiseUpBehavior : IRaiseUpBehaviour
@@ -133,7 +136,7 @@ namespace XDataFlow.Tests
             }
         }
         
-        private class SampleAppA : TypedPublisherOnlyFlowPart<SampleData>
+        private class SampleAppA : PublisherOnlyFlowPart<SampleData>
         {
             public SampleData Data { get; set; }
 
@@ -150,7 +153,7 @@ namespace XDataFlow.Tests
             }
         }
         
-        private class SampleAppB : TypedConsumerOnlyFlowPart<SampleData>
+        private class SampleAppB : ConsumerOnlyFlowPart<SampleData>
         {
             public SampleData Data { get; set; }
 
@@ -163,7 +166,7 @@ namespace XDataFlow.Tests
             }
         }
         
-        private class SampleAppC : TypedPublisherConsumerFlowPart<SampleData, int>
+        private class SampleAppC : PublisherConsumerFlowPart<SampleData, int>
         {
             protected override void OnEntry()
             {

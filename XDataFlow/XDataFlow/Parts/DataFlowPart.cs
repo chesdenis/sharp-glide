@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using XDataFlow.Behaviours;
+using XDataFlow.Tunnels;
+using XDataFlow.Wrappers;
 
 namespace XDataFlow.Parts
 {
@@ -17,9 +19,8 @@ namespace XDataFlow.Parts
         
         public IEnumerable<IDataFlowPart> Children { get; } = new List<IDataFlowPart>();
         public IList<IRaiseUpBehaviour> OnRaiseUp { get; } = new List<IRaiseUpBehaviour>();
-        
         public IList<IStartBehaviour> OnStarted { get; } = new List<IStartBehaviour>();
-        
         public IList<IStopBehaviour> OnStopped { get; } = new List<IStopBehaviour>();
+        public IList<IWrapper> OnEntryWrappers { get; set; } = new List<IWrapper>();
     }
 }

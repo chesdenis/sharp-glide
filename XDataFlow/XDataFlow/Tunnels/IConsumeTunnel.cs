@@ -1,7 +1,12 @@
+using System.Collections.Generic;
+using XDataFlow.Wrappers;
+
 namespace XDataFlow.Tunnels
 {
-    public interface IConsumeTunnel
+    public interface IConsumeTunnel<T>
     {
-        byte[] Consume();
+        IList<IWrapperWithOutput<T>> OnConsumeWrappers { get; }
+
+        T Consume();
     }
 }

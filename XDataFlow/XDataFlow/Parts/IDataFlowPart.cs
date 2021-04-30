@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using XDataFlow.Behaviours;
 using XDataFlow.Tunnels;
+using XDataFlow.Wrappers;
 
 namespace XDataFlow.Parts
 {
@@ -17,5 +18,7 @@ namespace XDataFlow.Parts
         
         IList<IStartBehaviour> OnStarted { get; }
         IList<IStopBehaviour> OnStopped { get; }
+
+        IList<IWrapper> OnEntryWrappers { get; }
     }
 }

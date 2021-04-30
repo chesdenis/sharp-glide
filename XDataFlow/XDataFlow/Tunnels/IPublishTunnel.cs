@@ -1,9 +1,12 @@
+using System.Collections.Generic;
+using XDataFlow.Wrappers;
+
 namespace XDataFlow.Tunnels
 {
-    public interface IPublishTunnel
+    public interface IPublishTunnel<T>
     {
-        bool CanPublishThis(byte[] data);
+        IList<IWrapperWithInput<T>> OnPublishWrappers { get; }
         
-        void Publish(byte[] data);
+        void Publish(T data);
     }
 }
