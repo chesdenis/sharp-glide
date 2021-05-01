@@ -20,8 +20,8 @@ namespace XDataFlow.Tests
             var partRegistry = new PartsRegistry();
             var sut = new SampleAppA();
             partRegistry.RegisterPart("app1", sut);
-            sut.RegisterRaiseUpBehaviour<SampleExecuteSequentiallyRaiseUpBehavior>();
-            sut.RegisterPublishTunnel(() => new SampleInMemoryPublishTunnel<SampleData>(testQueue));
+            sut.TweakRaiseUp<SampleExecuteSequentiallyRaiseUpBehavior>();
+            sut.AddPublishTunnel(() => new SampleInMemoryPublishTunnel<SampleData>(testQueue));
  
             // Act
             sut.Start();
@@ -46,11 +46,11 @@ namespace XDataFlow.Tests
             partRegistry.RegisterPart("app1", sampleAppA);
             partRegistry.RegisterPart("app2", sampleAppB);
             
-            sampleAppA.RegisterRaiseUpBehaviour<SampleExecuteSequentiallyRaiseUpBehavior>();
-            sampleAppB.RegisterRaiseUpBehaviour<SampleExecuteSequentiallyRaiseUpBehavior>();
+            sampleAppA.TweakRaiseUp<SampleExecuteSequentiallyRaiseUpBehavior>();
+            sampleAppB.TweakRaiseUp<SampleExecuteSequentiallyRaiseUpBehavior>();
 
-            sampleAppA.RegisterPublishTunnel(() => new SampleInMemoryPublishTunnel<SampleData>(testQueue));
-            sampleAppB.RegisterConsumeTunnel(() => new SampleInMemoryConsumeTunnel<SampleData>(testQueue));
+            sampleAppA.AddPublishTunnel(() => new SampleInMemoryPublishTunnel<SampleData>(testQueue));
+            sampleAppB.AddConsumeTunnel(() => new SampleInMemoryConsumeTunnel<SampleData>(testQueue));
             
             // Act
             sampleAppA.Start();
@@ -76,10 +76,10 @@ namespace XDataFlow.Tests
             
             var sampleAppC = new SampleAppC();
             partRegistry.RegisterPart("app1", sampleAppC);
-            sampleAppC.RegisterRaiseUpBehaviour<SampleExecuteSequentiallyRaiseUpBehavior>();
+            sampleAppC.TweakRaiseUp<SampleExecuteSequentiallyRaiseUpBehavior>();
             
-            sampleAppC.RegisterPublishTunnel(() => new SampleInMemoryPublishTunnel<SampleData>(testQueueOut));
-            sampleAppC.RegisterConsumeTunnel(() => new SampleInMemoryConsumeTunnel<int>(testQueueIn));
+            sampleAppC.AddPublishTunnel(() => new SampleInMemoryPublishTunnel<SampleData>(testQueueOut));
+            sampleAppC.AddConsumeTunnel(() => new SampleInMemoryConsumeTunnel<int>(testQueueIn));
             
             testQueueIn.Enqueue(1);
             

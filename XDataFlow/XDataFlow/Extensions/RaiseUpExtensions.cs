@@ -5,7 +5,7 @@ namespace XDataFlow.Extensions
 {
     public static class RaiseUpExtensions
     {
-        public static void RegisterRaiseUpBehaviour<TBehaviour>(this IDataFlowPart part)
+        public static void TweakRaiseUp<TBehaviour>(this IDataFlowPart part)
             where TBehaviour : IRaiseUpBehaviour, new()
         {
             part.OnRaiseUp.Add(new TBehaviour());

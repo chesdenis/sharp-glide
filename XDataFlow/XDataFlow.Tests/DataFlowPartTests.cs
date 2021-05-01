@@ -35,7 +35,7 @@ namespace XDataFlow.Tests
             var partRegistry = new PartsRegistry();
             var sut = new SampleAppA();
             partRegistry.RegisterPart("app1", sut);
-            sut.RegisterRaiseUpBehaviour<SampleExecuteSequentiallyRaiseUpBehavior>();
+            sut.TweakRaiseUp<SampleExecuteSequentiallyRaiseUpBehavior>();
 
             // Act
             sut.Start();

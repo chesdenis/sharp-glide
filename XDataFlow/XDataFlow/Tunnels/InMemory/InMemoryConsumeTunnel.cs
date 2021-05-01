@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using XDataFlow.Exceptions;
 
 namespace XDataFlow.Tunnels.InMemory
 {
@@ -14,7 +15,15 @@ namespace XDataFlow.Tunnels.InMemory
 
         public override Func<T> ConsumePointer()
         {
-            return () =>  _queue.TryDequeue(out var result) ? result : default;
+            return () =>
+            {
+                if (_queue.TryDequeue(out var result))
+                {
+                    return result;
+                }
+                
+                throw new NoDataException();
+            };
         }
     }
 }

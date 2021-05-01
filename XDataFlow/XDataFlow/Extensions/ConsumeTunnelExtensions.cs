@@ -6,14 +6,14 @@ namespace XDataFlow.Extensions
 {
     public static class ConsumeTunnelExtensions
     {
-        public static void RegisterConsumeTunnel<TTunnel, TOut>(this ConsumerOnlyFlowPart<TOut> part, Func<TTunnel> tunnelPointer)
+        public static void AddConsumeTunnel<TTunnel, TOut>(this ConsumerOnlyFlowPart<TOut> part, Func<TTunnel> tunnelPointer)
             where TTunnel : IConsumeTunnel<TOut>
         {
             var tunnel = tunnelPointer();
             part.ConsumeTunnels.Add(tunnel);
         }
         
-        public static void RegisterConsumeTunnel<TTunnel, TIn, TOut>(this PublisherConsumerFlowPart<TIn, TOut> part, Func<TTunnel> tunnelPointer)
+        public static void AddConsumeTunnel<TTunnel, TIn, TOut>(this PublisherConsumerFlowPart<TIn, TOut> part, Func<TTunnel> tunnelPointer)
             where TTunnel : IConsumeTunnel<TOut>
         {
             var tunnel = tunnelPointer();
