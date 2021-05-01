@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace XDataFlow.Wrappers.Default
 {
-    public class MeasureInputPerformanceWrapper<T> : IWrapperWithInput<T>
+    public class MeasureOutputPerformanceWrapper<T> : IWrapperWithOutput<T>
     {
         private readonly Stopwatch _sw = new Stopwatch();
         
@@ -15,16 +15,16 @@ namespace XDataFlow.Wrappers.Default
             public double TimeSpentInSeconds { get; set; }
         }
 
-        public List<PerformanceDataRow> PerformanceData { get; set; } = new List<PerformanceDataRow>();
+        private List<PerformanceDataRow> PerformanceData { get; set; } = new List<PerformanceDataRow>();
 
-        public Action<T> Wrap(Action<T> actionToWrap)
+        public Func<T> Wrap(Func<T> funcToWrap)
         {
-            return (arg) =>
+            return (() =>
             {
                 _sw.Reset();
                 _sw.Start();
-                
-                actionToWrap(arg);
+
+                var dataToReturn = funcToWrap();
                 
                 _sw.Stop();
                 
@@ -33,7 +33,9 @@ namespace XDataFlow.Wrappers.Default
                     EventTimestamp = DateTime.Now,
                     TimeSpentInSeconds = _sw.Elapsed.TotalSeconds
                 });
-            };
+                
+                return dataToReturn;
+            });
         }
     }
 }

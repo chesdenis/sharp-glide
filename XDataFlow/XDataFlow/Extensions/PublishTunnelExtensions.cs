@@ -27,7 +27,14 @@ namespace XDataFlow.Extensions
         {
             part.OnEntryWrappers.Add(wrapperPointer());
         }
-        
+
+        public static void RegisterPublishTunnelWrapper<TWrapper, TIn>(this IPublishTunnel<TIn> tunnel,
+            Func<TWrapper> wrapperPointer)
+            where TWrapper : IWrapperWithInput<TIn>
+        {
+            tunnel.OnPublishWrappers.Add(wrapperPointer());
+        }
+
         public static void Publish<TDataFlowPart, TIn>(this TDataFlowPart flowPart, TIn data)
             where TDataFlowPart : PublisherOnlyFlowPart<TIn>
         {
