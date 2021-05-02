@@ -21,4 +21,21 @@ namespace XDataFlow.Parts
 
         IList<IWrapper> OnEntryWrappers { get; }
     }
+
+    public interface IXDataFlowPart<TIn, TOut>
+    {
+        Action OnStart();
+
+        Action OnStop();
+
+        IDictionary<string, IXDataFlowPart<TIn, TOut>> Children { get; }
+
+        IDictionary<string, IPublishTunnel<TIn>> PublishTunnels { get; }
+
+        IDictionary<string, IConsumeTunnel<TOut>> ConsumeTunnels { get; }
+
+        void Consume(TOut data, string tunnelKey);
+
+        void Publish(TIn data, string tunnelKey);
+    }
 }
