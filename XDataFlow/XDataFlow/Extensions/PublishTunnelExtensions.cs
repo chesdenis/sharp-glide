@@ -7,39 +7,22 @@ namespace XDataFlow.Extensions
 {
     public static class PublishTunnelExtensions
     {
-        public static void AddPublishTunnel<TTunnel, TIn>(this PublisherOnlyFlowPart<TIn> part, Func<TTunnel> tunnelPointer)
-            where TTunnel : IPublishTunnel<TIn>
+        public static void AddPublishTunnel<TTunnel, TPublishData>(this IFlowPublisherPart<TPublishData> part, Func<TTunnel> tunnelPointer)
+            where TTunnel : IPublishTunnel<TPublishData>
         {
             var tunnel = tunnelPointer();
-            part.PublishTunnels.Add(tunnel);
+            var key = typeof(TPublishData).FullName ?? throw new InvalidOperationException();
+            part.PublishTunnels.Add(key, tunnel);
         }
         
-        public static void AddPublishTunnel<TTunnel, TIn, TOut>(this PublisherConsumerFlowPart<TIn, TOut> part, Func<TTunnel> tunnelPointer)
-            where TTunnel : IPublishTunnel<TIn>
+        public static void Publish<TDataFlowPart, TPublishData>(this TDataFlowPart flowPart, TPublishData data)
+            where TDataFlowPart : IFlowPublisherPart<TPublishData>
         {
-            var tunnel = tunnelPointer();
-            part.PublishTunnels.Add(tunnel);
-        }
-        
-        public static void Publish<TDataFlowPart, TIn>(this TDataFlowPart flowPart, TIn data)
-            where TDataFlowPart : PublisherOnlyFlowPart<TIn>
-        {
-            var tunnels =  flowPart.PublishTunnels.ToList();
+            var tunnels = flowPart.PublishTunnels;
 
-            foreach (var t in tunnels)
+            foreach (var tunnelKey in tunnels.Keys)
             {
-                t.Publish(data);
-            }
-        }
-        
-        public static void Publish<TDataFlowPart, TIn, TOut>(this TDataFlowPart flowPart, TIn data)
-            where TDataFlowPart : PublisherConsumerFlowPart<TIn, TOut>
-        {
-            var tunnels =  flowPart.PublishTunnels.ToList();
-
-            foreach (var t in tunnels)
-            {
-                t.Publish(data);
+                tunnels[tunnelKey].Publish(data);
             }
         }
     }

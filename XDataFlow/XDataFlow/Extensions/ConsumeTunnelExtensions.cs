@@ -6,39 +6,29 @@ namespace XDataFlow.Extensions
 {
     public static class ConsumeTunnelExtensions
     {
-        public static void AddConsumeTunnel<TTunnel, TOut>(this ConsumerOnlyFlowPart<TOut> part, Func<TTunnel> tunnelPointer)
-            where TTunnel : IConsumeTunnel<TOut>
+        public static void AddConsumeTunnel<TTunnel, TConsumeData>(this IFlowConsumerPart<TConsumeData> part, Func<TTunnel> tunnelPointer)
+            where TTunnel : IConsumeTunnel<TConsumeData>
         {
             var tunnel = tunnelPointer();
-            part.ConsumeTunnels.Add(tunnel);
+            var key = typeof(TConsumeData).FullName ?? throw new InvalidOperationException();
+            part.ConsumeTunnels.Add(key, tunnel);
         }
         
-        public static void AddConsumeTunnel<TTunnel, TIn, TOut>(this PublisherConsumerFlowPart<TIn, TOut> part, Func<TTunnel> tunnelPointer)
-            where TTunnel : IConsumeTunnel<TOut>
+        public static void AddConsumeTunnel<TTunnel, TConsumeData>(this IFlowConsumerPart<TConsumeData> part, string tunnelKey, Func<TTunnel> tunnelPointer)
+            where TTunnel : IConsumeTunnel<TConsumeData>
         {
             var tunnel = tunnelPointer();
-            part.ConsumeTunnels.Add(tunnel);
+            part.ConsumeTunnels.Add(tunnelKey, tunnel);
         }
         
-        public static void Consume<TDataFlowPart, TIn, TOut>(this TDataFlowPart flowPart, Action<TOut> onReceive)
-            where TDataFlowPart : PublisherConsumerFlowPart<TIn, TOut>
+        public static void Consume<TDataFlowPart, TConsumeData>(this TDataFlowPart flowPart, Action<TConsumeData> onReceive)
+            where TDataFlowPart : IFlowConsumerPart<TConsumeData>
         {
             var tunnels = flowPart.ConsumeTunnels;
 
-            foreach (var t in tunnels)
+            foreach (var tunnelKey in tunnels.Keys)
             {
-                onReceive(t.Consume());
-            }
-        }
-        
-        public static void Consume<TDataFlowPart, TOut>(this TDataFlowPart flowPart, Action<TOut> onReceive)
-            where TDataFlowPart : ConsumerOnlyFlowPart<TOut>
-        {
-            var tunnels = flowPart.ConsumeTunnels;
-
-            foreach (var t in tunnels)
-            {
-                onReceive(t.Consume());
+                onReceive(tunnels[tunnelKey].Consume());
             }
         }
     }

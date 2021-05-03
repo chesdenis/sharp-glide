@@ -4,6 +4,6 @@ namespace XDataFlow.Abstractions
 {
     public interface IExecutable
     {
-        void Execute(IDataFlowPart part);
+        void Execute(IRestartablePart part);
     }
 }

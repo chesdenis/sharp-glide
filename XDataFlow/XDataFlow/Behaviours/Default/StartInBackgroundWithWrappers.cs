@@ -3,13 +3,13 @@ using XDataFlow.Parts;
 
 namespace XDataFlow.Behaviours.Default
 {
-    public class RaiseUpInBackgroundWithWrappers : IRaiseUpBehaviour
+    public class StartInBackgroundWithWrappers : IStartBehaviour
     {
-        public void Execute(IDataFlowPart part)
+        public void Execute(IRestartablePart part)
         {
-            var entryPointer = part.EntryPointer();
+            var entryPointer = part.StartPointer();
 
-            foreach (var wrapper in part.OnEntryWrappers)
+            foreach (var wrapper in part.StartWrappers)
             {
                 entryPointer = wrapper.Wrap(entryPointer);
             }
