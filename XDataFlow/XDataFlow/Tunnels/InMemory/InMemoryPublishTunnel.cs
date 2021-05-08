@@ -12,9 +12,12 @@ namespace XDataFlow.Tunnels.InMemory
             _queue = queue;
         }
 
-        public override Action<T> PublishPointer()
+        public override Action<T, string> PublishPointer()
         {
-            return data => _queue.Enqueue(data);
+            return (data, key) =>
+            {
+                _queue.Enqueue(data);
+            };
         }
     }
 }

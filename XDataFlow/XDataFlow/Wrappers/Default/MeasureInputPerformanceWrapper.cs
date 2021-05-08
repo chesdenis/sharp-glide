@@ -16,15 +16,15 @@ namespace XDataFlow.Wrappers.Default
         }
 
         public List<PerformanceDataRow> PerformanceData { get; set; } = new List<PerformanceDataRow>();
-
-        public Action<T> Wrap(Action<T> actionToWrap)
+        
+        public Action<T, string> Wrap(Action<T, string> actionToWrap, string routingKey)
         {
-            return (arg) =>
+            return (arg, key) =>
             {
                 _sw.Reset();
                 _sw.Start();
                 
-                actionToWrap(arg);
+                actionToWrap(arg, key);
                 
                 _sw.Stop();
                 

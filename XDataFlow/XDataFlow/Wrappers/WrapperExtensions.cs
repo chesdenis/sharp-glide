@@ -6,13 +6,13 @@ namespace XDataFlow.Wrappers
 {
     public static class WrapperExtensions
     {
-        public static void AddStartWrapper<TWrapper>(this IRestartablePart part, Func<TWrapper> wrapperPointer)
+        public static void AddStartWrapper<TWrapper>(this IPart part, Func<TWrapper> wrapperPointer)
             where TWrapper : IWrapper 
         {
             part.StartWrappers.Add(wrapperPointer());
         }
         
-        public static void AddStartWrapper<TWrapper>(this IRestartablePart part)
+        public static void AddStartWrapper<TWrapper>(this IPart part)
             where TWrapper : IWrapper, new()
         {
             part.StartWrappers.Add(new TWrapper());

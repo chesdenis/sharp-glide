@@ -5,7 +5,7 @@ namespace XDataFlow.Behaviours.Default
 {
     public class StartInBackground : IStartBehaviour
     {
-        public void Execute(IRestartablePart part)
+        public void Execute(IPart part)
         {
             Task.Run(() => part.StartPointer()());
         }

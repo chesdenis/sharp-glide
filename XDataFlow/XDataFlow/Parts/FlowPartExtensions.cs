@@ -2,9 +2,9 @@ namespace XDataFlow.Parts
 {
     public static class FlowPartExtensions
     {
-        public static void Start<TDataFlowPart>(this TDataFlowPart flowPart) where TDataFlowPart : IRestartablePart
+        public static void Start<TDataFlowPart>(this TDataFlowPart flowPart) where TDataFlowPart : IPart
         {
-            foreach (var onRaiseUp in flowPart.StartBehaviours) onRaiseUp.Execute(flowPart);
+            foreach (var behaviour in flowPart.StartBehaviours) behaviour.Execute(flowPart);
         }
     }
 }

@@ -25,5 +25,10 @@ namespace XDataFlow.Tunnels.InMemory
                 throw new NoDataException();
             };
         }
+
+        public override void Put(T input)
+        {
+            _queue.Enqueue(input);
+        }
     }
 }

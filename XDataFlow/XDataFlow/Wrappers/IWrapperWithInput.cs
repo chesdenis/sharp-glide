@@ -4,6 +4,6 @@ namespace XDataFlow.Wrappers
 {
     public interface IWrapperWithInput<T>
     {
-        Action<T> Wrap(Action<T> actionToWrap);
+        Action<T, string> Wrap(Action<T, string> actionToWrap, string routingKey);
     }
 }

@@ -6,9 +6,12 @@ namespace XDataFlow.Tunnels
 {
     public abstract class PublishTunnel<T> : IPublishTunnel<T>
     {
-        public IList<IWrapperWithInput<T>> OnPublishWrappers { get; set; } = new List<IWrapperWithInput<T>>();
+        private const string DefaultRoutingKey = "#";
         
-        public abstract Action<T> PublishPointer();
+        public IList<IWrapperWithInput<T>> OnPublishWrappers { get; set; } = new List<IWrapperWithInput<T>>();
+        public string TopicName { get; set; }
+
+        public abstract Action<T, string> PublishPointer();
         
         public void Publish(T data)
         {
@@ -16,10 +19,22 @@ namespace XDataFlow.Tunnels
 
             foreach (var wrapper in OnPublishWrappers)
             {
-                resultAction = wrapper.Wrap(resultAction);
+                resultAction = wrapper.Wrap(resultAction, DefaultRoutingKey);
             }
 
-            resultAction(data);
+            resultAction(data, DefaultRoutingKey);
+        }
+
+        public void Publish(T data, string routingKey)
+        {
+            var resultAction = PublishPointer();
+
+            foreach (var wrapper in OnPublishWrappers)
+            {
+                resultAction = wrapper.Wrap(resultAction, routingKey);
+            }
+            
+            resultAction(data, routingKey);
         }
     }
 }

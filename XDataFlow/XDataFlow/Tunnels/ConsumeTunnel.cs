@@ -6,8 +6,11 @@ namespace XDataFlow.Tunnels
 {
     public abstract class ConsumeTunnel<T> : IConsumeTunnel<T>
     {
-        public IList<IWrapperWithOutput<T>> OnConsumeWrappers { get; set; } = new List<IWrapperWithOutput<T>>();
-        
+        public IList<IWrapperWithOutput<T>> OnConsumeWrappers { get; } = new List<IWrapperWithOutput<T>>();
+        public List<string> RoutingKeys { get; } = new List<string>();
+        public string TopicName { get; set; }
+        public string QueueName { get; set; }
+
         public abstract Func<T> ConsumePointer();
         
         public T Consume()
@@ -21,5 +24,7 @@ namespace XDataFlow.Tunnels
 
             return consumeFunc();
         }
+
+        public abstract void Put(T input);
     }
 }

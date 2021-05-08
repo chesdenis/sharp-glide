@@ -5,8 +5,10 @@ using XDataFlow.Wrappers;
 
 namespace XDataFlow.Parts
 {
-    public interface IRestartablePart
+    public interface IPart
     {
+        string Name { get; set; }
+        
         Action StartPointer();
 
         Action StopPointer();

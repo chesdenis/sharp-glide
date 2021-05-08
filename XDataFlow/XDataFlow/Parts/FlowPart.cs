@@ -11,12 +11,14 @@ using XDataFlow.Wrappers;
 
 namespace XDataFlow.Parts
 {
-    public abstract class FlowPart<TPublishData, TConsumeData> :
-        IFlowPart<TPublishData, TConsumeData>,
+    public abstract class FlowPart<TConsumeData, TPublishData> :
+        IFlowPart<TConsumeData, TPublishData>,
         IFlowPublisherPart<TPublishData>,
         IFlowConsumerPart<TConsumeData>
     {
         private CancellationTokenSource _cts;
+
+        public string Name { get; set; }
 
         public Action StartPointer()
         {
@@ -61,10 +63,7 @@ namespace XDataFlow.Parts
         public IList<IWrapper> StartWrappers { get; } = new List<IWrapper>();
         public IList<IStopBehaviour> StopBehaviours { get; } = new List<IStopBehaviour>();
         public IList<IWrapper> StopWrappers { get; } = new List<IWrapper>();
-
-        public IDictionary<string, IFlowPart<TPublishData, TConsumeData>> Children { get; } =
-            new Dictionary<string, IFlowPart<TPublishData, TConsumeData>>();
-
+        
         public IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels { get; } =
             new Dictionary<string, IPublishTunnel<TPublishData>>();
 

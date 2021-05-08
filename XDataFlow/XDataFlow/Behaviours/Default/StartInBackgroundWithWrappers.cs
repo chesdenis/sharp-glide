@@ -5,7 +5,7 @@ namespace XDataFlow.Behaviours.Default
 {
     public class StartInBackgroundWithWrappers : IStartBehaviour
     {
-        public void Execute(IRestartablePart part)
+        public void Execute(IPart part)
         {
             var entryPointer = part.StartPointer();
 
