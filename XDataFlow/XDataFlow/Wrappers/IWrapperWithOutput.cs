@@ -4,6 +4,6 @@ namespace XDataFlow.Wrappers
 {
     public interface IWrapperWithOutput<T>
     {
-        Func<T> Wrap(Func<T> funcToWrap);
+        Func<string, string, string, T> Wrap(Func<string, string, string, T> funcToWrap);
     }
 }

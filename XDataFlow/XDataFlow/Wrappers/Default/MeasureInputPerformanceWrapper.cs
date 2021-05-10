@@ -17,14 +17,14 @@ namespace XDataFlow.Wrappers.Default
 
         public List<PerformanceDataRow> PerformanceData { get; set; } = new List<PerformanceDataRow>();
         
-        public Action<T, string> Wrap(Action<T, string> actionToWrap, string routingKey)
+        public Action<T, string, string> Wrap(Action<T, string, string> actionToWrap, string exchange, string routingKey)
         {
-            return (arg, key) =>
+            return (arg, topicName, key) =>
             {
                 _sw.Reset();
                 _sw.Start();
                 
-                actionToWrap(arg, key);
+                actionToWrap(arg, topicName, key);
                 
                 _sw.Stop();
                 

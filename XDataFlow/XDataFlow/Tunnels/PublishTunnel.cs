@@ -6,12 +6,11 @@ namespace XDataFlow.Tunnels
 {
     public abstract class PublishTunnel<T> : IPublishTunnel<T>
     {
-        private const string DefaultRoutingKey = "#";
-        
         public IList<IWrapperWithInput<T>> OnPublishWrappers { get; set; } = new List<IWrapperWithInput<T>>();
         public string TopicName { get; set; }
+        public string RoutingKey { get; set; }
 
-        public abstract Action<T, string> PublishPointer();
+        public abstract Action<T, string, string> PublishPointer();
         
         public void Publish(T data)
         {
@@ -19,10 +18,10 @@ namespace XDataFlow.Tunnels
 
             foreach (var wrapper in OnPublishWrappers)
             {
-                resultAction = wrapper.Wrap(resultAction, DefaultRoutingKey);
+                resultAction = wrapper.Wrap(resultAction, TopicName, RoutingKey);
             }
 
-            resultAction(data, DefaultRoutingKey);
+            resultAction(data, TopicName, RoutingKey);
         }
 
         public void Publish(T data, string routingKey)
@@ -31,10 +30,24 @@ namespace XDataFlow.Tunnels
 
             foreach (var wrapper in OnPublishWrappers)
             {
-                resultAction = wrapper.Wrap(resultAction, routingKey);
+                resultAction = wrapper.Wrap(resultAction, TopicName, routingKey);
+            }
+
+            resultAction(data, TopicName, routingKey);
+        }
+
+        public void Publish(T data, string exchange, string routingKey)
+        {
+            var resultAction = PublishPointer();
+
+            foreach (var wrapper in OnPublishWrappers)
+            {
+                resultAction = wrapper.Wrap(resultAction, exchange, routingKey);
             }
             
-            resultAction(data, routingKey);
+            resultAction(data, exchange, routingKey);
         }
+
+        public abstract void SetupInfrastructure(string topicName, string routingKey);
     }
 }

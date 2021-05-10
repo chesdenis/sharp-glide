@@ -1,23 +1,32 @@
 using System;
-using System.Collections.Concurrent;
+using XDataFlow.Tunnels.InMemory.Messaging;
 
 namespace XDataFlow.Tunnels.InMemory
 {
     public class InMemoryPublishTunnel<T> : PublishTunnel<T>
     {
-        private readonly ConcurrentQueue<T> _queue;
-
-        public InMemoryPublishTunnel(ConcurrentQueue<T> queue)
+        private readonly InMemoryBroker _broker;
+        
+        public InMemoryPublishTunnel(InMemoryBroker broker)
         {
-            _queue = queue;
+            _broker = broker;
         }
 
-        public override Action<T, string> PublishPointer()
+        public override Action<T, string, string> PublishPointer()
         {
-            return (data, key) =>
+            return (data, topicName, routingKey) =>
             {
-                _queue.Enqueue(data);
+                _broker.SetupInfrastructure(topicName);
+                foreach (var inMemoryQueue in _broker.FindQueues(topicName, routingKey))
+                {
+                    inMemoryQueue.Enqueue(data);
+                }
             };
+        }
+
+        public override void SetupInfrastructure(string topicName, string routingKey)
+        {
+            _broker.SetupInfrastructure(topicName);
         }
     }
 }

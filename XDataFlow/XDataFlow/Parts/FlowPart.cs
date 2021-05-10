@@ -66,23 +66,79 @@ namespace XDataFlow.Parts
         
         public IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels { get; } =
             new Dictionary<string, IPublishTunnel<TPublishData>>();
-
-        public void Publish(TPublishData data, Func<KeyValuePair<string, IPublishTunnel<TPublishData>>, bool> predicate)
+        
+        public void Publish(TPublishData data)
         {
-            var tunnels = this.PublishTunnels.Where(predicate).ToList();
-
-            foreach (var t in tunnels)
+            foreach (var t in this.PublishTunnels)
             {
                 t.Value.Publish(data);
             }
         }
-
-        public void Publish(TPublishData data)
+        
+        public void Publish(TPublishData data, string routingKey)
         {
-            this.Publish(data, w => true);
+            foreach (var t in this.PublishTunnels)
+            {
+                t.Value.Publish(data, routingKey);
+            }
+        }
+
+        public void Publish(TPublishData data, string topicName, string routingKey)
+        {
+            foreach (var t in this.PublishTunnels)
+            {
+                t.Value.Publish(data, topicName, routingKey);
+            }
+        }
+
+        public void ConsumeCustomData(TConsumeData data)
+        {
+            this.ConsumeTunnels.First().Value.Put(data);
         }
 
         public IDictionary<string, IConsumeTunnel<TConsumeData>> ConsumeTunnels { get; } =
             new Dictionary<string, IConsumeTunnel<TConsumeData>>();
+
+        public FlowPart<TConsumeData, TPublishData> ConfigureListening(IConsumeTunnel<TConsumeData> tunnel)
+        {
+            tunnel.RoutingKey = "#";
+            tunnel.QueueName = $"InputQueueFor_{Name}";
+            tunnel.TopicName = $"InputTopicFor_{Name}";
+            
+            return ConfigureListening(tunnel, tunnel.TopicName, tunnel.QueueName, tunnel.RoutingKey);
+        }
+        
+        public FlowPart<TConsumeData, TPublishData> ConfigureListening(IConsumeTunnel<TConsumeData> tunnel, string topicName, string queueName, string routingKey)
+        {
+            tunnel.RoutingKey = routingKey;
+            tunnel.QueueName = queueName;
+            tunnel.TopicName = topicName;
+
+            tunnel.SetupInfrastructure(topicName, queueName, routingKey);
+            
+            this.ConsumeTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
+
+            return this;
+        }
+        
+        public FlowPart<TConsumeData, TPublishData> ConfigurePublishing(IPublishTunnel<TPublishData> tunnel)
+        {
+            tunnel.RoutingKey = "#";
+            tunnel.TopicName = $"OutputTopicFor_{Name}";
+            
+            return ConfigurePublishing(tunnel, tunnel.TopicName, tunnel.RoutingKey);
+        }
+        
+        public FlowPart<TConsumeData, TPublishData> ConfigurePublishing(IPublishTunnel<TPublishData> tunnel, string topicName, string routingKey)
+        {
+            tunnel.RoutingKey = routingKey;
+            tunnel.TopicName = topicName;
+
+            tunnel.SetupInfrastructure(topicName, routingKey);
+            
+            this.PublishTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
+          
+            return this;
+        }
     }
 }

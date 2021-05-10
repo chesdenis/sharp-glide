@@ -7,13 +7,13 @@ namespace XDataFlow.Tunnels
     public abstract class ConsumeTunnel<T> : IConsumeTunnel<T>
     {
         public IList<IWrapperWithOutput<T>> OnConsumeWrappers { get; } = new List<IWrapperWithOutput<T>>();
-        public List<string> RoutingKeys { get; } = new List<string>();
+        public string RoutingKey { get; set; }
         public string TopicName { get; set; }
         public string QueueName { get; set; }
 
-        public abstract Func<T> ConsumePointer();
+        public abstract Func<string, string, string, T> ConsumePointer();
         
-        public T Consume()
+        public T Consume(string topicName, string queueName, string routingKey)
         {
             var consumeFunc = ConsumePointer();
 
@@ -22,9 +22,14 @@ namespace XDataFlow.Tunnels
                 consumeFunc = wrapper.Wrap(consumeFunc);
             }
 
-            return consumeFunc();
+            return consumeFunc(topicName, queueName, routingKey);
         }
 
-        public abstract void Put(T input);
+        public T Consume() => Consume(TopicName, QueueName, RoutingKey);
+
+        public abstract void Put(T input, string topicName, string queueName, string routingKey);
+        
+        public void Put(T input) => Put(input, TopicName, QueueName, RoutingKey);
+        public abstract void SetupInfrastructure(string topicName, string queueName, string routingKey);
     }
 }

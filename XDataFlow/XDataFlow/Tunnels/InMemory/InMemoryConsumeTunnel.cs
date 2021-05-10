@@ -1,34 +1,49 @@
 using System;
-using System.Collections.Concurrent;
 using XDataFlow.Exceptions;
+using XDataFlow.Tunnels.InMemory.Messaging;
 
 namespace XDataFlow.Tunnels.InMemory
 {
     public class InMemoryConsumeTunnel<T> : ConsumeTunnel<T>
     {
-        private readonly ConcurrentQueue<T> _queue;
+        private readonly InMemoryBroker _broker;
 
-        public InMemoryConsumeTunnel(ConcurrentQueue<T> queue)
+        public InMemoryConsumeTunnel(InMemoryBroker broker)
         {
-            _queue = queue;
+            _broker = broker;
         }
 
-        public override Func<T> ConsumePointer()
+        public override Func<string, string, string, T> ConsumePointer()
         {
-            return () =>
+            return (topicName, queueName, routingKey) =>
             {
-                if (_queue.TryDequeue(out var result))
+                _broker.SetupInfrastructure(topicName, queueName, routingKey);
+
+                foreach (var inMemoryQueue in _broker.FindQueues(topicName, routingKey))
                 {
-                    return result;
+                    if (inMemoryQueue.TryDequeue(out var result))
+                    {
+                        return (T) result;
+                    }
                 }
-                
+
                 throw new NoDataException();
             };
         }
-
-        public override void Put(T input)
+        
+        public override void Put(T input, string topicName, string queueName, string routingKey)
         {
-            _queue.Enqueue(input);
+            _broker.SetupInfrastructure(topicName, queueName, routingKey);
+            
+            foreach (var inMemoryQueue in _broker.FindQueues(topicName, routingKey))
+            {
+                inMemoryQueue.Enqueue(input);
+            }
+        }
+
+        public override void SetupInfrastructure(string topicName, string queueName, string routingKey)
+        {
+            _broker.SetupInfrastructure(topicName, queueName, routingKey);
         }
     }
 }

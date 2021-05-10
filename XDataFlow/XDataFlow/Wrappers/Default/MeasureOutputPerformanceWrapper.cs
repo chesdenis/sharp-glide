@@ -16,15 +16,15 @@ namespace XDataFlow.Wrappers.Default
         }
 
         private List<PerformanceDataRow> PerformanceData { get; set; } = new List<PerformanceDataRow>();
-
-        public Func<T> Wrap(Func<T> funcToWrap)
+        
+        public Func<string, string, string, T> Wrap(Func<string, string, string, T> funcToWrap)
         {
-            return (() =>
+            return ((topicName, queueName, routingKeys) =>
             {
                 _sw.Reset();
                 _sw.Start();
 
-                var dataToReturn = funcToWrap();
+                var dataToReturn = funcToWrap(topicName, queueName, routingKeys);
                 
                 _sw.Stop();
                 

@@ -9,8 +9,14 @@ namespace XDataFlow.Tunnels
 
         string TopicName { get; set; }
 
-        void Publish(T data);
+        string RoutingKey { get; set; }
 
+        void Publish(T data);
+        
         void Publish(T data, string routingKey);
+
+        void Publish(T data, string exchange, string routingKey);
+        
+        void SetupInfrastructure(string topicName, string routingKey);
     }
 }

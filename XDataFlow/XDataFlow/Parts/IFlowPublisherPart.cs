@@ -8,8 +8,10 @@ namespace XDataFlow.Parts
     {
         IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels { get; }  
         
-        void Publish(TPublishData data, Func<KeyValuePair<string, IPublishTunnel<TPublishData>>, bool> predicate);
-        
         void Publish(TPublishData data);
+
+        void Publish(TPublishData data, string routingKey);
+
+        void Publish(TPublishData data, string topicName, string routingKey);
     }
 }
