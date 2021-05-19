@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using XDataFlow.Exceptions;
 using XDataFlow.Tunnels.InMemory.Messaging;
 
@@ -30,7 +31,9 @@ namespace XDataFlow.Tunnels.InMemory
                 throw new NoDataException();
             };
         }
-        
+
+        public override int WaitingToConsume => _broker.FindQueues(TopicName, RoutingKey).Select(inMemoryQueue => inMemoryQueue.Count).Sum();
+
         public override void Put(T input, string topicName, string queueName, string routingKey)
         {
             _broker.SetupInfrastructure(topicName, queueName, routingKey);

@@ -25,6 +25,7 @@ namespace XDataFlow.Tunnels
             return consumeFunc(topicName, queueName, routingKey);
         }
 
+        public abstract int WaitingToConsume { get; }
         public T Consume() => Consume(TopicName, QueueName, RoutingKey);
 
         public abstract void Put(T input, string topicName, string queueName, string routingKey);

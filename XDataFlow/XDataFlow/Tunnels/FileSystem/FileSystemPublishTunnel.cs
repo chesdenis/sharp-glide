@@ -6,13 +6,11 @@ namespace XDataFlow.Tunnels.FileSystem
 {
     public class FileSystemPublishTunnel<T> : PublishTunnel<T>
     {
-        private const string DefaultTunnelPlace = "C:\\samplePublishTunnel";
-         
         public override Action<T, string, string> PublishPointer()
         {
             return (data, topicName, routingKey) =>
             {
-                var path = Path.Combine(DefaultTunnelPlace, $"{Guid.NewGuid():N}.data");
+                var path = Path.Combine(topicName, routingKey, $"{Guid.NewGuid():N}.data");
                 
                 var writer = new FileStream(path, FileMode.Create);
                 var ser = new DataContractSerializer(typeof(T));
@@ -23,7 +21,7 @@ namespace XDataFlow.Tunnels.FileSystem
 
         public override void SetupInfrastructure(string topicName, string routingKey)
         {
-            Directory.CreateDirectory(DefaultTunnelPlace);
+            Directory.CreateDirectory(Path.Combine(topicName, routingKey));
         }
     }
 }

@@ -24,15 +24,13 @@ namespace XDataFlow.Wrappers.Default
                     _onStart();
                     
                     actionToWrap();
+                    
+                    _onFinish();
                 }
                 catch (Exception e)
                 {
                     _onException(e);
                     throw;
-                }
-                finally
-                {
-                    _onFinish();
                 }
             };
         }

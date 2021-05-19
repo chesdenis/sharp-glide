@@ -20,6 +20,8 @@ namespace XDataFlow.Parts
 
         public string Name { get; set; }
 
+        public Dictionary<string, string> Status { get; } = new Dictionary<string, string>();
+
         public Action StartPointer()
         {
             return OnStart;
@@ -98,7 +100,7 @@ namespace XDataFlow.Parts
 
         public IDictionary<string, IConsumeTunnel<TConsumeData>> ConsumeTunnels { get; } =
             new Dictionary<string, IConsumeTunnel<TConsumeData>>();
-
+        
         public FlowPart<TConsumeData, TPublishData> ConfigureListening(IConsumeTunnel<TConsumeData> tunnel)
         {
             tunnel.RoutingKey = "#";
@@ -121,14 +123,6 @@ namespace XDataFlow.Parts
             return this;
         }
         
-        public FlowPart<TConsumeData, TPublishData> ConfigurePublishing(IPublishTunnel<TPublishData> tunnel)
-        {
-            tunnel.RoutingKey = "#";
-            tunnel.TopicName = $"OutputTopicFor_{Name}";
-            
-            return ConfigurePublishing(tunnel, tunnel.TopicName, tunnel.RoutingKey);
-        }
-        
         public FlowPart<TConsumeData, TPublishData> ConfigurePublishing(IPublishTunnel<TPublishData> tunnel, string topicName, string routingKey)
         {
             tunnel.RoutingKey = routingKey;
@@ -139,6 +133,43 @@ namespace XDataFlow.Parts
             this.PublishTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
           
             return this;
+        }
+
+        public TPublishWrapper CreatePublishWrapper<TPublishWrapper>(TPublishWrapper wrapper)
+            where TPublishWrapper : IWrapperWithInput<TPublishData>
+        {
+            foreach (var tunnelKey in this.PublishTunnels.Keys)
+            {
+                this.PublishTunnels[tunnelKey].OnPublishWrappers.Add(wrapper);
+            }
+
+            return wrapper;
+        }
+
+        public TConsumeWrapper CreateConsumeWrapper<TConsumeWrapper>(TConsumeWrapper wrapper)
+            where TConsumeWrapper : IWrapperWithOutput<TConsumeData>
+        {
+            foreach (var tunnelKey in this.ConsumeTunnels.Keys)
+            {
+                this.ConsumeTunnels[tunnelKey].OnConsumeWrappers.Add(wrapper);
+            }
+            
+            return wrapper;
+        }
+        
+        public TWrapper CreateStartWrapper<TWrapper>(TWrapper wrapper)
+            where TWrapper : IWrapper 
+        {
+            this.StartWrappers.Add(wrapper);
+
+            return wrapper;
+        }
+
+        public void CollectStatusInfo()
+        {
+            this.Status.Upsert("Messages.AwaitingToProcess", 
+                this.ConsumeTunnels.Select(s=>s.Value.WaitingToConsume)
+                    .Sum().ToString());
         }
     }
 }

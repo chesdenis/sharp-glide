@@ -13,6 +13,8 @@ namespace XDataFlow.Tunnels
 
         string QueueName { get; set; }
 
+        int WaitingToConsume { get; }
+
         T Consume();
 
         T Consume(string topicName, string queueName, string routingKey);
