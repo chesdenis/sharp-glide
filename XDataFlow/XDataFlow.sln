@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XDataFlow.Parts.NetCore", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XDataFlow.Parts.Net", "XDataFlow.Parts.Net\XDataFlow.Parts.Net.csproj", "{6EF0568E-57BE-4EE8-9683-D4457DD69197}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "XDataFlow.Parts.Shared", "XDataFlow.Parts.Shared\XDataFlow.Parts.Shared.shproj", "{58A9AE09-8344-48AB-A205-AE14DC7035BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XDataFlow.Parts.Net.MsSql", "XDataFlow.Parts.Net.MsSql\XDataFlow.Parts.Net.MsSql.csproj", "{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +34,9 @@ Global
 		{6EF0568E-57BE-4EE8-9683-D4457DD69197}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EF0568E-57BE-4EE8-9683-D4457DD69197}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EF0568E-57BE-4EE8-9683-D4457DD69197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
