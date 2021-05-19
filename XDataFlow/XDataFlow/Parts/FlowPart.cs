@@ -167,7 +167,7 @@ namespace XDataFlow.Parts
 
         public void CollectStatusInfo()
         {
-            this.Status.Upsert("Messages.AwaitingToProcess", 
+            this.Status.Upsert("WaitingToProcess", 
                 this.ConsumeTunnels.Select(s=>s.Value.WaitingToConsume)
                     .Sum().ToString());
         }
