@@ -7,6 +7,4 @@
     <ItemGroup>
       <ProjectReference Include="..\XDataFlow\XDataFlow.csproj" />
     </ItemGroup>
-    
-    <Import Project="..\XDataFlow.Parts.Shared\XDataFlow.Parts.Shared.projitems" Label="Shared" />
 </Project>

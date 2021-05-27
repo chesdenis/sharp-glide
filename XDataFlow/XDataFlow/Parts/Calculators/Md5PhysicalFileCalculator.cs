@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using XDataFlow.Extensions;
 
-namespace XDataFlow.Parts.Shared.Calculators
+namespace XDataFlow.Parts.Calculators
 {
     public class Md5PhysicalFileCalculator : FlowPart<Md5PhysicalFileCalculator.Input, Md5PhysicalFileCalculator.Output>
     {
@@ -21,6 +21,8 @@ namespace XDataFlow.Parts.Shared.Calculators
         
         protected override void ProcessMessage(Input data)
         {
+            data.FilePath = data.FilePath ?? throw new InvalidOperationException();
+            
             this.Status["InProgress"] = Path.GetFileName(data.FilePath);
                 
             using var md5 = MD5.Create();

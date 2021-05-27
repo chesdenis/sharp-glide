@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace XDataFlow.Parts.Shared.FileSystem
+namespace XDataFlow.Parts.FileSystems
 {
     public class FilesScanner: FlowPart<FilesScanner.Input, FilesScanner.Output>
     {
