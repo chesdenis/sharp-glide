@@ -11,17 +11,13 @@ namespace XDataFlow.Dashboard
 {
     public class FlowDashboard : IFlowDashboard
     {
-        private readonly FlowDashboardTemplate _flowDashboardTemplate;
+        private readonly IDictionary<Type, Func<IPart>> _partTemplates = new Dictionary<Type, Func<IPart>>();
+      
         private readonly IDictionary<string, IPart> _parts  = new Dictionary<string, IPart>();
-
-        public FlowDashboard(FlowDashboardTemplate flowDashboardTemplate)
-        {
-            _flowDashboardTemplate = flowDashboardTemplate;
-        }
         
         public TFlowPart AddFlowPart<TFlowPart>(string name) where TFlowPart : IPart
         {
-            var flowPart = _flowDashboardTemplate.CreateFlowPart<TFlowPart>();
+            var flowPart = CreateFlowPart<TFlowPart>();
 
             flowPart.Name = name;
             flowPart.Status.Upsert("Name", name);
@@ -70,6 +66,19 @@ namespace XDataFlow.Dashboard
         public IEnumerable<IPart> GetFlowParts()
         {
             return this._parts.Select(s => s.Value);
+        }
+        
+        public IFlowDashboard AddFlowPartTemplate<TFlowPart>(Func<IPart> flowPartBuilder)
+            where TFlowPart : IPart
+        {
+            _partTemplates.Add(typeof(TFlowPart), flowPartBuilder);
+          
+            return this;
+        }
+
+        public TFlowPart CreateFlowPart<TFlowPart>() where TFlowPart : IPart
+        {
+            return (TFlowPart) _partTemplates[typeof(TFlowPart)]();
         }
 
         public void EnumerateParts(Action<IPart> partAction)

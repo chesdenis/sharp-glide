@@ -8,6 +8,10 @@ namespace XDataFlow.Dashboard
 {
     public interface IFlowDashboard
     {
+        IFlowDashboard AddFlowPartTemplate<TFlowPart>(Func<IPart> flowPartBuilder) where TFlowPart : IPart;
+
+        TFlowPart CreateFlowPart<TFlowPart>() where TFlowPart : IPart;
+        
         TFlowPart AddFlowPart<TFlowPart>(string name) where TFlowPart : IPart;
 
         List<ExpandoObject> GetStatusInfo();
