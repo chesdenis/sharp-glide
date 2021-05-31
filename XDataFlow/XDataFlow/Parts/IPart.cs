@@ -11,6 +11,8 @@ namespace XDataFlow.Parts
 
         Dictionary<string,string> Status { get; }
 
+        bool Idle { get; }
+
         void CollectStatusInfo();
 
         Action StartPointer();

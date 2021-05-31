@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using XDataFlow.Behaviours;
 using XDataFlow.Extensions;
 using XDataFlow.Parts;
@@ -26,7 +28,28 @@ namespace XDataFlow.Dashboard
 
             return flowPart;
         }
-  
+
+        public void WatchOnIdleParts(Action<IPart> onIdle, CancellationToken cancellationToken)
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    foreach (var idlePart in _parts.Values.Where(w=>w.Idle).ToList())
+                    {
+                        onIdle(idlePart);
+                    }
+
+                    await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                }
+            }, cancellationToken);
+        }
+
         public List<ExpandoObject> GetStatusInfo()
         {
             foreach (var partsKey in _parts.Keys)

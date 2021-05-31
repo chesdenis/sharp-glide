@@ -20,6 +20,15 @@ namespace XDataFlow.Parts
 
         public string Name { get; set; }
 
+        protected virtual int IdleTimeoutMs => 15000;
+
+        private DateTime lastPublish { get; set; }
+
+        private DateTime lastConsume { get; set; }
+
+        public bool Idle => DateTime.Now.Subtract(lastPublish).TotalMilliseconds > IdleTimeoutMs &
+                            DateTime.Now.Subtract(lastConsume).TotalMilliseconds > IdleTimeoutMs;
+
         public Dictionary<string, string> Status { get; } = new Dictionary<string, string>();
 
         public Action StartPointer()
@@ -46,6 +55,7 @@ namespace XDataFlow.Parts
                 try
                 {
                     this.Consume<IFlowConsumerPart<TConsumeData>, TConsumeData>(ProcessMessage);
+                    lastConsume = DateTime.Now;
                 }
                 catch (NoDataException)
                 {
@@ -74,6 +84,7 @@ namespace XDataFlow.Parts
             foreach (var t in this.PublishTunnels)
             {
                 t.Value.Publish(data);
+                lastPublish = DateTime.Now;
             }
         }
         
@@ -82,6 +93,7 @@ namespace XDataFlow.Parts
             foreach (var t in this.PublishTunnels)
             {
                 t.Value.Publish(data, routingKey);
+                lastPublish = DateTime.Now;
             }
         }
 
@@ -90,6 +102,7 @@ namespace XDataFlow.Parts
             foreach (var t in this.PublishTunnels)
             {
                 t.Value.Publish(data, topicName, routingKey);
+                lastPublish = DateTime.Now;
             }
         }
 

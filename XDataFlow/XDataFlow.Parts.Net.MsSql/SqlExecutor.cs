@@ -9,9 +9,9 @@ namespace XDataFlow.Parts.Net.MsSql
     {
         private readonly string _connectionString;
 
-        private readonly List<Input> _messageBuffer = new List<Input>();
+        private readonly List<Input> _inputBuffer = new List<Input>();
 
-        private readonly Timer _timer = new Timer(250);
+        private readonly Timer _bufferProcessTimer = new Timer(250);
 
         public class Input
         {
@@ -31,18 +31,18 @@ namespace XDataFlow.Parts.Net.MsSql
         {
             _connectionString = connectionString;
             
-            _timer.Elapsed += TimerOnElapsed;
-            _timer.Start();
+            _bufferProcessTimer.Elapsed += BufferProcessTimerOnElapsed;
+            _bufferProcessTimer.Start();
         }
 
-        private void TimerOnElapsed(object sender, ElapsedEventArgs e)
+        private void BufferProcessTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
-            if (!_messageBuffer.Any())
+            if (!_inputBuffer.Any())
             {
                 return;
             }
             
-            lock (_messageBuffer)
+            lock (_inputBuffer)
             {
                 var builder = new SqlConnectionStringBuilder {ConnectionString = _connectionString};
                 using var connection = new SqlConnection(builder.ConnectionString);
@@ -54,7 +54,7 @@ namespace XDataFlow.Parts.Net.MsSql
 
                 var processed = new List<Input>();
 
-                foreach (var bufferEntry in _messageBuffer)
+                foreach (var bufferEntry in _inputBuffer)
                 {
                     try
                     {
@@ -71,16 +71,16 @@ namespace XDataFlow.Parts.Net.MsSql
 
                 foreach (var processedEntry in processed)
                 {
-                    _messageBuffer.Remove(processedEntry);
+                    _inputBuffer.Remove(processedEntry);
                 }
             }
         }
 
         protected override void ProcessMessage(Input data)
         {
-            lock (_messageBuffer)
+            lock (_inputBuffer)
             {
-                _messageBuffer.Add(data);
+                _inputBuffer.Add(data);
             }
         }
     }
