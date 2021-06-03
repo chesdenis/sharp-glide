@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using XDataFlow.Behaviours;
 using XDataFlow.Wrappers;
 
@@ -13,7 +14,15 @@ namespace XDataFlow.Parts
 
         bool Idle { get; }
 
+        IEnumerable<IPart> GetChildren();
+
+        void EnumerateParts(Action<IPart> partAction);
+        
+        TFlowPart AddFlowPart<TFlowPart>(TFlowPart flowPart, string name) where TFlowPart : IPart;
+
         void CollectStatusInfo();
+
+        List<ExpandoObject> GetStatusInfo();
 
         Action StartPointer();
 

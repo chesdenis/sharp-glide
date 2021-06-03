@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +19,10 @@ namespace XDataFlow.Parts
     {
         private CancellationTokenSource _cts;
 
+        public virtual void SetupFlow()
+        {
+        }
+        
         public string Name { get; set; }
 
         protected virtual int IdleTimeoutMs => 15000;
@@ -28,6 +33,10 @@ namespace XDataFlow.Parts
 
         public bool Idle => DateTime.Now.Subtract(lastPublish).TotalMilliseconds > IdleTimeoutMs &
                             DateTime.Now.Subtract(lastConsume).TotalMilliseconds > IdleTimeoutMs;
+
+        private readonly IDictionary<string, IPart> _children  = new Dictionary<string, IPart>();
+        
+        public IEnumerable<IPart> GetChildren() => this._children.Select(s => s.Value);
 
         public Dictionary<string, string> Status { get; } = new Dictionary<string, string>();
 
@@ -70,6 +79,83 @@ namespace XDataFlow.Parts
         {
             _cts.Cancel();
         }
+        
+        public void EnumerateParts(Action<IPart> partAction)
+        {
+            foreach (var part in this.GetChildren())
+            {
+                partAction(part);
+            }
+        }
+        
+        public TFlowPart AddFlowPart<TFlowPart>(TFlowPart flowPart, string name) where TFlowPart : IPart
+        {
+            flowPart.Name = name;
+            flowPart.Status.Upsert("Name", name);
+
+            _children.Add(name, flowPart);
+
+            return flowPart;
+        }
+
+        
+        public List<ExpandoObject> GetStatusInfo()
+        {
+            foreach (var partsKey in _children.Keys)
+            {
+                var part = _children[partsKey];
+                part.CollectStatusInfo();
+            }
+            
+            var partsStatusKeys = _children
+                .Select(s => s.Value)
+                .SelectMany(ss => ss.Status.Keys)
+                .Distinct()
+                .OrderBy(o => o)
+                .ToList();
+
+            var dataToPlot = new List<ExpandoObject>();
+
+            foreach (var partsKey in _children.Keys)
+            {
+                var part = _children[partsKey];
+
+                var partStatus = new ExpandoObject();
+                var partStatusAsDict = (IDictionary<string, object>) partStatus;
+
+                foreach (var partsStatusKey in partsStatusKeys)
+                {
+                    partStatusAsDict[partsStatusKey] =
+                        part.Status.ContainsKey(partsStatusKey) ? part.Status[partsStatusKey] : string.Empty;
+                }
+
+                dataToPlot.Add(partStatus);
+            }
+
+            return dataToPlot;
+        }
+        
+        // TODO: implement watching for idle
+        // public void WatchOnIdleParts(Action<IPart> onIdle, CancellationToken cancellationToken)
+        // {
+        //     Task.Run(async () =>
+        //     {
+        //         while (true)
+        //         {
+        //             if (cancellationToken.IsCancellationRequested)
+        //             {
+        //                 break;
+        //             }
+        //
+        //             foreach (var idlePart in _parts.Values.Where(w=>w.Idle).ToList())
+        //             {
+        //                 onIdle(idlePart);
+        //             }
+        //
+        //             await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+        //         }
+        //     }, cancellationToken);
+        // }
 
         public IList<IStartBehaviour> StartBehaviours { get; } = new List<IStartBehaviour>();
         public IList<IWrapper> StartWrappers { get; } = new List<IWrapper>();

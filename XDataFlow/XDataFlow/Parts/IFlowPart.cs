@@ -5,6 +5,6 @@ namespace XDataFlow.Parts
 {
     public interface IFlowPart<TPublishData, TConsumeData> : IPart
     {
-       
+        void SetupFlow();
     }
 }

@@ -1,8 +1,8 @@
 using System;
 
-namespace XDataFlow.Repeaters
+namespace XDataFlow.Fields
 {
-    public class Taker<T>
+    public class Field<T>
     {
         public Func<T> Func;
 
@@ -10,12 +10,12 @@ namespace XDataFlow.Repeaters
  
         protected DateTime CalculatedAt { get; set; }
 
-        public Taker(Func<T> func)
+        public Field(Func<T> func)
         {
             Func = func;
         }
 
-        public virtual T Take()
+        public virtual T GetValue()
         {
             CalculatedAt = DateTime.Now;
             Value = Func();
