@@ -1,5 +1,8 @@
 using System;
 using XDataFlow.Parts;
+using XDataFlow.Tunnels;
+using XDataFlow.Tunnels.InMemory;
+using XDataFlow.Tunnels.InMemory.Messaging;
 
 namespace XDataFlow.Extensions
 {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using XDataFlow.Exceptions;
 using XDataFlow.Tunnels.InMemory.Messaging;
@@ -32,7 +33,70 @@ namespace XDataFlow.Tunnels.InMemory
             };
         }
 
-        public override int WaitingToConsume => _broker.FindQueues(TopicName, RoutingKey).Select(inMemoryQueue => inMemoryQueue.Count).Sum();
+       // private List<Tuple<int, DateTime>> WaitingToConsumeHistory = new List<Tuple<int, DateTime>>();
+        private int _previousWaitingToConsume = 0;
+        private DateTime _previousWaitingToConsumeDateTime = DateTime.Now;
+        
+        public override int WaitingToConsume
+        {
+            get
+            {
+                var waitingToConsume = _broker.FindQueues(TopicName, RoutingKey)
+                    .Select(inMemoryQueue => inMemoryQueue.Count).Sum();
+
+                return waitingToConsume;
+            }
+        }
+
+        public override int EstimatedTimeInSeconds
+        {
+            get
+            {
+                var currentWaitingToConsume = WaitingToConsume;
+
+                if (_previousWaitingToConsume > currentWaitingToConsume)
+                {
+                    var processedMessagesDelta = Math.Abs(_previousWaitingToConsume - currentWaitingToConsume);
+                    if (processedMessagesDelta == 0)
+                    {
+                        return 0;
+                    }
+                    
+                    var timeRangeDeltaInSeconds = DateTime.Now.Subtract(_previousWaitingToConsumeDateTime).TotalSeconds;
+
+                    var secondsPerMessage = timeRangeDeltaInSeconds / processedMessagesDelta;
+                    var estimatedTime = Convert.ToInt32(secondsPerMessage * currentWaitingToConsume);
+                    
+                    return estimatedTime;
+                }
+                
+                _previousWaitingToConsume = currentWaitingToConsume;
+                _previousWaitingToConsumeDateTime = DateTime.Now;
+
+                return 0;
+
+                // var historySnapshot = WaitingToConsumeHistory.ToList().OrderBy(o => o.Item2).ToList();
+                // if (historySnapshot.Count == 0)
+                // {
+                //     return 0;
+                // }
+                //
+                // var last = historySnapshot.Last();
+                // var first = historySnapshot.First();
+                //
+                // var deltaY = last.Item1 - first.Item1;
+                // if (deltaY <= 0)
+                // {
+                //     return 0;
+                // }
+                //
+                // var deltaX = last.Item2.Subtract(first.Item2);
+                //
+                // var estimatedTimeInSeconds = Convert.ToInt32((deltaX.TotalSeconds / deltaY * WaitingToConsume));
+                //
+                // return estimatedTimeInSeconds;
+            }
+        }
 
         public override void Put(T input, string topicName, string queueName, string routingKey)
         {

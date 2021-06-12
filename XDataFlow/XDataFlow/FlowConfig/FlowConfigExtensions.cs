@@ -1,6 +1,8 @@
 using System;
 using XDataFlow.Parts;
 using XDataFlow.Tunnels;
+using XDataFlow.Tunnels.InMemory;
+using XDataFlow.Tunnels.InMemory.Messaging;
 
 namespace XDataFlow.FlowConfig
 {
@@ -59,6 +61,16 @@ namespace XDataFlow.FlowConfig
             return config;
         }
         
+        public static FlowConfig AttachInMemoryPublisher<TConsumeData, TPublishData>( 
+            this FlowConfig config,
+            FlowPart<TConsumeData,TPublishData> part,
+            InMemoryBroker broker)
+        {
+            var tunnel = new InMemoryPublishTunnel<TPublishData>(broker);
+
+            return AttachPublisher(config, part, tunnel);
+        }
+        
         public static FlowConfig AttachConsumer<TConsumeData, TPublishData, TConsumeTunnel>(
             this FlowConfig config, 
             FlowPart<TConsumeData,TPublishData> part, TConsumeTunnel consumeTunnel)
@@ -71,5 +83,17 @@ namespace XDataFlow.FlowConfig
             
             return config;
         }
+
+        public static FlowConfig AttachInMemoryConsumer<TConsumeData, TPublishData>( 
+            this FlowConfig config,
+            FlowPart<TConsumeData,TPublishData> part,
+            InMemoryBroker broker)
+        {
+            var tunnel = new InMemoryConsumeTunnel<TConsumeData>(broker);
+
+            return AttachConsumer(config, part, tunnel);
+        }
+        
+       
     }
 }

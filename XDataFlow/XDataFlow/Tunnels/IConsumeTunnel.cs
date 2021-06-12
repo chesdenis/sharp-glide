@@ -14,6 +14,8 @@ namespace XDataFlow.Tunnels
         string QueueName { get; set; }
 
         int WaitingToConsume { get; }
+        
+        int EstimatedTimeInSeconds { get; }
 
         T Consume();
 

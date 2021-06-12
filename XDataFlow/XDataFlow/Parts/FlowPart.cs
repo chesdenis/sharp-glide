@@ -269,6 +269,11 @@ namespace XDataFlow.Parts
             this.Status.Upsert("WaitingToProcess", 
                 this.ConsumeTunnels.Select(s=>s.Value.WaitingToConsume)
                     .Sum().ToString());
+            
+            var estimatedTimeToFinishInSeconds = this.ConsumeTunnels.Select(s => s.Value.EstimatedTimeInSeconds)
+                .Sum();
+            this.Status.Upsert("EstimatedTimeToFinish",
+                TimeSpan.FromSeconds(estimatedTimeToFinishInSeconds).ToString("c"));
         }
     }
 }
