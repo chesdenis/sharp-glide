@@ -17,6 +17,8 @@ namespace XDataFlow.Tunnels
         
         int EstimatedTimeInSeconds { get; }
 
+        int MessagesPerSecond { get; }
+
         T Consume();
 
         T Consume(string topicName, string queueName, string routingKey);

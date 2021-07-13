@@ -27,6 +27,8 @@ namespace XDataFlow.Tunnels
 
         public abstract int WaitingToConsume { get; }
         public abstract int EstimatedTimeInSeconds { get; }
+        public abstract int MessagesPerSecond { get; }
+
         public T Consume() => Consume(TopicName, QueueName, RoutingKey);
 
         public abstract void Put(T input, string topicName, string queueName, string routingKey);

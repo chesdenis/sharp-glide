@@ -134,28 +134,6 @@ namespace XDataFlow.Parts
 
             return dataToPlot;
         }
-        
-        // TODO: implement watching for idle
-        // public void WatchOnIdleParts(Action<IPart> onIdle, CancellationToken cancellationToken)
-        // {
-        //     Task.Run(async () =>
-        //     {
-        //         while (true)
-        //         {
-        //             if (cancellationToken.IsCancellationRequested)
-        //             {
-        //                 break;
-        //             }
-        //
-        //             foreach (var idlePart in _parts.Values.Where(w=>w.Idle).ToList())
-        //             {
-        //                 onIdle(idlePart);
-        //             }
-        //
-        //             await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
-        //         }
-        //     }, cancellationToken);
-        // }
 
         public IList<IStartBehaviour> StartBehaviours { get; } = new List<IStartBehaviour>();
         public IList<IWrapper> StartWrappers { get; } = new List<IWrapper>();
@@ -266,14 +244,19 @@ namespace XDataFlow.Parts
 
         public void CollectStatusInfo()
         {
-            this.Status.Upsert("WaitingToProcess", 
+            this.Status.Upsert("Available", 
                 this.ConsumeTunnels.Select(s=>s.Value.WaitingToConsume)
                     .Sum().ToString());
             
             var estimatedTimeToFinishInSeconds = this.ConsumeTunnels.Select(s => s.Value.EstimatedTimeInSeconds)
                 .Sum();
-            this.Status.Upsert("EstimatedTimeToFinish",
+            this.Status.Upsert("ETA",
                 TimeSpan.FromSeconds(estimatedTimeToFinishInSeconds).ToString("c"));
+            
+            var messagesPerSecond = this.ConsumeTunnels.Select(s => s.Value.MessagesPerSecond)
+                .Sum();
+            
+            this.Status.Upsert("Speed, n/sec", messagesPerSecond.ToString());
         }
     }
 }
