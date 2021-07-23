@@ -11,7 +11,7 @@ namespace XDataFlow.Parts
         string Name { get; set; }
 
         Dictionary<string,string> Status { get; }
-
+        
         bool Idle { get; }
 
         IEnumerable<IPart> GetChildren();

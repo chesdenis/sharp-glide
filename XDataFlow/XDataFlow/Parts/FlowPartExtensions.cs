@@ -1,3 +1,5 @@
+using System;
+
 namespace XDataFlow.Parts
 {
     public static class FlowPartExtensions

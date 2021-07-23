@@ -1,14 +1,17 @@
-using XDataFlow.Parts.Net.HttpNative.Proxy;
+using System.Collections.Generic;
+using XDataFlow.Parts.NetCore.Http.Proxy;
 
-namespace XDataFlow.Parts.Net.HttpNative
+namespace XDataFlow.Parts.NetCore.Http
 {
-    public class HttpGet : FlowPart<HttpGet.Input, HttpGet.Output>
+    public class HttpPostAsUrlEncoded : FlowPart<HttpPostAsUrlEncoded.Input, HttpPostAsUrlEncoded.Output>
     {
         private readonly IHttpClientProxy _httpClientProxy;
 
         public class Input
         {
             public string Url { get; set; }
+
+            public Dictionary<string, string> FormData { get; set; }
         }
         
         public class Output
@@ -16,14 +19,14 @@ namespace XDataFlow.Parts.Net.HttpNative
             public string PageContent { get; set; }
         }
 
-        public HttpGet(IHttpClientProxy httpClientProxy)
+        public HttpPostAsUrlEncoded(IHttpClientProxy httpClientProxy)
         {
             _httpClientProxy = httpClientProxy;
         }
- 
+
         protected override void ProcessMessage(Input data)
         {
-            var pageData = this._httpClientProxy.Get(data.Url).GetAwaiter().GetResult();
+            var pageData = this._httpClientProxy.PostAsUrlEncoded(data.Url, data.FormData).GetAwaiter().GetResult();
 
             this.Publish(new Output() {PageContent = pageData});
         }

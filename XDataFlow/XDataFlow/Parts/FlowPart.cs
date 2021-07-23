@@ -88,6 +88,12 @@ namespace XDataFlow.Parts
             }
         }
         
+        public static Func<TFlowPart> CreateTemplate<TFlowPart>() where TFlowPart : IPart, new() => () => new TFlowPart();
+
+        public static Func<TFlowPart> CreateTemplate<TFlowPart>(params object[] args)
+            where TFlowPart : IPart
+            => ()=> (TFlowPart)Activator.CreateInstance(typeof(TFlowPart), args);
+
         public TFlowPart AddFlowPart<TFlowPart>(TFlowPart flowPart, string name) where TFlowPart : IPart
         {
             flowPart.Name = name;
@@ -97,7 +103,6 @@ namespace XDataFlow.Parts
 
             return flowPart;
         }
-
         
         public List<ExpandoObject> GetStatusInfo()
         {
@@ -135,14 +140,22 @@ namespace XDataFlow.Parts
             return dataToPlot;
         }
 
+        // R
         public IList<IStartBehaviour> StartBehaviours { get; } = new List<IStartBehaviour>();
+        
+        // R
         public IList<IWrapper> StartWrappers { get; } = new List<IWrapper>();
+        
+        // R
         public IList<IStopBehaviour> StopBehaviours { get; } = new List<IStopBehaviour>();
+        
+        // R
         public IList<IWrapper> StopWrappers { get; } = new List<IWrapper>();
         
         public IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels { get; } =
             new Dictionary<string, IPublishTunnel<TPublishData>>();
         
+        // Refactored
         public void Publish(TPublishData data)
         {
             foreach (var t in this.PublishTunnels)
@@ -151,7 +164,8 @@ namespace XDataFlow.Parts
                 lastPublish = DateTime.Now;
             }
         }
-        
+
+        // Refactored
         public void Publish(TPublishData data, string routingKey)
         {
             foreach (var t in this.PublishTunnels)
@@ -161,6 +175,7 @@ namespace XDataFlow.Parts
             }
         }
 
+        // Refactored
         public void Publish(TPublishData data, string topicName, string routingKey)
         {
             foreach (var t in this.PublishTunnels)
@@ -170,14 +185,17 @@ namespace XDataFlow.Parts
             }
         }
 
+        // Refactored
         public void ConsumeCustomData(TConsumeData data)
         {
             this.ConsumeTunnels.First().Value.Put(data);
         }
 
+        // Refactored
         public IDictionary<string, IConsumeTunnel<TConsumeData>> ConsumeTunnels { get; } =
             new Dictionary<string, IConsumeTunnel<TConsumeData>>();
         
+        // Refactored
         public FlowPart<TConsumeData, TPublishData> ConfigureListening(IConsumeTunnel<TConsumeData> tunnel)
         {
             tunnel.RoutingKey = "#";
@@ -187,6 +205,7 @@ namespace XDataFlow.Parts
             return ConfigureListening(tunnel, tunnel.TopicName, tunnel.QueueName, tunnel.RoutingKey);
         }
         
+        // Refactored
         public FlowPart<TConsumeData, TPublishData> ConfigureListening(IConsumeTunnel<TConsumeData> tunnel, string topicName, string queueName, string routingKey)
         {
             tunnel.RoutingKey = routingKey;
@@ -200,6 +219,7 @@ namespace XDataFlow.Parts
             return this;
         }
         
+        // refactored
         public FlowPart<TConsumeData, TPublishData> ConfigurePublishing(IPublishTunnel<TPublishData> tunnel, string topicName, string routingKey)
         {
             tunnel.RoutingKey = routingKey;
@@ -212,6 +232,7 @@ namespace XDataFlow.Parts
             return this;
         }
 
+        // Refactored
         public TPublishWrapper CreatePublishWrapper<TPublishWrapper>(TPublishWrapper wrapper)
             where TPublishWrapper : IWrapperWithInput<TPublishData>
         {
@@ -223,6 +244,7 @@ namespace XDataFlow.Parts
             return wrapper;
         }
 
+        // Refactored
         public TConsumeWrapper CreateConsumeWrapper<TConsumeWrapper>(TConsumeWrapper wrapper)
             where TConsumeWrapper : IWrapperWithOutput<TConsumeData>
         {
@@ -234,6 +256,7 @@ namespace XDataFlow.Parts
             return wrapper;
         }
         
+        // Refactored
         public TWrapper CreateStartWrapper<TWrapper>(TWrapper wrapper)
             where TWrapper : IWrapper 
         {
@@ -242,6 +265,7 @@ namespace XDataFlow.Parts
             return wrapper;
         }
 
+        // Refactored
         public void CollectStatusInfo()
         {
             this.Status.Upsert("Available", 

@@ -2,18 +2,13 @@ using System;
 
 namespace XDataFlow.Parts.Generic
 {
-    public class GenericGuard<TData> : FlowPart<TData, TData>
+    public abstract class GenericGuard<TData> : FlowPart<TData, TData>
     {
-        private readonly Func<TData, bool> _allowFunc;
+        protected abstract bool IsAllow(TData data);
 
-        public GenericGuard(Func<TData, bool> allowFunc)
-        {
-            _allowFunc = allowFunc;
-        }
-         
         protected override void ProcessMessage(TData data)
         {
-            if (_allowFunc(data))
+            if (IsAllow(data))
             {
                 this.Publish(data);
             }

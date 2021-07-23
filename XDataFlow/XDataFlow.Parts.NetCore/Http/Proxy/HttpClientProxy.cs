@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace XDataFlow.Parts.Net.HttpNative.Proxy
+namespace XDataFlow.Parts.NetCore.Http.Proxy
 {
     public class HttpClientProxy : IHttpClientProxy
     {
