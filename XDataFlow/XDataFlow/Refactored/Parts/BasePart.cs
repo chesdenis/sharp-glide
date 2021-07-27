@@ -1,4 +1,7 @@
-namespace XDataFlow.Refactored
+using XDataFlow.Refactored.Controllers.MetaData;
+using XDataFlow.Refactored.Controllers.Switch;
+
+namespace XDataFlow.Refactored.Parts
 {
     public abstract class BasePart : IBasePart
     {

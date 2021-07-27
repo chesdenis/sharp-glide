@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using XDataFlow.Refactored.Behaviours;
-using XDataFlow.Wrappers;
+using XDataFlow.Refactored.Controllers.Switch.Behaviours;
 
-namespace XDataFlow.Refactored
+namespace XDataFlow.Refactored.Controllers.Switch
 {
     public abstract class SwitchController : ISwitchController
     {

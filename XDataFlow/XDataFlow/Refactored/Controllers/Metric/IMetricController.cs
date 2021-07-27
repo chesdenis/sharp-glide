@@ -1,6 +1,6 @@
 using System;
 
-namespace XDataFlow.Parts.Interfaces
+namespace XDataFlow.Refactored.Controllers.Metric
 {
     public interface IMetricController<TConsumeData, IPublishData>
     { 

@@ -1,13 +1,12 @@
-using System;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using XDataFlow.Parts.Interfaces;
-using XDataFlow.Refactored;
-using XDataFlow.Refactored.Behaviours;
 using XDataFlow.Refactored.Builders;
+using XDataFlow.Refactored.Controllers.Group;
+using XDataFlow.Refactored.Controllers.MetaData;
+using XDataFlow.Refactored.Controllers.Switch.Behaviours;
+using XDataFlow.Refactored.Parts;
 using Xunit;
 
 namespace XDataFlow.Tests.Parts

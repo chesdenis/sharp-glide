@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using XDataFlow.Refactored;
+using XDataFlow.Refactored.Parts;
 
-namespace XDataFlow.Parts.Interfaces
+namespace XDataFlow.Refactored.Controllers.Group
 {
     public interface IGroupController
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using XDataFlow.Tunnels;
 using XDataFlow.Wrappers;
 
-namespace XDataFlow.Parts.Interfaces
+namespace XDataFlow.Refactored.Controllers.Consume
 {
     public class ConsumeController<TConsumeData> : IConsumeController<TConsumeData>
     {

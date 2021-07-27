@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using XDataFlow.Refactored.Behaviours;
+using XDataFlow.Refactored.Controllers.Switch.Behaviours;
 
-namespace XDataFlow.Refactored
+namespace XDataFlow.Refactored.Parts
 {
     public static class BasePartExtensions
     {

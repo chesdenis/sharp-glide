@@ -1,6 +1,7 @@
 using System;
-using System.Drawing;
-using XDataFlow.Parts.Interfaces;
+using XDataFlow.Refactored.Controllers.Group;
+using XDataFlow.Refactored.Controllers.MetaData;
+using XDataFlow.Refactored.Parts;
 
 namespace XDataFlow.Refactored.Builders
 {

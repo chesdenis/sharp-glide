@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using XDataFlow.Tunnels;
 using XDataFlow.Wrappers;
 
-namespace XDataFlow.Parts.Interfaces
+namespace XDataFlow.Refactored.Controllers.Consume
 {
     public interface IConsumeController<TConsumeData>
     {

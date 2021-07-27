@@ -1,7 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
+using XDataFlow.Refactored.Parts;
 
-namespace XDataFlow.Refactored
+namespace XDataFlow.Refactored.Controllers.Switch
 {
     public class PointPartSwitchController : SwitchController
     {

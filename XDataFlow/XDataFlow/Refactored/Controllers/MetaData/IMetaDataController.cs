@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace XDataFlow.Refactored
+namespace XDataFlow.Refactored.Controllers.MetaData
 {
     public interface IMetaDataController
     {

@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace XDataFlow.Refactored.Behaviours
+namespace XDataFlow.Refactored.Controllers.Switch.Behaviours
 {
     public class StartInBackground : Start
     {

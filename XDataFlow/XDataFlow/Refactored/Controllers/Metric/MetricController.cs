@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
 using XDataFlow.Providers;
-using XDataFlow.Refactored;
+using XDataFlow.Refactored.Controllers.Consume;
+using XDataFlow.Refactored.Controllers.Group;
+using XDataFlow.Refactored.Controllers.MetaData;
+using XDataFlow.Refactored.Controllers.Publish;
 
-namespace XDataFlow.Parts.Interfaces
+namespace XDataFlow.Refactored.Controllers.Metric
 {
     public class MetricController<TConsumeData, TPublishData> : IMetricController<TConsumeData, TPublishData>
     {

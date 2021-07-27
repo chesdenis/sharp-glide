@@ -33,8 +33,7 @@ namespace XDataFlow.Tunnels.InMemory
                 throw new NoDataException();
             };
         }
-
-       // private List<Tuple<int, DateTime>> WaitingToConsumeHistory = new List<Tuple<int, DateTime>>();
+        
         private int _previousWaitingToConsume = 0;
         private DateTime _previousWaitingToConsumeDateTime = DateTime.Now;
         

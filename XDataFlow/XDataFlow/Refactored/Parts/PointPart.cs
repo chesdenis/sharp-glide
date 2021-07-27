@@ -1,8 +1,10 @@
 using System.Threading;
 using System.Threading.Tasks;
-using XDataFlow.Parts.Interfaces;
+using XDataFlow.Refactored.Controllers.Group;
+using XDataFlow.Refactored.Controllers.MetaData;
+using XDataFlow.Refactored.Controllers.Switch;
 
-namespace XDataFlow.Refactored
+namespace XDataFlow.Refactored.Parts
 {
     public abstract class PointPart : BasePart
     {
