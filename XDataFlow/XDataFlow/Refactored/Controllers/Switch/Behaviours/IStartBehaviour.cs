@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace XDataFlow.Refactored.Behaviours
 {
     public interface IStartBehaviour
     {
-        void Execute(ISwitchController switchController);
+        Task ExecuteAsync(ISwitchController switchController);
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using XDataFlow.Refactored.Behaviours;
 using XDataFlow.Wrappers;
 
@@ -7,30 +8,26 @@ namespace XDataFlow.Refactored
 {
     public abstract class SwitchController : ISwitchController
     {
-        public Action StartPointer() => OnStart;
+        public Func<Task> GetStartAsyncCall() => OnStartAsync;
 
-        public Action StopPointer() => OnStop;
+        public Func<Task> GetStopAsyncCall() => OnStopAsync;
+
+        public IStartBehaviour StartBehaviour { get; set; } 
+       
+        public IStopBehaviour StopBehaviour { get; set; }
         
-        public IList<IStartBehaviour> StartBehaviours { get; } = new List<IStartBehaviour>();
-        public IList<IWrapper> StartWrappers { get; } = new List<IWrapper>();
-        public IList<IStopBehaviour> StopBehaviours { get; } = new List<IStopBehaviour>();
-        public IList<IWrapper> StopWrappers { get; } = new List<IWrapper>();
+        protected abstract Task OnStartAsync();
         
-        public TWrapper AddStartWrapper<TWrapper>(TWrapper wrapper)
-            where TWrapper : IWrapper 
+        protected abstract Task OnStopAsync();
+        
+        public async Task StartAsync()
         {
-            this.StartWrappers.Add(wrapper);
-
-            return wrapper;
+            await StartBehaviour.ExecuteAsync(this);
         }
-        
-        public abstract void OnStart();
 
-        public abstract void OnStop();
-
-        public void Start()
+        public async Task StopAsync()
         {
-            foreach (var behaviour in StartBehaviours) behaviour.Execute(this);
+            await StopBehaviour.ExecuteAsync(this);
         }
     }
 }

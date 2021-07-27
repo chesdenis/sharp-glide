@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace XDataFlow.Refactored
 {
@@ -11,16 +12,19 @@ namespace XDataFlow.Refactored
         {
             _pointPart = pointPart;
         }
-        public override void OnStart()
+
+        protected override async Task OnStartAsync()
         {
             _cts ??= new CancellationTokenSource();
-            
-            _pointPart.Process(_cts.Token);
+
+            await _pointPart.ProcessAsync(_cts.Token);
         }
 
-        public override void OnStop()
+        protected override Task OnStopAsync()
         {
             _cts.Cancel();
+
+            return Task.CompletedTask;
         }
     }
 }

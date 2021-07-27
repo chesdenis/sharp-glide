@@ -1,4 +1,5 @@
 using System.Threading;
+using System.Threading.Tasks;
 using XDataFlow.Parts.Interfaces;
 
 namespace XDataFlow.Refactored
@@ -18,8 +19,16 @@ namespace XDataFlow.Refactored
             _groupController = groupController;
         }
 
-        public override ISwitchController SwitchController => new PointPartSwitchController(this);
+        private ISwitchController _switchController;
+        public override ISwitchController SwitchController
+        {
+            get
+            {
+                _switchController ??= new PointPartSwitchController(this);
+                return _switchController;
+            }
+        }
 
-        public abstract void Process(CancellationToken cancellationToken);
+        public abstract Task ProcessAsync(CancellationToken cancellationToken);
     }
 }
