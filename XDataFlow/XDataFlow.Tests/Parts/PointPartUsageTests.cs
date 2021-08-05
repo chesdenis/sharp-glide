@@ -2,9 +2,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using XDataFlow.Refactored.Builders;
+using XDataFlow.Refactored.Controllers.Consume;
 using XDataFlow.Refactored.Controllers.Group;
 using XDataFlow.Refactored.Controllers.MetaData;
+using XDataFlow.Refactored.Controllers.Metric;
 using XDataFlow.Refactored.Controllers.Switch.Behaviours;
 using XDataFlow.Refactored.Parts;
 using Xunit;
@@ -17,8 +18,8 @@ namespace XDataFlow.Tests.Parts
         public async Task PointPartShouldSupportStartBehaviour()
         {
             // Arrange
-            var partTemplate = PartDefaultBuilder.GetTemplate<TestPointPart>();
-            var part = partTemplate();
+            var part = PartDefaultBuilder.CreatePointPart<TestPointPart>();
+            
             part.ConfigureStartAs<Start>();
 
             // Act
@@ -46,19 +47,15 @@ namespace XDataFlow.Tests.Parts
             part.TestProperty.Should().Be("ABCDE");
         }
         
-        private static PointPartBuilder PartDefaultBuilder = new PointPartBuilder(
+        private static IPartBuilder PartDefaultBuilder = new PartBuilder(
             (() => new Mock<IMetaDataController>().Object),
-            () => new Mock<IGroupController>().Object);
+            () => new Mock<IGroupController>().Object,
+            ()=> new Mock<IHeartBeatController>().Object,
+            ()=>new Mock<IConsumeMetrics>().Object);
 
         private class TestPointPart : PointPart
         {
             public string TestProperty { get; set; }
-
-            public TestPointPart(
-                IMetaDataController metaDataController,
-                IGroupController groupController) : base(metaDataController, groupController)
-            {
-            }
             
             public override async Task ProcessAsync(CancellationToken cancellationToken)
             {

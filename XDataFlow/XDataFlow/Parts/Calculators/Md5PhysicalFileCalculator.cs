@@ -1,11 +1,18 @@
 using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
 using XDataFlow.Extensions;
+using XDataFlow.Refactored.Controllers.Consume;
+using XDataFlow.Refactored.Controllers.Group;
+using XDataFlow.Refactored.Controllers.MetaData;
+using XDataFlow.Refactored.Parts;
 
 namespace XDataFlow.Parts.Calculators
 {
-    public class Md5PhysicalFileCalculator : FlowPart<Md5PhysicalFileCalculator.Input, Md5PhysicalFileCalculator.Output>
+    public class Md5PhysicalFileCalculator :
+        VectorPart<Md5PhysicalFileCalculator.Input, Md5PhysicalFileCalculator.Output>
     {
         public class Input
         {
@@ -19,9 +26,11 @@ namespace XDataFlow.Parts.Calculators
             public string Md5AsString { get; set; }
         }
         
-        protected override void ProcessMessage(Input data)
+        public override Task ProcessAsync(Input data, CancellationToken cancellationToken)
         {
             data.FilePath = data.FilePath ?? throw new InvalidOperationException();
+            
+            
             
             this.Status["InProgress"] = Path.GetFileName(data.FilePath);
                 

@@ -17,7 +17,7 @@ namespace XDataFlow.Fields
             _maxDelay = maxDelay;
         }
 
-        public override T GetValue()
+        protected override T GetValue()
         {
             var dynamicWait = _random.Next(
                 (int) _minDelay.TotalMilliseconds, 

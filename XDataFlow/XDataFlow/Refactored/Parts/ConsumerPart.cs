@@ -5,14 +5,8 @@ using XDataFlow.Refactored.Controllers.MetaData;
 
 namespace XDataFlow.Refactored.Parts
 {
-    public abstract class ConsumerPart<TConsumeData> : PipelinePart<TConsumeData, Empty>
+    public abstract class ConsumerPart<TConsumeData> : VectorPart<TConsumeData, Empty>
     {
-        protected ConsumerPart(
-            IMetaDataController metaDataController, 
-            IGroupController groupController,
-            IConsumeController<TConsumeData> consumeController) 
-            : base(metaDataController, groupController, consumeController)
-        {
-        }
+       
     }
 }

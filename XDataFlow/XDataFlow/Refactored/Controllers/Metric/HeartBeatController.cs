@@ -3,33 +3,22 @@ using System.Collections.Generic;
 using System.Dynamic;
 using XDataFlow.Providers;
 using XDataFlow.Refactored.Controllers.Consume;
-using XDataFlow.Refactored.Controllers.Group;
 using XDataFlow.Refactored.Controllers.MetaData;
-using XDataFlow.Refactored.Controllers.Publish;
 
 namespace XDataFlow.Refactored.Controllers.Metric
 {
-    public class MetricController<TConsumeData, TPublishData> : IMetricController<TConsumeData, TPublishData>
+    public class HeartBeatController : IHeartBeatController
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        
-        private readonly IConsumeController<TConsumeData> _consumeController;
-        private readonly IPublishController<TConsumeData, TPublishData> _publishController;
-        private readonly IGroupController _groupController;
+        private readonly IConsumeMetrics _consumeMetrics;
         private readonly IMetaDataController _metaDataController;
 
-        public MetricController(
+        public HeartBeatController(
             IDateTimeProvider dateTimeProvider,
-            IConsumeController<TConsumeData> consumeController,
-            IPublishController<TConsumeData, TPublishData> publishController,
-            IGroupController groupController,
-            IMetaDataController metaDataController)
+            IConsumeMetrics consumeMetrics)
         {
             _dateTimeProvider = dateTimeProvider;
-            _consumeController = consumeController;
-            _publishController = publishController;
-            _groupController = groupController;
-            _metaDataController = metaDataController;
+            _consumeMetrics = consumeMetrics;
 
             LastPublishedAt = _dateTimeProvider.GetNow();
             LastConsumedAt = _dateTimeProvider.GetNow();
@@ -42,12 +31,19 @@ namespace XDataFlow.Refactored.Controllers.Metric
         public bool Idle => DateTime.Now.Subtract(LastPublishedAt).TotalMilliseconds > IdleTimeoutMs &
                             DateTime.Now.Subtract(LastConsumedAt).TotalMilliseconds > IdleTimeoutMs;
 
+        public bool Failed { get; }
+
         public void PrintStatusInfo()
         {
             _metaDataController.UpsertStatus("Name", _metaDataController.Name);
-            _metaDataController.UpsertStatus("Available", _consumeController.GetWaitingToConsumeAmount().ToString());
-            _metaDataController.UpsertStatus("ETA",_consumeController.GetEstimatedTime().ToString("c"));
-            _metaDataController.UpsertStatus("Speed, n/sec", _consumeController.GetMessagesPerSecond().ToString());
+            _metaDataController.UpsertStatus("Available", _consumeMetrics.GetWaitingToConsumeAmount().ToString());
+            _metaDataController.UpsertStatus("ETA",_consumeMetrics.GetEstimatedTime().ToString("c"));
+            _metaDataController.UpsertStatus("Speed, n/sec", _consumeMetrics.GetMessagesPerSecond().ToString());
+        }
+
+        public void PrintStatusInfo(string key, string value)
+        {
+            _metaDataController.UpsertStatus(key, value);
         }
         
         public List<ExpandoObject> GetStatusInfo()

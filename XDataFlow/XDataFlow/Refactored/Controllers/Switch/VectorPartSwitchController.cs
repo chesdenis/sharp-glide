@@ -7,18 +7,18 @@ using XDataFlow.Refactored.Parts;
 
 namespace XDataFlow.Refactored.Controllers.Switch
 {
-    public class PipelinePartSwitchController<TConsumeData, TPublishData> : SwitchController
+    public class VectorPartSwitchController<TConsumeData, TPublishData> : SwitchController
     {
-        private readonly PipelinePart<TConsumeData, TPublishData> _pipelinePart;
+        private readonly VectorPart<TConsumeData, TPublishData> _vectorPart;
         private readonly IConsumeController<TConsumeData> _consumeController;
 
         private CancellationTokenSource _cts;
 
-        public PipelinePartSwitchController(
-            PipelinePart<TConsumeData, TPublishData> pipelinePart, 
+        public VectorPartSwitchController(
+            VectorPart<TConsumeData, TPublishData> vectorPart, 
             IConsumeController<TConsumeData> consumeController)
         {
-            _pipelinePart = pipelinePart;
+            _vectorPart = vectorPart;
             _consumeController = consumeController;
         }
 
@@ -35,11 +35,9 @@ namespace XDataFlow.Refactored.Controllers.Switch
 
                 try
                 {
-                    var tunnels = _consumeController.ConsumeTunnels;
-
-                    foreach (var tunnelKey in tunnels.Keys)
+                    foreach (var data in _consumeController.ReadAndConsumeData())
                     {
-                        await _pipelinePart.ProcessAsync(tunnels[tunnelKey].Consume(), _cts.Token);
+                        await _vectorPart.ProcessAsync(data, _cts.Token);
                     }
                 }
                 catch (NoDataException)

@@ -42,9 +42,27 @@ namespace XDataFlow.Refactored.Controllers.Consume
             ConfigureListening(tunnel, tunnel.TopicName, tunnel.QueueName, tunnel.RoutingKey);
         }
         
-        public void ConsumeCustomData(TConsumeData data)
+        public void PushDataToFirstTunnel(TConsumeData data)
         {
             this.ConsumeTunnels.First().Value.Put(data);
+        }
+
+        public void PushDataToTunnel(TConsumeData data, string tunnelKey)
+        {
+            this.ConsumeTunnels.First(f=>f.Key == tunnelKey).Value.Put(data);
+        }
+
+        // TODO: make it async
+        public IEnumerable<TConsumeData> ReadAndConsumeData()
+        {
+            var tunnels = this.ConsumeTunnels;
+
+            foreach (var tunnelKey in tunnels.Keys)
+            {
+                // TODO: make it awaitable
+                var consumeData = tunnels[tunnelKey].Consume();
+                yield return consumeData;
+            }
         }
 
         public int GetWaitingToConsumeAmount() =>

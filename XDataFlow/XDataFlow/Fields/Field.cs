@@ -15,7 +15,7 @@ namespace XDataFlow.Fields
             Func = func;
         }
 
-        public virtual T GetValue()
+        protected virtual T GetValue()
         {
             CalculatedAt = DateTime.Now;
             Value = Func();

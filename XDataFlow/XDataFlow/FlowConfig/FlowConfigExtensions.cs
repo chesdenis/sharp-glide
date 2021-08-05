@@ -48,51 +48,53 @@ namespace XDataFlow.FlowConfig
             return config;
         }
         
-        public static FlowConfig AttachPublisher<TConsumeData, TPublishData, TPublishTunnel>(
-            this FlowConfig config, 
-            FlowPart<TConsumeData, TPublishData> part, TPublishTunnel publishTunnel)
-        where TPublishTunnel : PublishTunnel<TPublishData>
-        {
-            part.ConfigurePublishing(
-                publishTunnel,
-                config.LastModifiedTopic.Name,
-                config.LastModifiedRoute.RoutingKey);
-           
-            return config;
-        }
         
-        public static FlowConfig AttachInMemoryPublisher<TConsumeData, TPublishData>( 
-            this FlowConfig config,
-            FlowPart<TConsumeData,TPublishData> part,
-            InMemoryBroker broker)
-        {
-            var tunnel = new InMemoryPublishTunnel<TPublishData>(broker);
-
-            return AttachPublisher(config, part, tunnel);
-        }
-        
-        public static FlowConfig AttachConsumer<TConsumeData, TPublishData, TConsumeTunnel>(
-            this FlowConfig config, 
-            FlowPart<TConsumeData,TPublishData> part, TConsumeTunnel consumeTunnel)
-            where TConsumeTunnel : ConsumeTunnel<TConsumeData>
-        {
-            part.ConfigureListening(consumeTunnel, 
-                config.LastModifiedRoute.TopicConfigNode.Name,
-                config.LastModifiedRoute.QueueConfigNode.Name,
-                config.LastModifiedRoute.RoutingKey);
-            
-            return config;
-        }
-
-        public static FlowConfig AttachInMemoryConsumer<TConsumeData, TPublishData>( 
-            this FlowConfig config,
-            FlowPart<TConsumeData,TPublishData> part,
-            InMemoryBroker broker)
-        {
-            var tunnel = new InMemoryConsumeTunnel<TConsumeData>(broker);
-
-            return AttachConsumer(config, part, tunnel);
-        }
+        // TODO: implement more fluent way
+        // public static FlowConfig AttachPublisher<TConsumeData, TPublishData, TPublishTunnel>(
+        //     this FlowConfig config, 
+        //     FlowPart<TConsumeData, TPublishData> part, TPublishTunnel publishTunnel)
+        // where TPublishTunnel : PublishTunnel<TPublishData>
+        // {
+        //     part.ConfigurePublishing(
+        //         publishTunnel,
+        //         config.LastModifiedTopic.Name,
+        //         config.LastModifiedRoute.RoutingKey);
+        //    
+        //     return config;
+        // }
+        //
+        // public static FlowConfig AttachInMemoryPublisher<TConsumeData, TPublishData>( 
+        //     this FlowConfig config,
+        //     FlowPart<TConsumeData,TPublishData> part,
+        //     InMemoryBroker broker)
+        // {
+        //     var tunnel = new InMemoryPublishTunnel<TPublishData>(broker);
+        //
+        //     return AttachPublisher(config, part, tunnel);
+        // }
+        //
+        // public static FlowConfig AttachConsumer<TConsumeData, TPublishData, TConsumeTunnel>(
+        //     this FlowConfig config, 
+        //     FlowPart<TConsumeData,TPublishData> part, TConsumeTunnel consumeTunnel)
+        //     where TConsumeTunnel : ConsumeTunnel<TConsumeData>
+        // {
+        //     part.ConfigureListening(consumeTunnel, 
+        //         config.LastModifiedRoute.TopicConfigNode.Name,
+        //         config.LastModifiedRoute.QueueConfigNode.Name,
+        //         config.LastModifiedRoute.RoutingKey);
+        //     
+        //     return config;
+        // }
+        //
+        // public static FlowConfig AttachInMemoryConsumer<TConsumeData, TPublishData>( 
+        //     this FlowConfig config,
+        //     FlowPart<TConsumeData,TPublishData> part,
+        //     InMemoryBroker broker)
+        // {
+        //     var tunnel = new InMemoryConsumeTunnel<TConsumeData>(broker);
+        //
+        //     return AttachConsumer(config, part, tunnel);
+        // }
         
        
     }

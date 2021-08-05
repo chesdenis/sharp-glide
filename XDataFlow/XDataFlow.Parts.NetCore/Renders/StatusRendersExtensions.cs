@@ -11,36 +11,38 @@ namespace XDataFlow.Parts.NetCore.Renders
 {
     public static class StatusRendersExtensions
     {
-        public static void RedirectStatusToConsole(Timer timer, IEnumerable<IPart> parts)
-        {
-            RenderToConsole(parts);
-            timer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
-            timer.Start();
+        // TODO: refactor this
+        // public static void RedirectStatusToConsole(Timer timer, IEnumerable<IPart> parts)
+        // {
+        //     RenderToConsole(parts);
+        //     timer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
+        //     timer.Start();
+        //
+        //     timer.Elapsed += (sender, eventArgs) => RenderToConsole(parts);
+        // }
 
-            timer.Elapsed += (sender, eventArgs) => RenderToConsole(parts);
-        }
-
-        private static void RenderToConsole(IEnumerable<IPart> parts)
-        {
-            var statusTextBuilder = new StringBuilder();
-
-            foreach (var part in parts)
-            {
-                var statusInfo = part.GetStatusInfo();
-                if (!statusInfo.Any())
-                {
-                    continue;
-                }
-                
-                statusTextBuilder.AppendLine(part.Name);
-                var statusTable = ConsoleTable.FromDynamic(statusInfo);
-                
-                statusTextBuilder.AppendLine(statusTable.ToString());
-            }
-
-            Console.Clear();
-            Console.Write(statusTextBuilder.ToString());
-            File.WriteAllText("PartStatus.txt", statusTextBuilder.ToString());
-        }
+        // TODO: refactor this
+        // private static void RenderToConsole(IEnumerable<IPart> parts)
+        // {
+        //     var statusTextBuilder = new StringBuilder();
+        //
+        //     foreach (var part in parts)
+        //     {
+        //         var statusInfo = part.GetStatusInfo();
+        //         if (!statusInfo.Any())
+        //         {
+        //             continue;
+        //         }
+        //         
+        //         statusTextBuilder.AppendLine(part.Name);
+        //         var statusTable = ConsoleTable.FromDynamic(statusInfo);
+        //         
+        //         statusTextBuilder.AppendLine(statusTable.ToString());
+        //     }
+        //
+        //     Console.Clear();
+        //     Console.Write(statusTextBuilder.ToString());
+        //     File.WriteAllText("PartStatus.txt", statusTextBuilder.ToString());
+        // }
     }
 }

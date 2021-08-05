@@ -2,7 +2,7 @@ using System;
 
 namespace XDataFlow.Refactored.Controllers.Metric
 {
-    public interface IMetricController<TConsumeData, IPublishData>
+    public interface IHeartBeatController
     { 
         DateTime LastPublishedAt { get; set; }
 
@@ -12,6 +12,10 @@ namespace XDataFlow.Refactored.Controllers.Metric
 
         bool Idle { get; }
 
+        bool Failed { get; }
+
         void PrintStatusInfo();
+        
+        void PrintStatusInfo(string key, string value);
     }
 }

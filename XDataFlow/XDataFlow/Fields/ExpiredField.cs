@@ -10,7 +10,7 @@ namespace XDataFlow.Fields
         {
         }
 
-        public override T GetValue()
+        protected override T GetValue()
         {
             if (Value == null)
             {
