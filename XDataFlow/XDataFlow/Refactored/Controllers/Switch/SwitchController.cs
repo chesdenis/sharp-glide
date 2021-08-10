@@ -18,12 +18,12 @@ namespace XDataFlow.Refactored.Controllers.Switch
         
         protected abstract Task OnStopAsync();
         
-        public async Task StartAsync()
+        public async Task TearUpAsync()
         {
             await StartBehaviour.ExecuteAsync(this);
         }
 
-        public async Task StopAsync()
+        public async Task TearDownAsync()
         {
             await StopBehaviour.ExecuteAsync(this);
         }

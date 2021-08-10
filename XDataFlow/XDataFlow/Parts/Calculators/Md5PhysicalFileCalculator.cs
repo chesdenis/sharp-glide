@@ -3,10 +3,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using XDataFlow.Extensions;
-using XDataFlow.Refactored.Controllers.Consume;
-using XDataFlow.Refactored.Controllers.Group;
-using XDataFlow.Refactored.Controllers.MetaData;
 using XDataFlow.Refactored.Parts;
 
 namespace XDataFlow.Parts.Calculators
@@ -29,10 +25,8 @@ namespace XDataFlow.Parts.Calculators
         public override Task ProcessAsync(Input data, CancellationToken cancellationToken)
         {
             data.FilePath = data.FilePath ?? throw new InvalidOperationException();
-            
-            
-            
-            this.Status["InProgress"] = Path.GetFileName(data.FilePath);
+
+            this.PrintStatus(Path.GetFileName(data.FilePath));
                 
             using var md5 = MD5.Create();
  
@@ -41,11 +35,13 @@ namespace XDataFlow.Parts.Calculators
             var hash = md5.ComputeHash(stream);
             var md5AsString = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 
-            this.Publish<Md5PhysicalFileCalculator, Output>(new Output()
+            this.Publish(new Output()
             {
                 FilePath = data.FilePath,
                 Md5AsString = md5AsString
             });
+
+            return Task.CompletedTask;
         }
     }
 }

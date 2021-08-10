@@ -14,8 +14,8 @@ namespace XDataFlow.Refactored.Controllers.Switch
         
         IStopBehaviour StopBehaviour { get; set; }
 
-        Task StartAsync();
+        Task TearUpAsync();
 
-        Task StopAsync();
+        Task TearDownAsync();
     }
 }

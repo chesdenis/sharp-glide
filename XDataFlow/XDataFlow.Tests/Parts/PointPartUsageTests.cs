@@ -34,8 +34,7 @@ namespace XDataFlow.Tests.Parts
         {
             // Arrange
             var cts = new CancellationTokenSource();
-            var partTemplate = PartDefaultBuilder.GetTemplate<TestPointPart>();
-            var part = partTemplate();
+            var part = PartDefaultBuilder.CreatePointPart<TestPointPart>();
 
             var startInBackground = new StartInBackground(cts.Token);
             part.ConfigureStartAs(() => startInBackground);

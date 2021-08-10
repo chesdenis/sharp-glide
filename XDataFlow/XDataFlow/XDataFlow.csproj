@@ -6,7 +6,6 @@
 
     <ItemGroup>
       <Folder Include="Parts\Controllers" />
-      <Folder Include="Refactored\Builders" />
     </ItemGroup>
 
 </Project>

@@ -1,8 +1,11 @@
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using XDataFlow.Refactored.Parts;
 
 namespace XDataFlow.Parts.FileSystems
 {
-    public class FilesScanner: FlowPart<FilesScanner.Input, FilesScanner.Output>
+    public class FilesScanner: VectorPart<FilesScanner.Input, FilesScanner.Output>
     {
         public class Input
         {
@@ -13,8 +16,8 @@ namespace XDataFlow.Parts.FileSystems
         {
             public string LeafRef { get; set; }
         }
-          
-        protected override void ProcessMessage(Input data)
+           
+        public override Task ProcessAsync(Input data, CancellationToken cancellationToken)
         {
             var dirInfo = new DirectoryInfo(data.InitialPath);
             
@@ -24,6 +27,8 @@ namespace XDataFlow.Parts.FileSystems
             {
                 this.Publish(new Output() {LeafRef = file.FullName});
             }
+
+            return Task.CompletedTask;
         }
     }
 }
