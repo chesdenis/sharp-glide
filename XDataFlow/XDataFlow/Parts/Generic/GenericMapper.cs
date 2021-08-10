@@ -1,23 +1,27 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using XDataFlow.Extensions;
+using XDataFlow.Parts.Abstractions;
 
 namespace XDataFlow.Parts.Generic
 {
-    // TODO: implement generic mapper
-    // public class GenericMapper<TConsumeData, TPublishData> : FlowPart<TConsumeData, TPublishData>
-    // {
-    //     private readonly Func<TConsumeData, TPublishData> _mapFunc;
-    //
-    //     public GenericMapper(Func<TConsumeData, TPublishData> mapFunc)
-    //     {
-    //         _mapFunc = mapFunc;
-    //     }
-    //      
-    //     protected override void ProcessMessage(TConsumeData data)
-    //     {
-    //         var transformed = _mapFunc(data);
-    //
-    //         this.Publish<GenericMapper<TConsumeData, TPublishData>, TPublishData>(transformed);
-    //     }
-    // }
+    public class GenericMapper<TConsumeData, TPublishData> : VectorPart<TConsumeData, TPublishData>
+    {
+        private readonly Func<TConsumeData, TPublishData> _mapFunc;
+    
+        public GenericMapper(Func<TConsumeData, TPublishData> mapFunc)
+        {
+            _mapFunc = mapFunc;
+        }
+          
+        public override Task ProcessAsync(TConsumeData data, CancellationToken cancellationToken)
+        {
+            var transformed = _mapFunc(data);
+    
+            this.Publish(transformed);
+
+            return Task.CompletedTask;
+        }
+    }
 }

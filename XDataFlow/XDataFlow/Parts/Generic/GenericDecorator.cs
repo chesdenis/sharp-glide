@@ -1,28 +1,23 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using XDataFlow.Parts.Abstractions;
 
 namespace XDataFlow.Parts.Generic
 {
-    // TODO: Implement generic decorator
-    // public class GenericDecorator<TDecorateData, TInput, TOutput> : FlowPart<TDecorateData, TDecorateData>
-    // {
-    //     private readonly Func<TInput> _inputPointer;
-    //     private readonly Action<TOutput> _assignActionPointer;
-    //     private readonly Action<Func<TInput>, Action<TOutput>> _decorateActions;
-    //
-    //     public GenericDecorator(
-    //         Func<TInput> inputPointer,
-    //         Action<TOutput> assignActionPointer, Action<Func<TInput>, Action<TOutput>> decorateActions)
-    //     {
-    //         _inputPointer = inputPointer;
-    //         _assignActionPointer = assignActionPointer;
-    //         _decorateActions = decorateActions;
-    //     }
-    //     
-    //     protected override void ProcessMessage(TDecorateData data)
-    //     {
-    //         _decorateActions(_inputPointer, _assignActionPointer);
-    //         
-    //         this.Publish(data);
-    //     }
-    // }
+    public class GenericDecorator<TDecorateData, TInput, TOutput> : VectorPart<TDecorateData, TDecorateData>
+    {
+        public Func<TInput> InputPointer { get; set; }
+        public Action<TOutput> AssignActionPointer { get; set; }
+        public Action<Func<TInput>, Action<TOutput>> DecorateActions { get; set; }
+
+        public override Task ProcessAsync(TDecorateData data, CancellationToken cancellationToken)
+        {
+            DecorateActions(InputPointer, AssignActionPointer);
+            
+            this.Publish(data);
+
+            return Task.CompletedTask;
+        }
+    }
 }

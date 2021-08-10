@@ -1,18 +1,24 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using XDataFlow.Parts.Abstractions;
 
 namespace XDataFlow.Parts.Generic
 {
-    // TODO: implement generic guard
-    // public abstract class GenericGuard<TData> : FlowPart<TData, TData>
-    // {
-    //     protected abstract bool IsAllow(TData data);
-    //
-    //     protected override void ProcessMessage(TData data)
-    //     {
-    //         if (IsAllow(data))
-    //         {
-    //             this.Publish(data);
-    //         }
-    //     }
-    // }
+    public abstract class GenericGuard<TConsumeData> : VectorPart<TConsumeData, TConsumeData>
+    {
+        protected abstract bool IsAllow(TConsumeData data);
+    
+        public override Task ProcessAsync(
+            TConsumeData data, 
+            CancellationToken cancellationToken)
+        {
+            if (IsAllow(data))
+            {
+                this.Publish(data);
+            }
+
+            return Task.CompletedTask;
+        }
+    }
 }

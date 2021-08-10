@@ -2,12 +2,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using XDataFlow.Refactored.Controllers.Consume;
-using XDataFlow.Refactored.Controllers.Group;
-using XDataFlow.Refactored.Controllers.MetaData;
-using XDataFlow.Refactored.Controllers.Metric;
-using XDataFlow.Refactored.Controllers.Switch.Behaviours;
-using XDataFlow.Refactored.Parts;
+using XDataFlow.Builders;
+using XDataFlow.Controllers.Consume;
+using XDataFlow.Controllers.Group;
+using XDataFlow.Controllers.MetaData;
+using XDataFlow.Controllers.Metric;
+using XDataFlow.Controllers.Switch.Behaviours;
+using XDataFlow.Parts.Abstractions;
 using Xunit;
 
 namespace XDataFlow.Tests.Parts
