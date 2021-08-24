@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using XDataFlow.Parts.Abstractions;
 
-namespace XDataFlow.Controllers.Group
+namespace XDataFlow.Context
 {
-    public class GroupController : IGroupController
+    public class GroupContext : IGroupContext
     {
         public virtual void Configure()
         {

@@ -1,6 +1,6 @@
 using System;
 
-namespace XDataFlow.Controllers.Consume
+namespace XDataFlow.Context
 {
     public interface IConsumeMetrics
     {

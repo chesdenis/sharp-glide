@@ -7,6 +7,15 @@ namespace XDataFlow.Tunnels.InMemory.Messaging
 {
     public class InMemoryBroker
     {
+        private static readonly Lazy<InMemoryBroker> LazyFactory =
+            new Lazy<InMemoryBroker>(() => new InMemoryBroker());
+    
+        public static InMemoryBroker Current => LazyFactory.Value;
+
+        private InMemoryBroker()
+        {
+        }
+        
         public InMemoryTopics Topics { get; } = new InMemoryTopics();
         public InMemoryQueues Queues { get; } = new InMemoryQueues();
         public InMemoryRoutes Routes { get; } = new InMemoryRoutes();

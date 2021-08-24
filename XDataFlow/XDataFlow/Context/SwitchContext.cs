@@ -1,11 +1,13 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
-using XDataFlow.Controllers.Switch.Behaviours;
+using XDataFlow.Behaviours;
 
-namespace XDataFlow.Controllers.Switch
+namespace XDataFlow.Context
 {
-    public abstract class SwitchController : ISwitchController
+    public abstract class SwitchContext : ISwitchContext
     {
+        public CancellationTokenSource CancellationTokenSource { get; set; }
         public Func<Task> GetStartAsyncCall() => OnStartAsync;
 
         public Func<Task> GetStopAsyncCall() => OnStopAsync;
@@ -20,12 +22,21 @@ namespace XDataFlow.Controllers.Switch
         
         public async Task TearUpAsync()
         {
+            CancelJobsAndReissueToken();
             await StartBehaviour.ExecuteAsync(this);
         }
 
         public async Task TearDownAsync()
         {
+            CancelJobsAndReissueToken();
             await StopBehaviour.ExecuteAsync(this);
+        }
+
+        private void CancelJobsAndReissueToken()
+        {
+            CancellationTokenSource?.Cancel();
+            CancellationTokenSource?.Dispose();
+            CancellationTokenSource = new CancellationTokenSource();
         }
     }
 }

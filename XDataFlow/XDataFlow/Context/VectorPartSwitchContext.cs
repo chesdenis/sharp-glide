@@ -1,43 +1,38 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using XDataFlow.Controllers.Consume;
 using XDataFlow.Exceptions;
 using XDataFlow.Parts.Abstractions;
 
-namespace XDataFlow.Controllers.Switch
+namespace XDataFlow.Context
 {
-    public class VectorPartSwitchController<TConsumeData, TPublishData> : SwitchController
+    public class VectorPartSwitchContext<TConsumeData, TPublishData> : SwitchContext
     {
         private readonly VectorPart<TConsumeData, TPublishData> _vectorPart;
-        private readonly IConsumeController<TConsumeData> _consumeController;
+        private readonly IConsumeContext<TConsumeData> _consumeContext;
 
-        private CancellationTokenSource _cts;
-
-        public VectorPartSwitchController(
+        public VectorPartSwitchContext(
             VectorPart<TConsumeData, TPublishData> vectorPart, 
-            IConsumeController<TConsumeData> consumeController)
+            IConsumeContext<TConsumeData> consumeContext)
         {
             _vectorPart = vectorPart;
-            _consumeController = consumeController;
+            _consumeContext = consumeContext;
         }
 
         protected override async Task OnStartAsync()
         {
-            _cts ??= new CancellationTokenSource();
-            
             while (true)
             {
-                if (_cts.Token.IsCancellationRequested)
+                if (_vectorPart.GetExecutionTokenSource().Token.IsCancellationRequested)
                 {
                     break;
                 }
 
                 try
                 {
-                    foreach (var data in _consumeController.ReadAndConsumeData())
+                    foreach (var data in _consumeContext.ReadAndConsumeData())
                     {
-                        await _vectorPart.ProcessAsync(data, _cts.Token);
+                        await _vectorPart.ProcessAsync(data, _vectorPart.GetExecutionTokenSource().Token);
                     }
                 }
                 catch (NoDataException)
@@ -49,7 +44,7 @@ namespace XDataFlow.Controllers.Switch
 
         protected override Task OnStopAsync()
         {
-            _cts.Cancel();
+            _vectorPart.GetExecutionTokenSource().Cancel();
 
             return Task.CompletedTask;
         }

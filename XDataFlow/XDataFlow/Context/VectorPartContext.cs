@@ -1,29 +1,22 @@
-using XDataFlow.Controllers.Consume;
-using XDataFlow.Controllers.Group;
-using XDataFlow.Controllers.MetaData;
-using XDataFlow.Controllers.Metric;
-using XDataFlow.Controllers.Publish;
-using XDataFlow.Controllers.Switch;
-
 namespace XDataFlow.Context
 {
     public class VectorPartContext<TConsumeData, TPublishData> : PointPartContext
     {
-        public IPublishController<TPublishData> PublishController { get; }
-        public IConsumeController<TConsumeData> ConsumeController { get; }
+        public IPublishContext<TPublishData> PublishContext { get; }
+        public IConsumeContext<TConsumeData> ConsumeContext { get; }
 
         public VectorPartContext(
-            IMetaDataController metaDataController, 
-            IGroupController groupController, 
-            IHeartBeatController heartBeatController,
+            IMetaDataContext metaDataContext, 
+            IGroupContext groupContext, 
+            IHeartBeatContext heartBeatContext,
             IConsumeMetrics consumeMetrics, 
-            ISwitchController switchController,
-            IConsumeController<TConsumeData> consumeController,
-            IPublishController<TPublishData> publishController) 
-            : base(metaDataController, groupController, heartBeatController, consumeMetrics, switchController)
+            ISwitchContext switchContext,
+            IConsumeContext<TConsumeData> consumeContext,
+            IPublishContext<TPublishData> publishContext) 
+            : base(metaDataContext, groupContext, heartBeatContext, consumeMetrics, switchContext)
         {
-            PublishController = publishController;
-            ConsumeController = consumeController;
+            PublishContext = publishContext;
+            ConsumeContext = consumeContext;
         }
     }
 }

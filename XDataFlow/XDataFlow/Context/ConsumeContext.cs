@@ -4,9 +4,9 @@ using System.Linq;
 using XDataFlow.Tunnels;
 using XDataFlow.Wrappers;
 
-namespace XDataFlow.Controllers.Consume
+namespace XDataFlow.Context
 {
-    public class ConsumeController<TConsumeData> : IConsumeController<TConsumeData>
+    public class ConsumeContext<TConsumeData> : IConsumeContext<TConsumeData>
     {
         public IDictionary<string, IConsumeTunnel<TConsumeData>> ConsumeTunnels { get; } =
             new Dictionary<string, IConsumeTunnel<TConsumeData>>();
@@ -22,7 +22,7 @@ namespace XDataFlow.Controllers.Consume
             return wrapper;
         }
         
-        public void ConfigureListening(IConsumeTunnel<TConsumeData> tunnel, string topicName, string queueName, string routingKey)
+        public void SetupBindingToTopic(IConsumeTunnel<TConsumeData> tunnel, string topicName, string queueName, string routingKey)
         {
             tunnel.RoutingKey = routingKey;
             tunnel.QueueName = queueName;
@@ -39,7 +39,7 @@ namespace XDataFlow.Controllers.Consume
             tunnel.QueueName = $"InputQueueFor_{name}";
             tunnel.TopicName = $"InputTopicFor_{name}";
             
-            ConfigureListening(tunnel, tunnel.TopicName, tunnel.QueueName, tunnel.RoutingKey);
+            SetupBindingToTopic(tunnel, tunnel.TopicName, tunnel.QueueName, tunnel.RoutingKey);
         }
         
         public void PushDataToFirstTunnel(TConsumeData data)

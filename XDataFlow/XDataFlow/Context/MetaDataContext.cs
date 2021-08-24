@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace XDataFlow.Controllers.MetaData
+namespace XDataFlow.Context
 {
-    public class MetaDataController : IMetaDataController
+    public class MetaDataContext : IMetaDataContext
     {
         public string Name { get; set; }
         public Dictionary<string, string> Status { get; } = new Dictionary<string, string>();

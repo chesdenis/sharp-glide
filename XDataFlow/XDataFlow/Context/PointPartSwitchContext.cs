@@ -2,14 +2,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Parts.Abstractions;
 
-namespace XDataFlow.Controllers.Switch
+namespace XDataFlow.Context
 {
-    public class PointPartSwitchController : SwitchController
+    public class PointPartSwitchContext : SwitchContext
     {
         private readonly PointPart _pointPart;
         private CancellationTokenSource _cts;
 
-        public PointPartSwitchController(PointPart pointPart)
+        public PointPartSwitchContext(PointPart pointPart)
         {
             _pointPart = pointPart;
         }

@@ -1,8 +1,8 @@
 using System;
 
-namespace XDataFlow.Controllers.Metric
+namespace XDataFlow.Context
 {
-    public interface IHeartBeatController
+    public interface IHeartBeatContext
     { 
         DateTime LastPublishedAt { get; set; }
 

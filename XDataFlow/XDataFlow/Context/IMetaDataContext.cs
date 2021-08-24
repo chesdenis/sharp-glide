@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace XDataFlow.Controllers.MetaData
+namespace XDataFlow.Context
 {
-    public interface IMetaDataController
+    public interface IMetaDataContext
     {
         string Name { get; set; }
 

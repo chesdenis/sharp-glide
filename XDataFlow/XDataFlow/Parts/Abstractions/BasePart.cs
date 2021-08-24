@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
+using XDataFlow.Behaviours;
 using XDataFlow.Context;
-using XDataFlow.Controllers.Switch.Behaviours;
 
 namespace XDataFlow.Parts.Abstractions
 {
@@ -11,44 +11,44 @@ namespace XDataFlow.Parts.Abstractions
 
         public string Name
         {
-            get => Context.MetaDataController.Name;
-            set => Context.MetaDataController.Name = value;
+            get => Context.MetaDataContext.Name;
+            set => Context.MetaDataContext.Name = value;
         }
 
         public void ConfigureStartAs<TBehaviour>(Func<TBehaviour> behaviourFunc)
             where TBehaviour : IStartBehaviour
         {
-            Context.SwitchController.StartBehaviour = behaviourFunc();
+            Context.SwitchContext.StartBehaviour = behaviourFunc();
         }
 
         public void ConfigureStartAs<TBehaviour>()
             where TBehaviour : IStartBehaviour, new()
         {
-            Context.SwitchController.StartBehaviour = new TBehaviour();
+            Context.SwitchContext.StartBehaviour = new TBehaviour();
         }
 
         public void ConfigureStopAs<TBehaviour>(TBehaviour behaviour)
             where TBehaviour : IStopBehaviour
         {
-            Context.SwitchController.StopBehaviour = behaviour;
+            Context.SwitchContext.StopBehaviour = behaviour;
         }
 
         public void ConfigureStopAs<TBehaviour>()
             where TBehaviour : IStopBehaviour, new()
         {
-            Context.SwitchController.StopBehaviour = new TBehaviour();
+            Context.SwitchContext.StopBehaviour = new TBehaviour();
         }
 
         public async Task StartAsync()
         {
-            await Context.SwitchController.TearUpAsync();
+            await Context.SwitchContext.TearUpAsync();
         }
 
         public async Task StopAsync()
         {
-            await Context.SwitchController.TearDownAsync();
+            await Context.SwitchContext.TearDownAsync();
         }
 
-        public void PrintStatus(string status) => this.Context.MetaDataController.Status["InProgress"] = status;
+        public void PrintStatus(string status) => this.Context.MetaDataContext.Status["InProgress"] = status;
     }
 }

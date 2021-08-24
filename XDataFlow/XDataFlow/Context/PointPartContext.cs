@@ -1,31 +1,25 @@
-using XDataFlow.Controllers.Consume;
-using XDataFlow.Controllers.Group;
-using XDataFlow.Controllers.MetaData;
-using XDataFlow.Controllers.Metric;
-using XDataFlow.Controllers.Switch;
-
 namespace XDataFlow.Context
 {
     public class PointPartContext : IPartContext
     {
-        public IMetaDataController MetaDataController { get; }
-        public IGroupController GroupController { get; }
-        public IHeartBeatController HeartBeatController { get; }
+        public IMetaDataContext MetaDataContext { get; }
+        public IGroupContext GroupContext { get; }
+        public IHeartBeatContext HeartBeatContext { get; }
         public IConsumeMetrics ConsumeMetrics { get; }
-        public ISwitchController SwitchController { get; }
+        public ISwitchContext SwitchContext { get; }
 
         public PointPartContext(
-            IMetaDataController metaDataController, 
-            IGroupController groupController, 
-            IHeartBeatController heartBeatController, 
+            IMetaDataContext metaDataContext, 
+            IGroupContext groupContext, 
+            IHeartBeatContext heartBeatContext, 
             IConsumeMetrics consumeMetrics, 
-            ISwitchController switchController)
+            ISwitchContext switchContext)
         {
-            MetaDataController = metaDataController;
-            GroupController = groupController;
-            HeartBeatController = heartBeatController;
+            MetaDataContext = metaDataContext;
+            GroupContext = groupContext;
+            HeartBeatContext = heartBeatContext;
             ConsumeMetrics = consumeMetrics;
-            SwitchController = switchController;
+            SwitchContext = switchContext;
         }
  
     }

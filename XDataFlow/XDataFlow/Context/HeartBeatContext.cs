@@ -1,19 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using XDataFlow.Controllers.Consume;
-using XDataFlow.Controllers.MetaData;
 using XDataFlow.Providers;
 
-namespace XDataFlow.Controllers.Metric
+namespace XDataFlow.Context
 {
-    public class HeartBeatController : IHeartBeatController
+    public class HeartBeatContext : IHeartBeatContext
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IConsumeMetrics _consumeMetrics;
-        private readonly IMetaDataController _metaDataController;
+        private readonly IMetaDataContext _metaDataContext;
 
-        public HeartBeatController(
+        public HeartBeatContext(
             IDateTimeProvider dateTimeProvider,
             IConsumeMetrics consumeMetrics)
         {
@@ -35,15 +33,15 @@ namespace XDataFlow.Controllers.Metric
 
         public void PrintStatusInfo()
         {
-            _metaDataController.UpsertStatus("Name", _metaDataController.Name);
-            _metaDataController.UpsertStatus("Available", _consumeMetrics.GetWaitingToConsumeAmount().ToString());
-            _metaDataController.UpsertStatus("ETA",_consumeMetrics.GetEstimatedTime().ToString("c"));
-            _metaDataController.UpsertStatus("Speed, n/sec", _consumeMetrics.GetMessagesPerSecond().ToString());
+            _metaDataContext.UpsertStatus("Name", _metaDataContext.Name);
+            _metaDataContext.UpsertStatus("Available", _consumeMetrics.GetWaitingToConsumeAmount().ToString());
+            _metaDataContext.UpsertStatus("ETA",_consumeMetrics.GetEstimatedTime().ToString("c"));
+            _metaDataContext.UpsertStatus("Speed, n/sec", _consumeMetrics.GetMessagesPerSecond().ToString());
         }
 
         public void PrintStatusInfo(string key, string value)
         {
-            _metaDataController.UpsertStatus(key, value);
+            _metaDataContext.UpsertStatus(key, value);
         }
         
         public List<ExpandoObject> GetStatusInfo()

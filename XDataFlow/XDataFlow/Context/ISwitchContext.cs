@@ -1,11 +1,14 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
-using XDataFlow.Controllers.Switch.Behaviours;
+using XDataFlow.Behaviours;
 
-namespace XDataFlow.Controllers.Switch
+namespace XDataFlow.Context
 {
-    public interface ISwitchController
+    public interface ISwitchContext
     {
+        CancellationTokenSource CancellationTokenSource { get; set; }
+
         Func<Task> GetStartAsyncCall();
         
         Func<Task> GetStopAsyncCall();

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using XDataFlow.Parts.Abstractions;
 
-namespace XDataFlow.Controllers.Group
+namespace XDataFlow.Context
 {
-    public interface IGroupController
+    public interface IGroupContext
     {
         TFlowPart AddFlowPart<TFlowPart>(TFlowPart flowPart, string name) where TFlowPart : IBasePart;
         IEnumerable<IBasePart> GetChildren();
