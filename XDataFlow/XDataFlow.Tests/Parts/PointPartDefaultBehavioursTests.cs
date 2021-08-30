@@ -14,6 +14,11 @@ namespace XDataFlow.Tests.Parts
 {
     public class PointPartDefaultBehavioursTests
     {
+        public PointPartDefaultBehavioursTests()
+        {
+            SetupDefaults();
+        }
+        
         [Fact]
         public async Task PointPartShouldSupportTryCatchStartBehaviour()
         {
@@ -22,7 +27,7 @@ namespace XDataFlow.Tests.Parts
             var finalized = false;
             var processedOk = false;
             var processedWithFailure = false;
-            var part = PartDefaultBuilder.CreatePointPart<PointPartWithFailure>();
+            var part = new PointPartWithFailure();
             part.ConfigureStartAs<TryCatchStart>(() => new TryCatchStart(
                 () => started = true,
                 () => processedOk = true,
@@ -45,7 +50,7 @@ namespace XDataFlow.Tests.Parts
         public async Task PointPartShouldSupportStartBehaviour()
         {
             // Arrange
-            var part = PartDefaultBuilder.CreatePointPart<TestPointPart>();
+            var part = new TestPointPart();
             
             part.ConfigureStartAs<Start>();
 
@@ -61,7 +66,7 @@ namespace XDataFlow.Tests.Parts
         {
             // Arrange
             var cts = new CancellationTokenSource();
-            var part = PartDefaultBuilder.CreatePointPart<TestPointPart>();
+            var part = new TestPointPart();
 
             var startInBackground = new StartInBackground();
             part.ConfigureStartAs(() => startInBackground);
@@ -72,12 +77,14 @@ namespace XDataFlow.Tests.Parts
             // Assert
             part.TestProperty.Should().Be("ABCDE");
         }
-        
-        private static IPartBuilder PartDefaultBuilder = new PartBuilder(
-            (() => new Mock<IMetaDataContext>().Object),
-            () => new Mock<IGroupContext>().Object,
-            ()=> new Mock<IHeartBeatContext>().Object,
-            ()=>new Mock<IConsumeMetrics>().Object);
+
+        private static void SetupDefaults()
+        {
+            XFlowDefault.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
+            XFlowDefault.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
+            XFlowDefault.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
+            XFlowDefault.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+        }
 
         private class TestPointPart : PointPart
         {

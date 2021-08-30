@@ -13,7 +13,7 @@ namespace XDataFlow.Context
             ISwitchContext switchContext,
             IConsumeContext<TConsumeData> consumeContext,
             IPublishContext<TPublishData> publishContext) 
-            : base(metaDataContext, groupContext, heartBeatContext, consumeMetrics, switchContext)
+            : base(metaDataContext, groupContext, heartBeatContext, switchContext)
         {
             PublishContext = publishContext;
             ConsumeContext = consumeContext;

@@ -7,7 +7,7 @@ namespace XDataFlow.Context
 {
     public interface ISwitchContext
     {
-        CancellationTokenSource CancellationTokenSource { get; set; }
+        CancellationTokenSource GetExecutionTokenSource();
 
         Func<Task> GetStartAsyncCall();
         

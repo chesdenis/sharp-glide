@@ -33,21 +33,12 @@ namespace XDataFlow.Context
             this.ConsumeTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
         }
         
-        public void ConfigureListening(IConsumeTunnel<TConsumeData> tunnel, string name)
-        {
-            tunnel.RoutingKey = "#";
-            tunnel.QueueName = $"InputQueueFor_{name}";
-            tunnel.TopicName = $"InputTopicFor_{name}";
-            
-            SetupBindingToTopic(tunnel, tunnel.TopicName, tunnel.QueueName, tunnel.RoutingKey);
-        }
-        
-        public void PushDataToFirstTunnel(TConsumeData data)
+        public void ConsumeData(TConsumeData data)
         {
             this.ConsumeTunnels.First().Value.Put(data);
         }
 
-        public void PushDataToTunnel(TConsumeData data, string tunnelKey)
+        public void ConsumeData(TConsumeData data, string tunnelKey)
         {
             this.ConsumeTunnels.First(f=>f.Key == tunnelKey).Value.Put(data);
         }

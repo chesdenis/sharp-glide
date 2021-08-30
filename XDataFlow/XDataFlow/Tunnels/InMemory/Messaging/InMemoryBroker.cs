@@ -39,7 +39,7 @@ namespace XDataFlow.Tunnels.InMemory.Messaging
 
         public IEnumerable<InMemoryQueue<object>> FindQueues(string topicName, string routingKey)
         {
-            var routes = Routes.Where(
+            var routes = Routes.ToList().Where(
                 w=> string.Equals(w.TopicName, topicName, StringComparison.InvariantCultureIgnoreCase)
                     && string.Equals(w.RoutingKey, routingKey, StringComparison.InvariantCultureIgnoreCase));
 

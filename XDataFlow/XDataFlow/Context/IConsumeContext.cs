@@ -14,7 +14,7 @@ namespace XDataFlow.Context
         void SetupBindingToTopic(IConsumeTunnel<TConsumeData> tunnel, string topicName, string queueName, string routingKey);
         
         IEnumerable<TConsumeData> ReadAndConsumeData();
-        void PushDataToFirstTunnel(TConsumeData data);
-        void PushDataToTunnel(TConsumeData data, string tunnelKey);
+        void ConsumeData(TConsumeData data);
+        void ConsumeData(TConsumeData data, string tunnelKey);
     }
 }

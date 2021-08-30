@@ -23,7 +23,9 @@ namespace XDataFlow.Context
         {
             while (true)
             {
-                if (_vectorPart.GetExecutionTokenSource().Token.IsCancellationRequested)
+                var cancellationTokenSource = GetExecutionTokenSource();
+                
+                if (cancellationTokenSource.Token.IsCancellationRequested)
                 {
                     break;
                 }
@@ -32,7 +34,7 @@ namespace XDataFlow.Context
                 {
                     foreach (var data in _consumeContext.ReadAndConsumeData())
                     {
-                        await _vectorPart.ProcessAsync(data, _vectorPart.GetExecutionTokenSource().Token);
+                        await _vectorPart.ProcessAsync(data, cancellationTokenSource.Token);
                     }
                 }
                 catch (NoDataException)
@@ -44,7 +46,7 @@ namespace XDataFlow.Context
 
         protected override Task OnStopAsync()
         {
-            _vectorPart.GetExecutionTokenSource().Cancel();
+            GetExecutionTokenSource().Cancel();
 
             return Task.CompletedTask;
         }

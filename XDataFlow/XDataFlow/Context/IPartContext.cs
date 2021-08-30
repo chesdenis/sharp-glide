@@ -5,7 +5,6 @@ namespace XDataFlow.Context
         IMetaDataContext MetaDataContext { get; }
         IGroupContext GroupContext { get; }
         IHeartBeatContext HeartBeatContext { get; }
-        IConsumeMetrics ConsumeMetrics { get; }
         ISwitchContext SwitchContext { get; }
     }
 }

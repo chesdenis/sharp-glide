@@ -11,6 +11,6 @@ namespace XDataFlow.Context
         TPublishWrapper AddPublishWrapper<TPublishWrapper>(TPublishWrapper wrapper)
             where TPublishWrapper : IWrapperWithInput<TPublishData>;
 
-        void ConfigurePublishing(IPublishTunnel<TPublishData> tunnel, string topicName, string routingKey);
+        void SetupBindingToTopic(IPublishTunnel<TPublishData> tunnel, string topicName, string routingKey);
     }
 }

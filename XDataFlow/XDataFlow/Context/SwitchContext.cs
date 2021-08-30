@@ -2,12 +2,16 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Behaviours;
+using XDataFlow.Exceptions;
 
 namespace XDataFlow.Context
 {
     public abstract class SwitchContext : ISwitchContext
     {
-        public CancellationTokenSource CancellationTokenSource { get; set; }
+        private CancellationTokenSource _cancellationTokenSource;
+        public CancellationTokenSource GetExecutionTokenSource() => 
+            _cancellationTokenSource;
+        
         public Func<Task> GetStartAsyncCall() => OnStartAsync;
 
         public Func<Task> GetStopAsyncCall() => OnStopAsync;
@@ -22,21 +26,42 @@ namespace XDataFlow.Context
         
         public async Task TearUpAsync()
         {
-            CancelJobsAndReissueToken();
+            ReissueToken();
+
+            if (StartBehaviour == null)
+            {
+                throw new StartBehaviourWasNotConfiguredException();
+            }
+            
             await StartBehaviour.ExecuteAsync(this);
         }
 
         public async Task TearDownAsync()
         {
-            CancelJobsAndReissueToken();
+            CancelToken();
+
+            if (StopBehaviour == null)
+            {
+                throw new StopBehaviourWasNotConfiguredException();
+            }
+            
             await StopBehaviour.ExecuteAsync(this);
         }
 
-        private void CancelJobsAndReissueToken()
+        private void ReissueToken()
         {
-            CancellationTokenSource?.Cancel();
-            CancellationTokenSource?.Dispose();
-            CancellationTokenSource = new CancellationTokenSource();
+            if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
+            {
+                return;
+            }
+            
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = new CancellationTokenSource();
+        }
+
+        private void CancelToken()
+        {
+            _cancellationTokenSource?.Cancel();
         }
     }
 }

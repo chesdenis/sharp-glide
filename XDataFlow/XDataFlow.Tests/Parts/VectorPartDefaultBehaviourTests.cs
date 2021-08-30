@@ -8,6 +8,7 @@ using XDataFlow.Builders;
 using XDataFlow.Context;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Tunnels.InMemory;
+using XDataFlow.Tunnels.InMemory.Messaging;
 using Xunit;
 
 namespace XDataFlow.Tests.Parts
@@ -15,40 +16,123 @@ namespace XDataFlow.Tests.Parts
     public class VectorPartDefaultBehaviourTests
     {
         [Fact]
-        public async Task VectorPartShouldSupportTryCatchStartBehaviour()
+        public async Task VectorPartShouldSupportTryCatchStartInBackgroundBehaviour()
         {
             // Arrange
-            var started = false;
-            var finalized = false;
-            var processedOk = false;
-            var processedWithFailure = false;
+            var partWithFailureStarted = false;
+            var partWithFailureFinalized = false;
+            var partWithFailureProcessedOk = false;
+            var partWithFailureProcessedFailed = false;
+            
+            var partStableStarted = false;
+            var partStableFinalized = false;
+            var partStableProcessedOk = false;
+            var partStableProcessedFailed = false;
 
-            var part = PartDefaultBuilder.CreateVectorPart<VectorPartWithFailure,
-                VectorPartWithFailure.Input,
-                VectorPartWithFailure.Output>();
+            var partWithFailure = new VectorPartWithFailure();
+            var partStable = new TestVectorPart();
 
-            part.ConfigureStartAs<TryCatchStart>(() => new TryCatchStart(
-                () => started = true,
-                () => processedOk = true,
-                (ex) => processedWithFailure = true,
-                () => finalized = true));
+            partWithFailure.ConfigureStartAs<TryCatchStart>(() => new TryCatchStartInBackground(
+                () => partWithFailureStarted = true,
+                () => partWithFailureProcessedOk = true,
+                (ex) => partWithFailureProcessedFailed = true,
+                () => partWithFailureFinalized = true));
+            partStable.ConfigureStartAs<TryCatchStart>(() => new TryCatchStartInBackground(
+                () => partStableStarted = true,
+                () => partStableProcessedOk = true,
+                (ex) => partStableProcessedFailed = true,
+                () => partStableFinalized = true));
 
-            part.SetupBindingAsTopicToQueue("testTopic", "testQueue", "testRoutingKey");
+            partWithFailure.SetupConsumeAsQueueFromTopic(
+                new InMemoryConsumeTunnel<VectorPartWithFailure.Input>(InMemoryBroker.Current),
+                "t1", "q1", "r1");
+            partStable.SetupConsumeAsQueueFromTopic(
+                new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
+                "t2", "q2", "r2");
+
 
             // Act
             var result = await Assert.ThrowsAsync<Exception>(async () =>
             {
-                part.PushDataToFirstTunnel(new VectorPartWithFailure.Input() { });
-                await part.StartAsync();
+                partWithFailure.ConsumeData(new VectorPartWithFailure.Input() { });
+                await partWithFailure.StartAsync();
             });
+
+            partStable.ConsumeData(new TestVectorPart.Input() { });
+            await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
 
             result.Message.Should().Be("Some Exception");
 
             // Assert
-            started.Should().BeTrue();
-            finalized.Should().BeTrue();
-            processedWithFailure.Should().BeTrue();
-            processedOk.Should().BeFalse();
+            partWithFailureStarted.Should().BeTrue();
+            partWithFailureFinalized.Should().BeTrue();
+            partWithFailureProcessedFailed.Should().BeTrue();
+            partWithFailureProcessedOk.Should().BeFalse();
+            
+            partStableStarted.Should().BeTrue();
+            partStableFinalized.Should().BeTrue();
+            partStableProcessedFailed.Should().BeFalse();
+            partStableProcessedOk.Should().BeTrue();
+        }
+        
+        [Fact]
+        public async Task VectorPartShouldSupportTryCatchStartBehaviour()
+        {
+            // Arrange
+            var partWithFailureStarted = false;
+            var partWithFailureFinalized = false;
+            var partWithFailureProcessedOk = false;
+            var partWithFailureProcessedFailed = false;
+            
+            var partStableStarted = false;
+            var partStableFinalized = false;
+            var partStableProcessedOk = false;
+            var partStableProcessedFailed = false;
+
+            var partWithFailure = new VectorPartWithFailure();
+            var partStable = new TestVectorPart();
+
+            partWithFailure.ConfigureStartAs<TryCatchStart>(() => new TryCatchStart(
+                () => partWithFailureStarted = true,
+                () => partWithFailureProcessedOk = true,
+                (ex) => partWithFailureProcessedFailed = true,
+                () => partWithFailureFinalized = true));
+            partStable.ConfigureStartAs<TryCatchStart>(() => new TryCatchStart(
+                () => partStableStarted = true,
+                () => partStableProcessedOk = true,
+                (ex) => partStableProcessedFailed = true,
+                () => partStableFinalized = true));
+
+            partWithFailure.SetupConsumeAsQueueFromTopic(
+                new InMemoryConsumeTunnel<VectorPartWithFailure.Input>(InMemoryBroker.Current),
+                "t1", "q1", "r1");
+            partStable.SetupConsumeAsQueueFromTopic(
+                new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
+                "t2", "q2", "r2");
+
+
+            // Act
+            var result = await Assert.ThrowsAsync<Exception>(async () =>
+            {
+                partWithFailure.ConsumeData(new VectorPartWithFailure.Input() { });
+                await partWithFailure.StartAsync();
+            });
+
+            partStable.ConsumeData(new TestVectorPart.Input() { });
+            await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
+
+            result.Message.Should().Be("Some Exception");
+
+            // Assert
+            partWithFailureStarted.Should().BeTrue();
+            partWithFailureFinalized.Should().BeTrue();
+            partWithFailureProcessedFailed.Should().BeTrue();
+            partWithFailureProcessedOk.Should().BeFalse();
+            
+            partStableStarted.Should().BeTrue();
+            partStableFinalized.Should().BeTrue();
+            partStableProcessedFailed.Should().BeFalse();
+            partStableProcessedOk.Should().BeTrue();
         }
         
         [Fact]
@@ -56,27 +140,20 @@ namespace XDataFlow.Tests.Parts
         {
             // Arrange
             var cts = new CancellationTokenSource();
-            var part = PartDefaultBuilder.CreateVectorPart<TestVectorPart,
-                TestVectorPart.Input,
-                TestVectorPart.Output>();
+            var part = new TestVectorPart();
 
             part.ConfigureStartAs<StartInBackground>(() => new StartInBackground());
-            part.SetupBindingAsTopicToQueue("testTopic", "testQueue", "testRoutingKey");
+            
+            part.SetupConsumeAsQueueFromTopic(
+                new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
+                "t2", "q2", "r2");
 
             // Act
-            part.PushDataToFirstTunnel(new TestVectorPart.Input() { });
-#pragma warning disable 4014
-            Task.Run(async () =>
-#pragma warning restore 4014
-            {
-                await Task.Delay(TimeSpan.FromSeconds(3), cts.Token);
-                await part.StopAsync();
-            }, cts.Token);
-            
-            await part.StartAsync();
+            part.ConsumeData(new TestVectorPart.Input() { });
+            await part.StartAndStopAsync(TimeSpan.FromSeconds(1));
 
             // Assert
-            part.Should().Be("ABCDE");
+            part.TestProperty.Should().Be("ABCDE");
         }
         
         private static IPartBuilder PartDefaultBuilder = new PartBuilder(

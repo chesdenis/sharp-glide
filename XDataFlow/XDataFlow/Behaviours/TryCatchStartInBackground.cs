@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Context;
 
@@ -7,21 +6,17 @@ namespace XDataFlow.Behaviours
 {
     public class TryCatchStartInBackground : TryCatchStart
     {
-        private readonly CancellationToken _ct;
-        
         public TryCatchStartInBackground(
             Action onStart, 
             Action onProcessedOk, 
             Action<Exception> onProcessedWithFailure, 
-            Action onFinalise, 
-            CancellationToken ct) 
+            Action onFinalise) 
             : base(
                 onStart, 
                 onProcessedOk, 
                 onProcessedWithFailure, 
                 onFinalise)
         {
-            _ct = ct;
         }
 
         public override async Task ExecuteAsync(ISwitchContext switchContext)
@@ -29,7 +24,7 @@ namespace XDataFlow.Behaviours
             await Task.Run(async () =>
             {
                 await base.ExecuteAsync(switchContext);
-            }, _ct);
+            }, switchContext.GetExecutionTokenSource().Token);
         }
     }
 }

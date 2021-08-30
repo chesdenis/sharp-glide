@@ -11,7 +11,7 @@ namespace XDataFlow.Behaviours
             await Task.Run(async () =>
             {
                 await base.ExecuteAsync(switchContext);
-            }, switchContext.CancellationTokenSource.Token);
+            }, switchContext.GetExecutionTokenSource().Token);
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using XDataFlow.Behaviours;
 using XDataFlow.Context;
+using XDataFlow.Extensions;
 
 namespace XDataFlow.Parts.Abstractions
 {
@@ -42,6 +43,12 @@ namespace XDataFlow.Parts.Abstractions
         public async Task StartAsync()
         {
             await Context.SwitchContext.TearUpAsync();
+        }
+
+        public async Task StartAndStopAsync(TimeSpan onlinePeriod)
+        {
+            BackgroundExtensions.RunInParallel(onlinePeriod, StopAsync);
+            await StartAsync();
         }
 
         public async Task StopAsync()

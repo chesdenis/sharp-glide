@@ -27,8 +27,8 @@ namespace XDataFlow.Context
 
             return wrapper;
         }
-
-        public void ConfigurePublishing(IPublishTunnel<TPublishData> tunnel, string topicName, string routingKey)
+        
+        public void SetupBindingToTopic(IPublishTunnel<TPublishData> tunnel, string topicName, string routingKey)
         {
             tunnel.RoutingKey = routingKey;
             tunnel.TopicName = topicName;
@@ -37,7 +37,7 @@ namespace XDataFlow.Context
             
             this.PublishTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
         }
-        
+
         public void Publish(TPublishData data)
         {
             foreach (var t in this.PublishTunnels)

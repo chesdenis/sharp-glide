@@ -32,8 +32,7 @@ namespace XDataFlow.Builders
             part.Context = new PointPartContext(
                 _metaDataFunc(), 
                 _groupFunc(), 
-                _heartBeatFunc(), 
-                _consumeMetricsFunc(),
+                _heartBeatFunc(),
                 new PointPartSwitchContext(part));
 
             return part;
