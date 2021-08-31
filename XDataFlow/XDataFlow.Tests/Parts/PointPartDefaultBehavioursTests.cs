@@ -8,6 +8,7 @@ using XDataFlow.Builders;
 using XDataFlow.Context;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Providers;
+using XDataFlow.Registry;
 using Xunit;
 
 namespace XDataFlow.Tests.Parts
@@ -80,10 +81,10 @@ namespace XDataFlow.Tests.Parts
 
         private static void SetupDefaults()
         {
-            XFlowDefault.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
-            XFlowDefault.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
-            XFlowDefault.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
-            XFlowDefault.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+            XFlowDefaultRegistry.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
+            XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
+            XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
+            XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
         }
 
         private class TestPointPart : PointPart

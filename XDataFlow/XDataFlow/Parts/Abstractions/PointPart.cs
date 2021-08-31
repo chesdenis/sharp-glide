@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Builders;
 using XDataFlow.Context;
+using XDataFlow.Registry;
 
 namespace XDataFlow.Parts.Abstractions
 {
@@ -12,10 +13,10 @@ namespace XDataFlow.Parts.Abstractions
 
         protected PointPart()
         {
-            var metaDataContext = XFlowDefault.Get<IMetaDataContext>() ?? throw new ArgumentNullException(nameof(IMetaDataContext));
-            var groupContext = XFlowDefault.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext)); 
-            var heartBeatContext = XFlowDefault.Get<IHeartBeatContext>() ?? throw new ArgumentNullException(nameof(IHeartBeatContext));
-            var consumeMetrics = XFlowDefault.Get<IConsumeMetrics>() ?? throw new ArgumentNullException(nameof(IConsumeMetrics));
+            var metaDataContext = XFlowDefaultRegistry.Get<IMetaDataContext>() ?? throw new ArgumentNullException(nameof(IMetaDataContext));
+            var groupContext = XFlowDefaultRegistry.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext)); 
+            var heartBeatContext = XFlowDefaultRegistry.Get<IHeartBeatContext>() ?? throw new ArgumentNullException(nameof(IHeartBeatContext));
+            var consumeMetrics = XFlowDefaultRegistry.Get<IConsumeMetrics>() ?? throw new ArgumentNullException(nameof(IConsumeMetrics));
 
             var switchContext = new PointPartSwitchContext(this);
             

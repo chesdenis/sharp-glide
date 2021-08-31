@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using XDataFlow.Builders;
 using XDataFlow.Context;
 using XDataFlow.Providers;
+using XDataFlow.Registry;
 using XDataFlow.Tunnels;
 using XDataFlow.Tunnels.InMemory;
 using XDataFlow.Tunnels.InMemory.Messaging;
@@ -25,10 +26,10 @@ namespace XDataFlow.Parts.Abstractions
 
         protected VectorPart()
         {
-            var metaDataContext = XFlowDefault.Get<IMetaDataContext>() ?? throw new ArgumentNullException(nameof(IMetaDataContext));
-            var groupContext = XFlowDefault.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext)); 
-            var heartBeatContext = XFlowDefault.Get<IHeartBeatContext>() ?? throw new ArgumentNullException(nameof(IHeartBeatContext));
-            var consumeMetrics = XFlowDefault.Get<IConsumeMetrics>() ?? throw new ArgumentNullException(nameof(IConsumeMetrics));
+            var metaDataContext = XFlowDefaultRegistry.Get<IMetaDataContext>() ?? throw new ArgumentNullException(nameof(IMetaDataContext));
+            var groupContext = XFlowDefaultRegistry.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext)); 
+            var heartBeatContext = XFlowDefaultRegistry.Get<IHeartBeatContext>() ?? throw new ArgumentNullException(nameof(IHeartBeatContext));
+            var consumeMetrics = XFlowDefaultRegistry.Get<IConsumeMetrics>() ?? throw new ArgumentNullException(nameof(IConsumeMetrics));
             
             var consumeContext = new ConsumeContext<TConsumeData>();
             var publishContext = new PublishContext<TConsumeData,TPublishData>(heartBeatContext);
@@ -121,47 +122,5 @@ namespace XDataFlow.Parts.Abstractions
             
             return partBuilder.CreateVectorPart<VectorPart<TConsumeData, TPublishData>, TConsumeData, TPublishData>(partFunc);
         }
-
-        public void FlowFromSelf()
-        {
-            var linkId = Guid.NewGuid().ToString("N");
-            var topicName = $"{linkId}:{this.Name}<-[manual]";
-            var queueName = $"{linkId}:{this.Name}<-[manual]";
-            var routingKey = $"#";
-            
-            var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TConsumeData>(InMemoryBroker.Current);
-            
-            this.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
-        }
-
-        public void FlowTo<TTargetConsumeData, TTargetPublishData>(
-            VectorPart<TTargetConsumeData, TTargetPublishData> partB)
-        {
-            var linkId = Guid.NewGuid().ToString("N");
-            var topicName = $"{linkId}:{this.Name}->{partB.Name}";
-            var queueName = $"{linkId}:{this.Name}->{partB.Name}";
-            var routingKey = $"#";
-
-            var inMemoryPublishTunnel = new InMemoryPublishTunnel<TPublishData>(InMemoryBroker.Current);
-            var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TTargetConsumeData>(InMemoryBroker.Current);
-            
-            this.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, topicName, routingKey);
-            partB.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
-        }
     }
-
-    public class XFlowDefault
-    {
-        public static readonly Dictionary<Type, Func<object>> DefaultImpls = new Dictionary<Type, Func<object>>();
-
-        public static void Set<T>(Func<object> builder)
-        {
-            DefaultImpls[typeof(T)] = builder;
-        }
-        
-        public static T Get<T>() => (T)DefaultImpls[typeof(T)]();
-    }
-    
-     
-     
 }
