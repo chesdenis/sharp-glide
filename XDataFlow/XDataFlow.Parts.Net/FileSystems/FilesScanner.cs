@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Parts.Abstractions;
 
-namespace XDataFlow.Parts.FileSystems
+namespace XDataFlow.Parts.Net.FileSystems
 {
     public class FilesScanner: VectorPart<FilesScanner.Input, FilesScanner.Output>
     {

@@ -40,12 +40,10 @@ namespace XDataFlow.Context
         {
             CancelToken();
 
-            if (StopBehaviour == null)
+            if (StopBehaviour != null)
             {
-                throw new StopBehaviourWasNotConfiguredException();
+                await StopBehaviour.ExecuteAsync(this);
             }
-            
-            await StopBehaviour.ExecuteAsync(this);
         }
 
         private void ReissueToken()

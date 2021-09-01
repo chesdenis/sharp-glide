@@ -6,7 +6,7 @@ namespace XDataFlow.Tests.Model
     public abstract class DirectAssertableVectorPart<TConsumeData, TPublishData> 
         : AssertableVectorPart<TConsumeData, TPublishData>
     {
-        public override Task ProcessAsync(TConsumeData data, CancellationToken cancellationToken)
+        public override async Task ProcessAsync(TConsumeData data, CancellationToken cancellationToken)
         {
             var publishData = Map(data);
                 
@@ -14,8 +14,8 @@ namespace XDataFlow.Tests.Model
                 
             this.ConsumedData.Add(data);
             this.PublishedData.Add(publishData);
-                
-            return Task.CompletedTask;
+
+            await this.StopAsync();
         }
     }
 }

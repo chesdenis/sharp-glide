@@ -39,9 +39,9 @@ namespace XDataFlow.Tests.Parts
 
             // Act
             partA.ConsumeData(10);
-            await partA.StartAndStopAsync(TimeSpan.FromSeconds(2));
-            await partB.StartAndStopAsync(TimeSpan.FromSeconds(2));
-            await partC.StartAndStopAsync(TimeSpan.FromSeconds(2));
+            await partA.StartAsync();
+            await partB.StartAsync();
+            await partC.StartAsync();
             
             // Assert
             partA.WasPublished("20").Should().BeTrue();
@@ -56,7 +56,7 @@ namespace XDataFlow.Tests.Parts
         
         public class SimplePublisherWithTwoRoutingWay : AssertableVectorPart<int, string>
         {
-            public override Task ProcessAsync(int data, CancellationToken cancellationToken)
+            public override async Task ProcessAsync(int data, CancellationToken cancellationToken)
             {
                 this.ConsumedData.Add(data);
                 
@@ -68,7 +68,7 @@ namespace XDataFlow.Tests.Parts
                 this.Publish(Map(valueB), "Rk.BFlow");
                 this.PublishedData.Add(Map(valueB));
 
-                return Task.CompletedTask;
+                await this.StopAsync();
             }
 
             public override string Map(int data) => data.ToString();
@@ -76,10 +76,11 @@ namespace XDataFlow.Tests.Parts
         
         public class SimpleReceiverOfAFlow : AssertableVectorPart<string, byte[]>
         {
-            public override Task ProcessAsync(string data, CancellationToken cancellationToken)
+            public override async Task ProcessAsync(string data, CancellationToken cancellationToken)
             {
                 this.ConsumedData.Add(data);
-                return Task.CompletedTask;
+
+                await this.StopAsync();
             }
 
             public override byte[] Map(string data) => Encoding.UTF8.GetBytes(data);
@@ -87,10 +88,10 @@ namespace XDataFlow.Tests.Parts
         
         public class SimpleReceiverOfBFlow : AssertableVectorPart<string, byte[]>
         {
-            public override Task ProcessAsync(string data, CancellationToken cancellationToken)
+            public override async Task ProcessAsync(string data, CancellationToken cancellationToken)
             {
                 this.ConsumedData.Add(data);
-                return Task.CompletedTask;
+                await this.StopAsync();
             }
 
             public override byte[] Map(string data) => Encoding.UTF8.GetBytes(data);
@@ -102,6 +103,7 @@ namespace XDataFlow.Tests.Parts
             XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
             XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
             XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+            XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
         }
     }
 }

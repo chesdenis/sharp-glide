@@ -1,8 +1,11 @@
-using XDataFlow.Parts.NetCore.Http.Proxy;
+using System.Threading;
+using System.Threading.Tasks;
+using XDataFlow.Parts.Abstractions;
+using XDataFlow.Parts.Net.Http.Proxy;
 
-namespace XDataFlow.Parts.NetCore.Http
+namespace XDataFlow.Parts.Net.Http
 {
-    public class HttpGet : FlowPart<HttpGet.Input, HttpGet.Output>
+    public class HttpGet : VectorPart<HttpGet.Input, HttpGet.Output>
     {
         private readonly IHttpClientProxy _httpClientProxy;
 
@@ -20,10 +23,10 @@ namespace XDataFlow.Parts.NetCore.Http
         {
             _httpClientProxy = httpClientProxy;
         }
- 
-        protected override void ProcessMessage(Input data)
+    
+        public override async Task ProcessAsync(Input data, CancellationToken cancellationToken)
         {
-            var pageData = this._httpClientProxy.Get(data.Url).GetAwaiter().GetResult();
+            var pageData = await this._httpClientProxy.GetAsync(data.Url, cancellationToken);
 
             this.Publish(new Output() {PageContent = pageData});
         }

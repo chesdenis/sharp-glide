@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using XDataFlow.Builders;
 using XDataFlow.Context;
 using XDataFlow.Providers;
 using XDataFlow.Registry;
@@ -30,6 +29,9 @@ namespace XDataFlow.Parts.Abstractions
             var groupContext = XFlowDefaultRegistry.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext)); 
             var heartBeatContext = XFlowDefaultRegistry.Get<IHeartBeatContext>() ?? throw new ArgumentNullException(nameof(IHeartBeatContext));
             var consumeMetrics = XFlowDefaultRegistry.Get<IConsumeMetrics>() ?? throw new ArgumentNullException(nameof(IConsumeMetrics));
+
+            var settingsContext = XFlowDefaultRegistry.Get<ISettingsContext>() ??
+                                  throw new ArgumentNullException(nameof(ISettingsContext));
             
             var consumeContext = new ConsumeContext<TConsumeData>();
             var publishContext = new PublishContext<TConsumeData,TPublishData>(heartBeatContext);
@@ -44,6 +46,7 @@ namespace XDataFlow.Parts.Abstractions
                     heartBeatContext,
                     consumeMetrics,
                     switchContext,
+                    settingsContext,
                     consumeContext,
                     publishContext
                     );
@@ -100,27 +103,6 @@ namespace XDataFlow.Parts.Abstractions
             where TPublishTunnel : IPublishTunnel<TPublishData>
         {
             this.VectorPartContext.PublishContext.SetupBindingToTopic(tunnel, topicName, routingKey);
-        }
-
-        public static VectorPart<TConsumeData, TPublishData> CreateUsing(IPartBuilder partBuilder = null)
-        {
-            if (partBuilder == null)
-            {
-                throw new NotImplementedException("Create default part builder as singleton");
-            }
-            
-            return partBuilder.CreateVectorPart<VectorPart<TConsumeData, TPublishData>, TConsumeData, TPublishData>();
-        }
-
-        public static VectorPart<TConsumeData, TPublishData> CreateUsing(
-            Func<VectorPart<TConsumeData, TPublishData>> partFunc, IPartBuilder partBuilder = null)
-        {
-            if (partBuilder == null)
-            {
-                throw new NotImplementedException("Create default part builder as singleton");
-            }
-            
-            return partBuilder.CreateVectorPart<VectorPart<TConsumeData, TPublishData>, TConsumeData, TPublishData>(partFunc);
         }
     }
 }

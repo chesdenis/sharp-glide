@@ -11,9 +11,10 @@ namespace XDataFlow.Context
             IHeartBeatContext heartBeatContext,
             IConsumeMetrics consumeMetrics, 
             ISwitchContext switchContext,
+            ISettingsContext settingsContext,
             IConsumeContext<TConsumeData> consumeContext,
             IPublishContext<TPublishData> publishContext) 
-            : base(metaDataContext, groupContext, heartBeatContext, switchContext)
+            : base(metaDataContext, groupContext, heartBeatContext, switchContext, settingsContext)
         {
             PublishContext = publishContext;
             ConsumeContext = consumeContext;

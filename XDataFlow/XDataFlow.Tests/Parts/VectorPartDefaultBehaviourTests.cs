@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using XDataFlow.Behaviours;
-using XDataFlow.Builders;
 using XDataFlow.Context;
 using XDataFlow.Parts.Abstractions;
+using XDataFlow.Registry;
 using XDataFlow.Tunnels.InMemory;
 using XDataFlow.Tunnels.InMemory.Messaging;
 using Xunit;
@@ -15,6 +15,11 @@ namespace XDataFlow.Tests.Parts
 {
     public class VectorPartDefaultBehaviourTests
     {
+        public VectorPartDefaultBehaviourTests()
+        {
+            SetupDefaults();
+        }
+        
         [Fact]
         public async Task VectorPartShouldSupportTryCatchStartInBackgroundBehaviour()
         {
@@ -156,12 +161,15 @@ namespace XDataFlow.Tests.Parts
             part.TestProperty.Should().Be("ABCDE");
         }
         
-        private static IPartBuilder PartDefaultBuilder = new PartBuilder(
-            (() => new Mock<IMetaDataContext>().Object),
-            () => new Mock<IGroupContext>().Object,
-            ()=> new Mock<IHeartBeatContext>().Object,
-            ()=>new Mock<IConsumeMetrics>().Object);
-        
+        private static void SetupDefaults()
+        {
+            XFlowDefaultRegistry.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
+            XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
+            XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
+            XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+            XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
+        }
+
         private class TestVectorPart : VectorPart<TestVectorPart.Input, TestVectorPart.Output>
         {
             public class Input
@@ -180,6 +188,8 @@ namespace XDataFlow.Tests.Parts
             {
                 await Task.Delay(100, cancellationToken);
                 this.TestProperty = "ABCDE";
+
+                await this.StopAsync();
             }
         }
         

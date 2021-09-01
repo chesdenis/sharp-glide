@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using XDataFlow.Builders;
 using XDataFlow.Context;
 using XDataFlow.Registry;
 
@@ -18,23 +17,16 @@ namespace XDataFlow.Parts.Abstractions
             var heartBeatContext = XFlowDefaultRegistry.Get<IHeartBeatContext>() ?? throw new ArgumentNullException(nameof(IHeartBeatContext));
             var consumeMetrics = XFlowDefaultRegistry.Get<IConsumeMetrics>() ?? throw new ArgumentNullException(nameof(IConsumeMetrics));
 
+            var settingsContext = XFlowDefaultRegistry.Get<ISettingsContext>() ??
+                                  throw new ArgumentNullException(nameof(ISettingsContext));
             var switchContext = new PointPartSwitchContext(this);
             
             this.Context = new PointPartContext(
                 metaDataContext,
                 groupContext,
                 heartBeatContext,
-                switchContext);
-        }
-        
-        public static PointPart CreateUsing(IPartBuilder partBuilder = null)
-        {
-            if (partBuilder == null)
-            {
-                throw new NotImplementedException("Create default part builder as singleton");
-            }
-            
-            return partBuilder.CreatePointPart<PointPart>();
+                switchContext,
+                settingsContext);
         }
     }
 }

@@ -6,5 +6,6 @@ namespace XDataFlow.Context
         IGroupContext GroupContext { get; }
         IHeartBeatContext HeartBeatContext { get; }
         ISwitchContext SwitchContext { get; }
+        ISettingsContext SettingsContext { get; }
     }
 }

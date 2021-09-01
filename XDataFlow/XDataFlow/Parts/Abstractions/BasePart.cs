@@ -51,6 +51,11 @@ namespace XDataFlow.Parts.Abstractions
             await StartAsync();
         }
 
+        public TSettings GetSettings<TSettings>(string keyPath)
+        {
+            return Context.SettingsContext.GetByKey<TSettings>(keyPath);
+        }
+        
         public async Task StopAsync()
         {
             await Context.SwitchContext.TearDownAsync();

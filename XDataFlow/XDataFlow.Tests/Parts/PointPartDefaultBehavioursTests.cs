@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using XDataFlow.Behaviours;
-using XDataFlow.Builders;
 using XDataFlow.Context;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Providers;
@@ -85,6 +84,7 @@ namespace XDataFlow.Tests.Parts
             XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
             XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
             XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+            XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
         }
 
         private class TestPointPart : PointPart
@@ -95,6 +95,8 @@ namespace XDataFlow.Tests.Parts
             {
                 await Task.Delay(100, cancellationToken);
                 this.TestProperty = "ABCDE";
+
+                await this.StopAsync();
             }
         }
         

@@ -1,8 +1,11 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
+using XDataFlow.Parts.Abstractions;
 
 namespace XDataFlow.Parts.Net.MsSql
 {
-    public class SqlDataReader : FlowPart<SqlDataReader.Input, object[]>
+    public class SqlDataReader : VectorPart<SqlDataReader.Input, object[]>
     {
         private readonly string _connectionString;
 
@@ -15,19 +18,19 @@ namespace XDataFlow.Parts.Net.MsSql
         {
             _connectionString = connectionString;
         }
-
-        protected override void ProcessMessage(Input data)
+ 
+        public override async Task ProcessAsync(Input data, CancellationToken cancellationToken)
         {
             var builder = new SqlConnectionStringBuilder {ConnectionString = _connectionString};
-            using var connection = new SqlConnection(builder.ConnectionString);
+            await using var connection = new SqlConnection(builder.ConnectionString);
 
-            connection.Open();
+            await connection.OpenAsync(cancellationToken);
 
-            using var command = new SqlCommand(data.SqlQuery, connection);
+            await using var command = new SqlCommand(data.SqlQuery, connection);
 
-            using var reader = command.ExecuteReader();
+            await using var reader = await command.ExecuteReaderAsync(cancellationToken);
 
-            while (reader.Read())
+            while (await reader.ReadAsync(cancellationToken))
             {
                 var values = new object[reader.FieldCount];
 

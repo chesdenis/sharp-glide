@@ -34,8 +34,8 @@ namespace XDataFlow.Tests.Parts
             
             // Act
             partA.ConsumeData(123);
-            await partA.StartAndStopAsync(TimeSpan.FromSeconds(2));
-            await partB.StartAndStopAsync(TimeSpan.FromSeconds(2));
+            await partA.StartAsync();
+            await partB.StartAsync();
 
             // Assert
             partA.WasPublished("123").Should().BeTrue();
@@ -59,9 +59,9 @@ namespace XDataFlow.Tests.Parts
             
             // Act
             partA.ConsumeData(123);
-            await partA.StartAndStopAsync(TimeSpan.FromSeconds(2));
-            await partB.StartAndStopAsync(TimeSpan.FromSeconds(2));
-            await partC.StartAndStopAsync(TimeSpan.FromSeconds(2));
+            await partA.StartAsync();
+            await partB.StartAsync();
+            await partC.StartAsync();
 
             // Assert
             partA.WasPublished("123").Should().BeTrue();
@@ -83,8 +83,8 @@ namespace XDataFlow.Tests.Parts
             
             // Act
             partA.ConsumeData(123);
-            await partA.StartAndStopAsync(TimeSpan.FromSeconds(2));
-            await partB.StartAndStopAsync(TimeSpan.FromSeconds(2));
+            await partA.StartAsync();
+            await partB.StartAsync();
 
             // Assert
             partA.WasPublished("123").Should().BeTrue();
@@ -97,6 +97,7 @@ namespace XDataFlow.Tests.Parts
             XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
             XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
             XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+            XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
         }
         
         public class VectorA : DirectAssertableVectorPart<int, string>

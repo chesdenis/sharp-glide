@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Parts.Generic;
 
-namespace XDataFlow.Parts.Calculators
+namespace XDataFlow.Parts.Net.Calculators
 {
     public class Md5StringDecorator<TDecorateData> : GenericDecorator<TDecorateData, string, string>
     {

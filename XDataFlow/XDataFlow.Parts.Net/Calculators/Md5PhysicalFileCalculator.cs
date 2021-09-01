@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Parts.Abstractions;
 
-namespace XDataFlow.Parts.Calculators
+namespace XDataFlow.Parts.Net.Calculators
 {
     public class Md5PhysicalFileCalculator :
         VectorPart<Md5PhysicalFileCalculator.Input, Md5PhysicalFileCalculator.Output>
