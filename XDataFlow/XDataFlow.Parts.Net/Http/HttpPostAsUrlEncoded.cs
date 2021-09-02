@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Parts.Net.Http.Proxy;
+using XDataFlow.Registry;
 
 namespace XDataFlow.Parts.Net.Http
 {
@@ -22,7 +23,7 @@ namespace XDataFlow.Parts.Net.Http
             public string PageContent { get; set; }
         }
 
-        public HttpPostAsUrlEncoded(IHttpClientProxy httpClientProxy)
+        public HttpPostAsUrlEncoded(IHttpClientProxy httpClientProxy, IDefaultRegistry defaultRegistry) : base(defaultRegistry) 
         {
             _httpClientProxy = httpClientProxy;
         }

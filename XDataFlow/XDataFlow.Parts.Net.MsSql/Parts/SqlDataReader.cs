@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using XDataFlow.Parts.Abstractions;
+using XDataFlow.Registry;
 
 namespace XDataFlow.Parts.Net.MsSql
 {
@@ -14,7 +15,7 @@ namespace XDataFlow.Parts.Net.MsSql
             public string SqlQuery { get; set; }
         }
         
-        public SqlDataReader(string connectionString)
+        public SqlDataReader(string connectionString, IDefaultRegistry defaultRegistry) : base(defaultRegistry)
         {
             _connectionString = connectionString;
         }

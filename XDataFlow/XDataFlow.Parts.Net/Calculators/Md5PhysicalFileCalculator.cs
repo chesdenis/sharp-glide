@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Parts.Abstractions;
+using XDataFlow.Registry;
 
 namespace XDataFlow.Parts.Net.Calculators
 {
@@ -21,7 +22,11 @@ namespace XDataFlow.Parts.Net.Calculators
 
             public string Md5AsString { get; set; }
         }
-        
+
+        public Md5PhysicalFileCalculator(IDefaultRegistry defaultRegistry) : base(defaultRegistry)
+        {
+        }
+
         public override Task ProcessAsync(Input data, CancellationToken cancellationToken)
         {
             data.FilePath = data.FilePath ?? throw new InvalidOperationException();

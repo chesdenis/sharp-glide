@@ -7,6 +7,7 @@ using XDataFlow.Behaviours;
 using XDataFlow.Context;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Registry;
+using XDataFlow.Tests.Stubs;
 using XDataFlow.Tunnels.InMemory;
 using XDataFlow.Tunnels.InMemory.Messaging;
 using Xunit;
@@ -15,11 +16,6 @@ namespace XDataFlow.Tests.Parts
 {
     public class VectorPartDefaultBehaviourTests
     {
-        public VectorPartDefaultBehaviourTests()
-        {
-            SetupDefaults();
-        }
-        
         [Fact]
         public async Task VectorPartShouldSupportTryCatchStartInBackgroundBehaviour()
         {
@@ -161,15 +157,7 @@ namespace XDataFlow.Tests.Parts
             part.TestProperty.Should().Be("ABCDE");
         }
         
-        private static void SetupDefaults()
-        {
-            XFlowDefaultRegistry.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
-            XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
-            XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
-            XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
-            XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
-        }
-
+       
         private class TestVectorPart : VectorPart<TestVectorPart.Input, TestVectorPart.Output>
         {
             public class Input
@@ -181,7 +169,11 @@ namespace XDataFlow.Tests.Parts
             {
                 
             }
-            
+
+            public TestVectorPart() : base(new DefaultRegistryStub())
+            {
+            }
+
             public string TestProperty { get; set; }
 
             public override async Task ProcessAsync(Input data, CancellationToken cancellationToken)
@@ -204,7 +196,11 @@ namespace XDataFlow.Tests.Parts
             {
                 
             }
-             
+
+            public VectorPartWithFailure() : base(new DefaultRegistryStub())
+            {
+            }
+
             public override async Task ProcessAsync(Input data, CancellationToken cancellationToken)
             {
                 await Task.Delay(100, cancellationToken);

@@ -23,14 +23,14 @@ namespace XDataFlow.Parts.Abstractions
             TConsumeData data, 
             CancellationToken cancellationToken);
 
-        protected VectorPart()
+        protected VectorPart(IDefaultRegistry defaultRegistry)
         {
-            var metaDataContext = XFlowDefaultRegistry.Get<IMetaDataContext>() ?? throw new ArgumentNullException(nameof(IMetaDataContext));
-            var groupContext = XFlowDefaultRegistry.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext)); 
-            var heartBeatContext = XFlowDefaultRegistry.Get<IHeartBeatContext>() ?? throw new ArgumentNullException(nameof(IHeartBeatContext));
-            var consumeMetrics = XFlowDefaultRegistry.Get<IConsumeMetrics>() ?? throw new ArgumentNullException(nameof(IConsumeMetrics));
+            var metaDataContext = defaultRegistry.Get<IMetaDataContext>() ?? throw new ArgumentNullException(nameof(IMetaDataContext));
+            var groupContext = defaultRegistry.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext)); 
+            var heartBeatContext = defaultRegistry.Get<IHeartBeatContext>() ?? throw new ArgumentNullException(nameof(IHeartBeatContext));
+            var consumeMetrics = defaultRegistry.Get<IConsumeMetrics>() ?? throw new ArgumentNullException(nameof(IConsumeMetrics));
 
-            var settingsContext = XFlowDefaultRegistry.Get<ISettingsContext>() ??
+            var settingsContext = defaultRegistry.Get<ISettingsContext>() ??
                                   throw new ArgumentNullException(nameof(ISettingsContext));
             
             var consumeContext = new ConsumeContext<TConsumeData>();

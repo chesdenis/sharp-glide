@@ -8,17 +8,13 @@ using XDataFlow.Context;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Providers;
 using XDataFlow.Registry;
+using XDataFlow.Tests.Stubs;
 using Xunit;
 
 namespace XDataFlow.Tests.Parts
 {
     public class PointPartDefaultBehavioursTests
     {
-        public PointPartDefaultBehavioursTests()
-        {
-            SetupDefaults();
-        }
-        
         [Fact]
         public async Task PointPartShouldSupportTryCatchStartBehaviour()
         {
@@ -78,17 +74,21 @@ namespace XDataFlow.Tests.Parts
             part.TestProperty.Should().Be("ABCDE");
         }
 
-        private static void SetupDefaults()
-        {
-            XFlowDefaultRegistry.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
-            XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
-            XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
-            XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
-            XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
-        }
+        // private static void SetupDefaults()
+        // {
+        //     XFlowDefaultRegistry.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
+        //     XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
+        //     XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
+        //     XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+        //     XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
+        // }
 
         private class TestPointPart : PointPart
         {
+            public TestPointPart() : base(new DefaultRegistryStub())
+            {
+            }
+
             public string TestProperty { get; set; }
             
             public override async Task ProcessAsync(CancellationToken cancellationToken)
@@ -102,6 +102,10 @@ namespace XDataFlow.Tests.Parts
         
         private class PointPartWithFailure : PointPart
         {
+            public PointPartWithFailure() : base(new DefaultRegistryStub())
+            {
+            }
+
             public override async Task ProcessAsync(CancellationToken cancellationToken)
             {
                 await Task.Delay(100, cancellationToken);

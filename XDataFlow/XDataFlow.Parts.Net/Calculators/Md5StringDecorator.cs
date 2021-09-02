@@ -2,11 +2,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Parts.Generic;
+using XDataFlow.Registry;
 
 namespace XDataFlow.Parts.Net.Calculators
 {
     public class Md5StringDecorator<TDecorateData> : GenericDecorator<TDecorateData, string, string>
     {
+        public Md5StringDecorator(IDefaultRegistry defaultRegistry) : base(defaultRegistry)
+        {
+        }
+
         public override Task ProcessAsync(TDecorateData data, CancellationToken cancellationToken)
         {
             // Use input string to calculate MD5 hash

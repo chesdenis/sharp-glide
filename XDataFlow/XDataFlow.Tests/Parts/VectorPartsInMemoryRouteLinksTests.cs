@@ -10,17 +10,13 @@ using XDataFlow.Extensions;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Registry;
 using XDataFlow.Tests.Model;
+using XDataFlow.Tunnels.InMemory.Messaging;
 using Xunit;
 
 namespace XDataFlow.Tests.Parts
 {
     public class VectorPartsInMemoryRouteLinksTests
     {
-        public VectorPartsInMemoryRouteLinksTests()
-        {
-            SetupDefaults();
-        }
-        
         [Fact]
         public async Task VectorPartShouldFlowDataToAnotherVectorPart()
         {
@@ -95,15 +91,6 @@ namespace XDataFlow.Tests.Parts
             }
 
             public override byte[] Map(string data) => Encoding.UTF8.GetBytes(data);
-        }
-
-        private static void SetupDefaults()
-        {
-            XFlowDefaultRegistry.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
-            XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
-            XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
-            XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
-            XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
         }
     }
 }

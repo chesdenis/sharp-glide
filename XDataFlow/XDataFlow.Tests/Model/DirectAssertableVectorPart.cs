@@ -1,5 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
+using XDataFlow.Registry;
+using XDataFlow.Tests.Stubs;
 
 namespace XDataFlow.Tests.Model
 {

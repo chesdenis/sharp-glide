@@ -9,17 +9,13 @@ using XDataFlow.Extensions;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Registry;
 using XDataFlow.Tests.Model;
+using XDataFlow.Tunnels.InMemory.Messaging;
 using Xunit;
 
 namespace XDataFlow.Tests.Parts
 {
     public class VectorPartsInMemoryLinksTests
     {
-        public VectorPartsInMemoryLinksTests()
-        {
-            SetupDefaults();
-        }
-        
         [Fact]
         public async Task VectorPartShouldFlowDataToAnotherVectorPart()
         {
@@ -28,10 +24,10 @@ namespace XDataFlow.Tests.Parts
             var partB = new VectorB();
             partA.ConfigureStartAs<StartInBackground>();
             partB.ConfigureStartAs<StartInBackground>();
-
+            
             partA.FlowFromSelf();
             partA.FlowTo(partB);
-            
+
             // Act
             partA.ConsumeData(123);
             await partA.StartAsync();
@@ -52,7 +48,7 @@ namespace XDataFlow.Tests.Parts
             partA.ConfigureStartAs<StartInBackground>();
             partB.ConfigureStartAs<StartInBackground>();
             partC.ConfigureStartAs<StartInBackground>();
-
+            
             partA.FlowFromSelf();
             partA.FlowTo(partB);
             partA.FlowTo(partC);
@@ -77,7 +73,7 @@ namespace XDataFlow.Tests.Parts
             var partB = new VectorB();
             partA.ConfigureStartAs<StartInBackground>();
             partB.ConfigureStartAs<StartInBackground>();
-
+            
             partA.FlowFromSelf();
             partB.FlowFrom(partA);
             
@@ -91,14 +87,14 @@ namespace XDataFlow.Tests.Parts
             partB.WasConsumed("123").Should().BeTrue();
         }
 
-        private static void SetupDefaults()
-        {
-            XFlowDefaultRegistry.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
-            XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
-            XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
-            XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
-            XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
-        }
+        // private static void SetupDefaults()
+        // {
+        //     XFlowDefaultRegistry.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
+        //     XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
+        //     XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
+        //     XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+        //     XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
+        // }
         
         public class VectorA : DirectAssertableVectorPart<int, string>
         {

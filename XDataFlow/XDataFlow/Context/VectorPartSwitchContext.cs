@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Exceptions;
 using XDataFlow.Parts.Abstractions;
+using XDataFlow.Tunnels.InMemory.Messaging;
 
 namespace XDataFlow.Context
 {
@@ -39,7 +40,7 @@ namespace XDataFlow.Context
                 }
                 catch (NoDataException)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    await Task.Delay(TimeSpan.FromSeconds(1), cancellationTokenSource.Token);
                 }
             }
         }
