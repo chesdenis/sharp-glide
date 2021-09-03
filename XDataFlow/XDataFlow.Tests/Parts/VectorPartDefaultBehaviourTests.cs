@@ -7,6 +7,7 @@ using XDataFlow.Behaviours;
 using XDataFlow.Context;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Registry;
+using XDataFlow.Tests.Model;
 using XDataFlow.Tests.Stubs;
 using XDataFlow.Tunnels.InMemory;
 using XDataFlow.Tunnels.InMemory.Messaging;
@@ -30,7 +31,7 @@ namespace XDataFlow.Tests.Parts
             var partStableProcessedOk = false;
             var partStableProcessedFailed = false;
 
-            var partWithFailure = new VectorPartWithFailure();
+            var partWithFailure = new TestVectorPartWithFailure();
             var partStable = new TestVectorPart();
 
             partWithFailure.ConfigureStartAs<TryCatchStart>(() => new TryCatchStartInBackground(
@@ -45,7 +46,7 @@ namespace XDataFlow.Tests.Parts
                 () => partStableFinalized = true));
 
             partWithFailure.SetupConsumeAsQueueFromTopic(
-                new InMemoryConsumeTunnel<VectorPartWithFailure.Input>(InMemoryBroker.Current),
+                new InMemoryConsumeTunnel<TestVectorPartWithFailure.Input>(InMemoryBroker.Current),
                 "t1", "q1", "r1");
             partStable.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
@@ -55,7 +56,7 @@ namespace XDataFlow.Tests.Parts
             // Act
             var result = await Assert.ThrowsAsync<Exception>(async () =>
             {
-                partWithFailure.ConsumeData(new VectorPartWithFailure.Input() { });
+                partWithFailure.ConsumeData(new TestVectorPartWithFailure.Input() { });
                 await partWithFailure.StartAsync();
             });
 
@@ -90,7 +91,7 @@ namespace XDataFlow.Tests.Parts
             var partStableProcessedOk = false;
             var partStableProcessedFailed = false;
 
-            var partWithFailure = new VectorPartWithFailure();
+            var partWithFailure = new TestVectorPartWithFailure();
             var partStable = new TestVectorPart();
 
             partWithFailure.ConfigureStartAs<TryCatchStart>(() => new TryCatchStart(
@@ -105,7 +106,7 @@ namespace XDataFlow.Tests.Parts
                 () => partStableFinalized = true));
 
             partWithFailure.SetupConsumeAsQueueFromTopic(
-                new InMemoryConsumeTunnel<VectorPartWithFailure.Input>(InMemoryBroker.Current),
+                new InMemoryConsumeTunnel<TestVectorPartWithFailure.Input>(InMemoryBroker.Current),
                 "t1", "q1", "r1");
             partStable.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
@@ -115,7 +116,7 @@ namespace XDataFlow.Tests.Parts
             // Act
             var result = await Assert.ThrowsAsync<Exception>(async () =>
             {
-                partWithFailure.ConsumeData(new VectorPartWithFailure.Input() { });
+                partWithFailure.ConsumeData(new TestVectorPartWithFailure.Input() { });
                 await partWithFailure.StartAsync();
             });
 
@@ -155,58 +156,6 @@ namespace XDataFlow.Tests.Parts
 
             // Assert
             part.TestProperty.Should().Be("ABCDE");
-        }
-        
-       
-        private class TestVectorPart : VectorPart<TestVectorPart.Input, TestVectorPart.Output>
-        {
-            public class Input
-            {
-                
-            }
-            
-            public class Output
-            {
-                
-            }
-
-            public TestVectorPart() : base(new DefaultRegistryStub())
-            {
-            }
-
-            public string TestProperty { get; set; }
-
-            public override async Task ProcessAsync(Input data, CancellationToken cancellationToken)
-            {
-                await Task.Delay(100, cancellationToken);
-                this.TestProperty = "ABCDE";
-
-                await this.StopAsync();
-            }
-        }
-        
-        private class VectorPartWithFailure : VectorPart<VectorPartWithFailure.Input, VectorPartWithFailure.Output>
-        {
-            public class Input
-            {
-                
-            }
-            
-            public class Output
-            {
-                
-            }
-
-            public VectorPartWithFailure() : base(new DefaultRegistryStub())
-            {
-            }
-
-            public override async Task ProcessAsync(Input data, CancellationToken cancellationToken)
-            {
-                await Task.Delay(100, cancellationToken);
-
-                throw new Exception("Some Exception");
-            }
         }
     }
 }

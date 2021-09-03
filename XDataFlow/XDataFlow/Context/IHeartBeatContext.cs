@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Dynamic;
 
 namespace XDataFlow.Context
 {
@@ -14,8 +16,9 @@ namespace XDataFlow.Context
 
         bool Failed { get; }
 
-        void PrintStatusInfo();
+        void UpdateStatus();
         
-        void PrintStatusInfo(string key, string value);
+        void UpdateStatus(string key, string value);
+        List<ExpandoObject> GetStatus();
     }
 }

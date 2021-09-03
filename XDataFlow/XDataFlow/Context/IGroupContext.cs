@@ -6,12 +6,13 @@ namespace XDataFlow.Context
 {
     public interface IGroupContext
     {
-        TFlowPart AddFlowPart<TFlowPart>(TFlowPart flowPart, string name) where TFlowPart : IBasePart;
-        IEnumerable<IBasePart> GetChildren();
-        
-        void EnumerateParts(Action<IBasePart> partAction);
+        IEnumerable<Tuple<int, IBasePart>> GetChildrenTree(int parentLevel = 0);
+
+        void EnumerateParts(Action<IBasePart> partAction, bool recursive);
         
         IDictionary<string, IBasePart> Children { get; }
-        void Configure();
+        
+        void AddChild(IBasePart part);
+        IBasePart GetChild(string name, bool recursive = false);
     }
 }

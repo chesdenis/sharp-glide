@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using XDataFlow.Behaviours;
 using XDataFlow.Context;
@@ -62,5 +63,14 @@ namespace XDataFlow.Parts.Abstractions
         }
 
         public void PrintStatus(string status) => this.Context.MetaDataContext.Status["InProgress"] = status;
+
+        public Dictionary<string, string> Status => this.Context.MetaDataContext.Status;
+
+        public void AddChild(IBasePart part) => this.Context.GroupContext.AddChild(part);
+
+        public IBasePart GetChild(string name, bool recursive = false) => this.Context.GroupContext.GetChild(name, recursive);
+
+        public void EnumerateParts(Action<IBasePart> partAction, bool recursive) =>
+            this.Context.GroupContext.EnumerateParts(partAction, recursive);
     }
 }

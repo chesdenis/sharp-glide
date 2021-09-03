@@ -2,12 +2,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Moq;
 using XDataFlow.Behaviours;
-using XDataFlow.Context;
 using XDataFlow.Parts.Abstractions;
-using XDataFlow.Providers;
-using XDataFlow.Registry;
+using XDataFlow.Tests.Model;
 using XDataFlow.Tests.Stubs;
 using Xunit;
 
@@ -23,7 +20,7 @@ namespace XDataFlow.Tests.Parts
             var finalized = false;
             var processedOk = false;
             var processedWithFailure = false;
-            var part = new PointPartWithFailure();
+            var part = new TestPointPartWithFailure();
             part.ConfigureStartAs<TryCatchStart>(() => new TryCatchStart(
                 () => started = true,
                 () => processedOk = true,
@@ -72,46 +69,6 @@ namespace XDataFlow.Tests.Parts
 
             // Assert
             part.TestProperty.Should().Be("ABCDE");
-        }
-
-        // private static void SetupDefaults()
-        // {
-        //     XFlowDefaultRegistry.Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
-        //     XFlowDefaultRegistry.Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
-        //     XFlowDefaultRegistry.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
-        //     XFlowDefaultRegistry.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
-        //     XFlowDefaultRegistry.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
-        // }
-
-        private class TestPointPart : PointPart
-        {
-            public TestPointPart() : base(new DefaultRegistryStub())
-            {
-            }
-
-            public string TestProperty { get; set; }
-            
-            public override async Task ProcessAsync(CancellationToken cancellationToken)
-            {
-                await Task.Delay(100, cancellationToken);
-                this.TestProperty = "ABCDE";
-
-                await this.StopAsync();
-            }
-        }
-        
-        private class PointPartWithFailure : PointPart
-        {
-            public PointPartWithFailure() : base(new DefaultRegistryStub())
-            {
-            }
-
-            public override async Task ProcessAsync(CancellationToken cancellationToken)
-            {
-                await Task.Delay(100, cancellationToken);
-
-                throw new Exception("Some Exception");
-            }
         }
     }
 }

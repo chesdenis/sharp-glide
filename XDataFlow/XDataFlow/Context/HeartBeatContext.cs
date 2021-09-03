@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using XDataFlow.Providers;
 
 namespace XDataFlow.Context
@@ -9,14 +10,17 @@ namespace XDataFlow.Context
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IConsumeMetrics _consumeMetrics;
+        private readonly IGroupContext _groupContext;
         private readonly IMetaDataContext _metaDataContext;
 
         public HeartBeatContext(
             IDateTimeProvider dateTimeProvider,
-            IConsumeMetrics consumeMetrics)
+            IConsumeMetrics consumeMetrics,
+            IGroupContext groupContext)
         {
             _dateTimeProvider = dateTimeProvider;
             _consumeMetrics = consumeMetrics;
+            _groupContext = groupContext;
 
             LastPublishedAt = _dateTimeProvider.GetNow();
             LastConsumedAt = _dateTimeProvider.GetNow();
@@ -31,7 +35,7 @@ namespace XDataFlow.Context
 
         public bool Failed { get; }
 
-        public void PrintStatusInfo()
+        public void UpdateStatus()
         {
             _metaDataContext.UpsertStatus("Name", _metaDataContext.Name);
             _metaDataContext.UpsertStatus("Available", _consumeMetrics.GetWaitingToConsumeAmount().ToString());
@@ -39,47 +43,45 @@ namespace XDataFlow.Context
             _metaDataContext.UpsertStatus("Speed, n/sec", _consumeMetrics.GetMessagesPerSecond().ToString());
         }
 
-        public void PrintStatusInfo(string key, string value)
+        public void UpdateStatus(string key, string value)
         {
             _metaDataContext.UpsertStatus(key, value);
         }
         
-        public List<ExpandoObject> GetStatusInfo()
+        public List<ExpandoObject> GetStatus()
         {
-            throw new NotImplementedException();
-            // TODO: need to apply recursion here, may be have children in metric controller?
-            // foreach (var partsKey in _groupController.Children.Keys)
-            // {
-            //     var part = _groupController.Children[partsKey];
-            //     part.PrintStatusInfo();
-            // }
-            //
-            // var partsStatusKeys = _groupController.Children
-            //     .Select(s => s.Value)
-            //     .SelectMany(ss => ss.Status.Keys)
-            //     .Distinct()
-            //     .OrderBy(o => o)
-            //     .ToList();
-            //
-            // var dataToPlot = new List<ExpandoObject>();
-            //
-            // foreach (var partsKey in _groupController.Children.Keys)
-            // {
-            //     var part = _groupController.Children[partsKey];
-            //
-            //     var partStatus = new ExpandoObject();
-            //     var partStatusAsDict = (IDictionary<string, object>) partStatus;
-            //
-            //     foreach (var partsStatusKey in partsStatusKeys)
-            //     {
-            //         partStatusAsDict[partsStatusKey] =
-            //             part.Status.ContainsKey(partsStatusKey) ? part.Status[partsStatusKey] : string.Empty;
-            //     }
-            //
-            //     dataToPlot.Add(partStatus);
-            // }
-            //
-            // return dataToPlot;
+            var children = _groupContext.GetChildrenTree()
+                .Select(s=>s.Item2).ToList();
+            
+            foreach (var child in children)
+            {
+                child.Context.HeartBeatContext.UpdateStatus();
+            }
+            
+            var partsStatusKeys = children
+                .SelectMany(ss => ss.Status.Keys)
+                .Distinct()
+                .OrderBy(o => o)
+                .ToList();
+            
+            var dataToPlot = new List<ExpandoObject>();
+            
+            foreach (var child in children)
+            {
+
+                var partStatus = new ExpandoObject();
+                var partStatusAsDict = (IDictionary<string, object>) partStatus;
+            
+                foreach (var partsStatusKey in partsStatusKeys)
+                {
+                    partStatusAsDict[partsStatusKey] =
+                        child.Status.ContainsKey(partsStatusKey) ? child.Status[partsStatusKey] : string.Empty;
+                }
+            
+                dataToPlot.Add(partStatus);
+            }
+            
+            return dataToPlot;
         }
     }
 }
