@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Text;
+using XDataFlow.Extensions;
+using XDataFlow.Parts.Abstractions;
 using XDataFlow.Providers;
+using XDataFlow.Renders;
 
 namespace XDataFlow.Context
 {
@@ -16,11 +20,13 @@ namespace XDataFlow.Context
         public HeartBeatContext(
             IDateTimeProvider dateTimeProvider,
             IConsumeMetrics consumeMetrics,
-            IGroupContext groupContext)
+            IGroupContext groupContext,
+            IMetaDataContext metaDataContext)
         {
             _dateTimeProvider = dateTimeProvider;
             _consumeMetrics = consumeMetrics;
             _groupContext = groupContext;
+            _metaDataContext = metaDataContext;
 
             LastPublishedAt = _dateTimeProvider.GetNow();
             LastConsumedAt = _dateTimeProvider.GetNow();
@@ -35,53 +41,66 @@ namespace XDataFlow.Context
 
         public bool Failed { get; }
 
-        public void UpdateStatus()
+        public void UpdateStatus(int indentation = 0)
         {
-            _metaDataContext.UpsertStatus("Name", _metaDataContext.Name);
+            _metaDataContext.UpsertStatus("Name", _metaDataContext.Name.IndentLeft('-', indentation));
             _metaDataContext.UpsertStatus("Available", _consumeMetrics.GetWaitingToConsumeAmount().ToString());
-            _metaDataContext.UpsertStatus("ETA",_consumeMetrics.GetEstimatedTime().ToString("c"));
-            _metaDataContext.UpsertStatus("Speed, n/sec", _consumeMetrics.GetMessagesPerSecond().ToString());
+            _metaDataContext.UpsertStatus("_ETA",_consumeMetrics.GetEstimatedTime().ToString("c"));
+            _metaDataContext.UpsertStatus("_Speed, n/sec", _consumeMetrics.GetMessagesPerSecond().ToString());
         }
 
         public void UpdateStatus(string key, string value)
         {
             _metaDataContext.UpsertStatus(key, value);
         }
-        
-        public List<ExpandoObject> GetStatus()
+
+        public List<ExpandoObject> GetStatus(IBasePart startPart)
         {
-            var children = _groupContext.GetChildrenTree()
-                .Select(s=>s.Item2).ToList();
+            var partTree = _groupContext.GetPartTree(startPart).ToList();
             
-            foreach (var child in children)
+            foreach (var leaf in partTree)
             {
-                child.Context.HeartBeatContext.UpdateStatus();
+                leaf.Item2.Context.HeartBeatContext.UpdateStatus(leaf.Item1);
             }
             
-            var partsStatusKeys = children
-                .SelectMany(ss => ss.Status.Keys)
+            var partsStatusKeys = partTree
+                .SelectMany(ss => ss.Item2.Status.Keys)
                 .Distinct()
-                .OrderBy(o => o)
                 .ToList();
             
             var dataToPlot = new List<ExpandoObject>();
             
-            foreach (var child in children)
+            foreach (var child in partTree)
             {
-
                 var partStatus = new ExpandoObject();
                 var partStatusAsDict = (IDictionary<string, object>) partStatus;
             
                 foreach (var partsStatusKey in partsStatusKeys)
                 {
                     partStatusAsDict[partsStatusKey] =
-                        child.Status.ContainsKey(partsStatusKey) ? child.Status[partsStatusKey] : string.Empty;
+                        child.Item2.Status.ContainsKey(partsStatusKey) ? child.Item2.Status[partsStatusKey] : string.Empty;
                 }
             
                 dataToPlot.Add(partStatus);
             }
             
             return dataToPlot;
+        }
+
+        public string GetStatusTable(IBasePart startPart)
+        {
+            var stringBuilder = new StringBuilder();
+
+            var statusInfo = startPart.Context.HeartBeatContext.GetStatus(startPart);
+
+            if (!statusInfo.Any()) return string.Empty;
+
+            stringBuilder.AppendLine(startPart.Name);
+            var statusTable = ConsoleTable.FromDynamic(statusInfo);
+
+            stringBuilder.AppendLine(statusTable.ToString());
+             
+            return stringBuilder.ToString();
         }
     }
 }

@@ -8,11 +8,12 @@ namespace XDataFlow.Context
     public class GroupContext : IGroupContext
     {
         public IDictionary<string, IBasePart> Children { get; } = new Dictionary<string, IBasePart>();
-        public void AddChild(IBasePart part)
+
+        public void AddChild(IBasePart child)
         {
-            Children.Add(part.Name, part);
+            Children.Add(child.Name, child);
         }
-        
+
         public IBasePart GetChild(string name, bool recursive = false)
         {
             if (Children.ContainsKey(name))
@@ -47,27 +48,24 @@ namespace XDataFlow.Context
         }
  
         public IEnumerable<IBasePart> GetChildren() => this.Children.Select(s => s.Value);
-        public IEnumerable<Tuple<int, IBasePart>> GetChildrenTree(int parentLevel = 0)
+        public IEnumerable<Tuple<int, IBasePart>> GetPartTree(IBasePart parentPart, int parentLevel = 0)
         {
             var total = new List<Tuple<int, IBasePart>>();
-            var currentLevel = parentLevel;
+            
+            total.Add(new Tuple<int, IBasePart>(parentLevel, parentPart));
 
-            foreach (var nameAndPart in Children)
+            parentLevel++;
+
+            parentPart.EnumerateChildren(child =>
             {
-                var groupContext = ((BasePart)nameAndPart.Value).Context.GroupContext;
-
-                var childrenTree = groupContext.GetChildrenTree(++currentLevel);
-                
+                var childrenTree = child.Context.GroupContext.GetPartTree(child, parentLevel);
                 total.AddRange(childrenTree);
-                
-                total.Add(new Tuple<int, IBasePart>(currentLevel, nameAndPart.Value));
-            }
+            });
 
             return total;
         }
-
-
-        public void EnumerateParts(Action<IBasePart> partAction, bool recursive)
+        
+        public void EnumerateChildren(Action<IBasePart> partAction, bool recursive = false)
         {
             foreach (var part in this.GetChildren())
             {
@@ -75,7 +73,7 @@ namespace XDataFlow.Context
                 
                 if (recursive)
                 {
-                    part.Context.GroupContext.EnumerateParts(partAction, true);
+                    part.Context.GroupContext.EnumerateChildren(partAction, true);
                 }
             }
         }

@@ -5,14 +5,15 @@ using XDataFlow.Tests.Stubs;
 
 namespace XDataFlow.Tests.Model
 {
-    public class TestPointPartWithGroupSupport : PointPart
+    public class TestPointPartWithGroupAndMetadataAndHeartbeatSupport : PointPart
     {
         public string TestProperty { get; set; }
-
-        public TestPointPartWithGroupSupport() : base(new RegistryStubWithGroupAndMetadataContext())
+        
+        public TestPointPartWithGroupAndMetadataAndHeartbeatSupport() 
+            : base(new RegistryStubWithGroupAndMetadataAndHearthBeatContext())
         {
             
-        } 
+        }
 
         public override async Task ProcessAsync(CancellationToken cancellationToken)
         {

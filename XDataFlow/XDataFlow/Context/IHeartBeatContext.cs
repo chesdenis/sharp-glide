@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using XDataFlow.Parts.Abstractions;
 
 namespace XDataFlow.Context
 {
@@ -16,9 +17,10 @@ namespace XDataFlow.Context
 
         bool Failed { get; }
 
-        void UpdateStatus();
+        void UpdateStatus(int indentation = 0);
         
         void UpdateStatus(string key, string value);
-        List<ExpandoObject> GetStatus();
+        List<ExpandoObject> GetStatus(IBasePart startPart);
+        string GetStatusTable(IBasePart startPart);
     }
 }

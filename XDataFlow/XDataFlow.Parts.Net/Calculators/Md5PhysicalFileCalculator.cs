@@ -31,7 +31,7 @@ namespace XDataFlow.Parts.Net.Calculators
         {
             data.FilePath = data.FilePath ?? throw new InvalidOperationException();
 
-            this.PrintStatus(Path.GetFileName(data.FilePath));
+            this.ReportInfo(Path.GetFileName(data.FilePath));
                 
             using var md5 = MD5.Create();
  
