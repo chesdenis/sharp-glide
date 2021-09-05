@@ -4,10 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XDataFlow", "XDataFlow\XDat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XDataFlow.Tests", "XDataFlow.Tests\XDataFlow.Tests.csproj", "{1B6B1936-B583-4753-B6EA-F11DCFB674AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XDataFlow.Parts.Net", "XDataFlow.Parts.Net\XDataFlow.Parts.Net.csproj", "{6EF0568E-57BE-4EE8-9683-D4457DD69197}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XDataFlow.Parts.Net.MsSql", "XDataFlow.Parts.Net.MsSql\XDataFlow.Parts.Net.MsSql.csproj", "{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,13 +18,5 @@ Global
 		{1B6B1936-B583-4753-B6EA-F11DCFB674AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B6B1936-B583-4753-B6EA-F11DCFB674AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B6B1936-B583-4753-B6EA-F11DCFB674AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6EF0568E-57BE-4EE8-9683-D4457DD69197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6EF0568E-57BE-4EE8-9683-D4457DD69197}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6EF0568E-57BE-4EE8-9683-D4457DD69197}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6EF0568E-57BE-4EE8-9683-D4457DD69197}.Release|Any CPU.Build.0 = Release|Any CPU
-		{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{801B23B4-00FF-47B9-9F4B-0F996AA2E85F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
