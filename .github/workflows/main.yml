@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Building xdataflow packages
 
 # Controls when the workflow will run
 on:
@@ -36,3 +36,10 @@ jobs:
       - name: Test
         run: dotnet test XDataFlow.Tests.csproj --no-restore --verbosity normal
         working-directory: src/XDataFlow.Tests
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: dotnet-results-${{ matrix.dotnet-version }}
+          path: TestResults-${{ matrix.dotnet-version }}
+        # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}
