@@ -28,8 +28,11 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Install dependencies
-        run: dotnet restore 
+        run: dotnet restore XDataFlow.sln
+        working-directory: src
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build XDataFlow.sln --configuration Release --no-restore
+        working-directory: src
       - name: Test
-        run: dotnet test --no-restore --verbosity normal
+        run: dotnet test XDataFlow.Tests.csproj --no-restore --verbosity normal
+        working-directory: src/XDataFlow.Tests
