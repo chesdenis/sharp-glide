@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using XDataFlow.Exceptions;
 using XDataFlow.Tunnels.InMemory.Messaging;
 
@@ -34,7 +32,7 @@ namespace XDataFlow.Tunnels.InMemory
             };
         }
         
-        private int _previousWaitingToConsume = 0;
+        private int _previousWaitingToConsume;
         private DateTime _previousWaitingToConsumeDateTime = DateTime.Now;
         
         public override int WaitingToConsume
@@ -66,7 +64,7 @@ namespace XDataFlow.Tunnels.InMemory
 
                     var secondsPerMessage = timeRangeDeltaInSeconds / processedMessagesDelta;
                     var estimatedTime = Convert.ToInt32(secondsPerMessage * currentWaitingToConsume);
-                    this._messagesPerSecond = Convert.ToInt32(timeRangeDeltaInSeconds > 0 ? processedMessagesDelta / timeRangeDeltaInSeconds : 0);
+                    _messagesPerSecond = Convert.ToInt32(timeRangeDeltaInSeconds > 0 ? processedMessagesDelta / timeRangeDeltaInSeconds : 0);
                     
                     return estimatedTime;
                 }
@@ -78,7 +76,7 @@ namespace XDataFlow.Tunnels.InMemory
             }
         }
 
-        private int _messagesPerSecond = 0;
+        private int _messagesPerSecond;
         public override int MessagesPerSecond
         {
             get

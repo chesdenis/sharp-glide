@@ -5,8 +5,6 @@ namespace XDataFlow.Behaviours
 {
     public interface IStopBehaviour
     {
-        void Execute(ISwitchContext switchContext);
-
         Task ExecuteAsync(ISwitchContext switchContext);
     }
 }

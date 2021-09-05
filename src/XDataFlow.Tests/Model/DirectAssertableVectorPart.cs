@@ -1,7 +1,5 @@
 using System.Threading;
 using System.Threading.Tasks;
-using XDataFlow.Registry;
-using XDataFlow.Tests.Stubs;
 
 namespace XDataFlow.Tests.Model
 {
@@ -12,12 +10,12 @@ namespace XDataFlow.Tests.Model
         {
             var publishData = Map(data);
                 
-            this.Publish(publishData);
+            Publish(publishData);
                 
-            this.ConsumedData.Add(data);
-            this.PublishedData.Add(publishData);
+            ConsumedData.Add(data);
+            PublishedData.Add(publishData);
 
-            await this.StopAsync();
+            await StopAsync();
         }
     }
 }

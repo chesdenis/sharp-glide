@@ -3,9 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using XDataFlow.Behaviours;
-using XDataFlow.Parts.Abstractions;
 using XDataFlow.Tests.Model;
-using XDataFlow.Tests.Stubs;
 using Xunit;
 
 namespace XDataFlow.Tests.Parts
@@ -21,17 +19,17 @@ namespace XDataFlow.Tests.Parts
             var processedOk = false;
             var processedWithFailure = false;
             var part = new TestPointPartWithFailure();
-            part.ConfigureStartAs<TryCatchStart>(() => new TryCatchStart(
+            part.ConfigureStartAs(() => new TryCatchStart(
                 () => started = true,
                 () => processedOk = true,
-                (ex) => processedWithFailure = true,
+                ex => processedWithFailure = true,
                 () => finalized = true));
             // Act
             await Assert.ThrowsAsync<Exception>(async () =>
             {
                 await part.StartAsync();
             });
-            
+
             // Assert
             started.Should().BeTrue();
             finalized.Should().BeTrue();

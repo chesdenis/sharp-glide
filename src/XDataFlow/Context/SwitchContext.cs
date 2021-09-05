@@ -8,9 +8,8 @@ namespace XDataFlow.Context
 {
     public abstract class SwitchContext : ISwitchContext
     {
-        private CancellationTokenSource _cancellationTokenSource;
-        public CancellationTokenSource GetExecutionTokenSource() => 
-            _cancellationTokenSource;
+        private CancellationTokenSource _cts;
+        public CancellationTokenSource GetExecutionTokenSource() => _cts;
         
         public Func<Task> GetStartAsyncCall() => OnStartAsync;
 
@@ -48,18 +47,18 @@ namespace XDataFlow.Context
 
         private void ReissueToken()
         {
-            if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
+            if (_cts != null && !_cts.IsCancellationRequested)
             {
                 return;
             }
             
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = new CancellationTokenSource();
+            _cts?.Dispose();
+            _cts = new CancellationTokenSource();
         }
 
         private void CancelToken()
         {
-            _cancellationTokenSource?.Cancel();
+            _cts?.Cancel();
         }
     }
 }

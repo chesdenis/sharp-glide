@@ -30,7 +30,7 @@ namespace XDataFlow.Wrappers.Default
 
                 _sw.Stop();
 
-                _data.Add(new Metric()
+                _data.Add(new Metric
                 {
                     Timestamp = DateTime.Now,
                     ValueInSeconds = _sw.Elapsed.TotalSeconds

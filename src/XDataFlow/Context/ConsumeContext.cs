@@ -14,9 +14,9 @@ namespace XDataFlow.Context
         public TConsumeWrapper AddConsumeWrapper<TConsumeWrapper>(TConsumeWrapper wrapper)
             where TConsumeWrapper : IWrapperWithOutput<TConsumeData>
         {
-            foreach (var tunnelKey in this.ConsumeTunnels.Keys)
+            foreach (var tunnelKey in ConsumeTunnels.Keys)
             {
-                this.ConsumeTunnels[tunnelKey].OnConsumeWrappers.Add(wrapper);
+                ConsumeTunnels[tunnelKey].OnConsumeWrappers.Add(wrapper);
             }
             
             return wrapper;
@@ -30,23 +30,23 @@ namespace XDataFlow.Context
 
             tunnel.SetupInfrastructure(topicName, queueName, routingKey);
             
-            this.ConsumeTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
+            ConsumeTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
         }
         
         public void ConsumeData(TConsumeData data)
         {
-            this.ConsumeTunnels.First().Value.Put(data);
+            ConsumeTunnels.First().Value.Put(data);
         }
 
         public void ConsumeData(TConsumeData data, string tunnelKey)
         {
-            this.ConsumeTunnels.First(f=>f.Key == tunnelKey).Value.Put(data);
+            ConsumeTunnels.First(f=>f.Key == tunnelKey).Value.Put(data);
         }
 
         // TODO: make it async
         public IEnumerable<TConsumeData> ReadAndConsumeData()
         {
-            var tunnels = this.ConsumeTunnels;
+            var tunnels = ConsumeTunnels;
 
             foreach (var tunnelKey in tunnels.Keys)
             {
@@ -57,18 +57,18 @@ namespace XDataFlow.Context
         }
 
         public int GetWaitingToConsumeAmount() =>
-            this.ConsumeTunnels
+            ConsumeTunnels
                 .Select(s => s.Value.WaitingToConsume)
                 .Sum();
 
         public TimeSpan GetEstimatedTime() =>
             TimeSpan.FromSeconds(
-                this.ConsumeTunnels
+                ConsumeTunnels
                     .Select(s => s.Value.EstimatedTimeInSeconds)
                     .Sum());
 
         public int GetMessagesPerSecond() =>
-            this.ConsumeTunnels
+            ConsumeTunnels
                 .Select(s => s.Value.MessagesPerSecond)
                 .Sum();
     }

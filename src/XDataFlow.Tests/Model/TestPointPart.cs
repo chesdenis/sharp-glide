@@ -16,9 +16,9 @@ namespace XDataFlow.Tests.Model
         public override async Task ProcessAsync(CancellationToken cancellationToken)
         {
             await Task.Delay(100, cancellationToken);
-            this.TestProperty = "ABCDE";
+            TestProperty = "ABCDE";
 
-            await this.StopAsync();
+            await StopAsync();
         }
     }
 }

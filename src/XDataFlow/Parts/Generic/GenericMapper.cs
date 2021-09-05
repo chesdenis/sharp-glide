@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using XDataFlow.Extensions;
 using XDataFlow.Parts.Abstractions;
 using XDataFlow.Registry;
 
@@ -20,7 +19,7 @@ namespace XDataFlow.Parts.Generic
         {
             var transformed = _mapFunc(data);
     
-            this.Publish(transformed);
+            Publish(transformed);
 
             return Task.CompletedTask;
         }

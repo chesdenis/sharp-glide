@@ -20,7 +20,7 @@ namespace XDataFlow.Parts.Generic
         {
             DecorateActions(InputPointer, AssignActionPointer);
             
-            this.Publish(data);
+            Publish(data);
 
             return Task.CompletedTask;
         }

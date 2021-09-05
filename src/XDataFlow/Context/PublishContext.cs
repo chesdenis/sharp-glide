@@ -5,7 +5,7 @@ using XDataFlow.Wrappers;
 
 namespace XDataFlow.Context
 {
-    public class PublishContext<TConsumeData, TPublishData> : IPublishContext<TPublishData>
+    public class PublishContext<TPublishData> : IPublishContext<TPublishData>
     {
         private readonly IHeartBeatContext _heartBeatContext;
 
@@ -20,9 +20,9 @@ namespace XDataFlow.Context
         public TPublishWrapper AddPublishWrapper<TPublishWrapper>(TPublishWrapper wrapper)
             where TPublishWrapper : IWrapperWithInput<TPublishData>
         {
-            foreach (var tunnelKey in this.PublishTunnels.Keys)
+            foreach (var tunnelKey in PublishTunnels.Keys)
             {
-                this.PublishTunnels[tunnelKey].OnPublishWrappers.Add(wrapper);
+                PublishTunnels[tunnelKey].OnPublishWrappers.Add(wrapper);
             }
 
             return wrapper;
@@ -35,12 +35,12 @@ namespace XDataFlow.Context
 
             tunnel.SetupInfrastructure(topicName, routingKey);
             
-            this.PublishTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
+            PublishTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
         }
 
         public void Publish(TPublishData data)
         {
-            foreach (var t in this.PublishTunnels)
+            foreach (var t in PublishTunnels)
             {
                 t.Value.Publish(data);
                 _heartBeatContext.LastPublishedAt = DateTime.Now;
@@ -49,7 +49,7 @@ namespace XDataFlow.Context
 
         public void Publish(TPublishData data, string routingKey)
         {
-            foreach (var t in this.PublishTunnels)
+            foreach (var t in PublishTunnels)
             {
                 t.Value.Publish(data, routingKey);
                 _heartBeatContext.LastPublishedAt = DateTime.Now;
@@ -58,7 +58,7 @@ namespace XDataFlow.Context
 
         public void Publish(TPublishData data, string topicName, string routingKey)
         {
-            foreach (var t in this.PublishTunnels)
+            foreach (var t in PublishTunnels)
             {
                 t.Value.Publish(data, topicName, routingKey);
                 _heartBeatContext.LastPublishedAt = DateTime.Now;

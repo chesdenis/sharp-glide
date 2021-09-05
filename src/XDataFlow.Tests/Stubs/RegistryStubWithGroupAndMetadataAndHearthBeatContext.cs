@@ -12,16 +12,16 @@ namespace XDataFlow.Tests.Stubs
             var metadataContext = new MetaDataContext();
             var groupContext = new GroupContext();
                 
-            this.Set<IMetaDataContext>(() => metadataContext);
-            this.Set<IGroupContext>(() => groupContext);
+            Set<IMetaDataContext>(() => metadataContext);
+            Set<IGroupContext>(() => groupContext);
           
-            this.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
-            this.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
+            Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+            Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
             
-            this.Set<IHeartBeatContext>(()=>new HeartBeatContext(new Mock<IDateTimeProvider>().Object,
-                this.Get<IConsumeMetrics>(),
-                this.Get<IGroupContext>(),
-                this.Get<IMetaDataContext>()
+            Set<IHeartBeatContext>(()=>new HeartBeatContext(new Mock<IDateTimeProvider>().Object,
+                Get<IConsumeMetrics>(),
+                Get<IGroupContext>(),
+                Get<IMetaDataContext>()
             ));
         }
     }

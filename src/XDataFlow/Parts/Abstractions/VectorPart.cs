@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Context;
-using XDataFlow.Providers;
 using XDataFlow.Registry;
 using XDataFlow.Tunnels;
-using XDataFlow.Tunnels.InMemory;
-using XDataFlow.Tunnels.InMemory.Messaging;
 
 namespace XDataFlow.Parts.Abstractions
 {
     public abstract class VectorPart<TConsumeData, TPublishData> : BasePart
     {
         public VectorPartContext<TConsumeData, TPublishData> VectorPartContext => 
-            (VectorPartContext<TConsumeData, TPublishData>) this.Context;
+            (VectorPartContext<TConsumeData, TPublishData>) Context;
         
         public IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels => 
-            this.VectorPartContext.PublishContext.PublishTunnels;
+            VectorPartContext.PublishContext.PublishTunnels;
         
         public abstract Task ProcessAsync(
             TConsumeData data, 
@@ -34,13 +31,13 @@ namespace XDataFlow.Parts.Abstractions
                                   throw new ArgumentNullException(nameof(ISettingsContext));
             
             var consumeContext = new ConsumeContext<TConsumeData>();
-            var publishContext = new PublishContext<TConsumeData,TPublishData>(heartBeatContext);
+            var publishContext = new PublishContext<TPublishData>(heartBeatContext);
             
             var switchContext = new VectorPartSwitchContext<TConsumeData, TPublishData>(
                 this, 
                 consumeContext);
             
-            this.Context = new VectorPartContext<TConsumeData, TPublishData>
+            Context = new VectorPartContext<TConsumeData, TPublishData>
                 (metaDataContext,
                     groupContext,
                     heartBeatContext,
@@ -78,12 +75,12 @@ namespace XDataFlow.Parts.Abstractions
 
         public void ConsumeData(TConsumeData data)
         {
-            this.VectorPartContext.ConsumeContext.ConsumeData(data);
+            VectorPartContext.ConsumeContext.ConsumeData(data);
         }
 
         public void ConsumeData(TConsumeData data, string tunnelKey)
         {
-            this.VectorPartContext.ConsumeContext.ConsumeData(data, tunnelKey);
+            VectorPartContext.ConsumeContext.ConsumeData(data, tunnelKey);
         }
 
         public void SetupConsumeAsQueueFromTopic<TConsumeTunnel>(
@@ -93,7 +90,7 @@ namespace XDataFlow.Parts.Abstractions
             string routingKey) 
             where TConsumeTunnel : IConsumeTunnel<TConsumeData>
         {
-            this.VectorPartContext.ConsumeContext.SetupBindingToTopic(tunnel, topicName, queueName, routingKey);
+            VectorPartContext.ConsumeContext.SetupBindingToTopic(tunnel, topicName, queueName, routingKey);
         }
 
         public void SetupPublishAsTopicToQueue<TPublishTunnel>(
@@ -102,7 +99,7 @@ namespace XDataFlow.Parts.Abstractions
             string routingKey) 
             where TPublishTunnel : IPublishTunnel<TPublishData>
         {
-            this.VectorPartContext.PublishContext.SetupBindingToTopic(tunnel, topicName, routingKey);
+            VectorPartContext.PublishContext.SetupBindingToTopic(tunnel, topicName, routingKey);
         }
     }
 }

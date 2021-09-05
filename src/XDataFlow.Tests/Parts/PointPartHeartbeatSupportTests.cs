@@ -12,11 +12,11 @@ namespace XDataFlow.Tests.Parts
         public async Task PointPartShouldPrintStatusTree()
         {
             // Arrange 
-            var rootPart = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport() { Name = "Root" };
-            var childrenAWithChild = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport() { Name = "Child 1" };
-            var childrenB = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport() { Name = "Child 2" };
-            var childrenC = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport() { Name = "Child 3" };
-            var childrenD = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport() { Name = "Child 4" };
+            var rootPart = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport { Name = "Root" };
+            var childrenAWithChild = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport { Name = "Child 1" };
+            var childrenB = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport { Name = "Child 2" };
+            var childrenC = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport { Name = "Child 3" };
+            var childrenD = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport { Name = "Child 4" };
 
             rootPart.ConfigureStartAs<StartInBackground>();
             childrenAWithChild.ConfigureStartAs<StartInBackground>();

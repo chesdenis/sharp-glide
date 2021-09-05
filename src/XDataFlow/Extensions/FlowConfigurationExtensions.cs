@@ -13,7 +13,7 @@ namespace XDataFlow.Extensions
             var linkId = Guid.NewGuid().ToString("N");
             var topicName = $"{linkId}:{sourcePart.Name}<-[manual]";
             var queueName = $"{linkId}:{sourcePart.Name}<-[manual]";
-            var routingKey = $"#";
+            var routingKey = "#";
             
             var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TConsumeData>(InMemoryBroker.Current);
             
@@ -27,7 +27,7 @@ namespace XDataFlow.Extensions
             var linkId = Guid.NewGuid().ToString("N");
             var topicName = $"{linkId}:{sourcePart.Name}->{targetPart.Name}";
             var queueName = $"{linkId}:{sourcePart.Name}->{targetPart.Name}";
-            var routingKey = $"#";
+            var routingKey = "#";
 
             var inMemoryPublishTunnel = new InMemoryPublishTunnel<TPublishData>(InMemoryBroker.Current);
             var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TTargetConsumeData>(InMemoryBroker.Current);
@@ -58,7 +58,7 @@ namespace XDataFlow.Extensions
             var linkId = Guid.NewGuid().ToString("N");
             var topicName = $"{linkId}:{sourcePart.Name}->{targetPart.Name}";
             var queueName = $"{linkId}:{sourcePart.Name}->{targetPart.Name}";
-            var routingKey = $"#";
+            var routingKey = "#";
             
             var inMemoryPublishTunnel = new InMemoryPublishTunnel<TSourcePublishData>(InMemoryBroker.Current);
             var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TConsumeData>(InMemoryBroker.Current);

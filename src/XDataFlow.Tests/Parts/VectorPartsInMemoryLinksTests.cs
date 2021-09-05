@@ -2,14 +2,9 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Moq;
 using XDataFlow.Behaviours;
-using XDataFlow.Context;
 using XDataFlow.Extensions;
-using XDataFlow.Parts.Abstractions;
-using XDataFlow.Registry;
 using XDataFlow.Tests.Model;
-using XDataFlow.Tunnels.InMemory.Messaging;
 using Xunit;
 
 namespace XDataFlow.Tests.Parts

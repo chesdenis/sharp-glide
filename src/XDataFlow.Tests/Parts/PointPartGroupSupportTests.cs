@@ -14,11 +14,11 @@ namespace XDataFlow.Tests.Parts
         public async Task PointPartStartsChildrenOnceStarted()
         {
             // Arrange
-            var rootPart = new TestPointPartWithGroupSupport() { Name = "Root"};
-            var childrenAWithChild = new TestPointPartWithGroupSupport(){ Name = "Child 1"};
-            var childrenB = new TestPointPartWithGroupSupport(){ Name = "Child 2"};
-            var childrenC = new TestPointPartWithGroupSupport(){ Name = "Child 3"};
-            var childrenD = new TestPointPartWithGroupSupport(){ Name = "Child 4"};
+            var rootPart = new TestPointPartWithGroupSupport { Name = "Root"};
+            var childrenAWithChild = new TestPointPartWithGroupSupport { Name = "Child 1"};
+            var childrenB = new TestPointPartWithGroupSupport { Name = "Child 2"};
+            var childrenC = new TestPointPartWithGroupSupport { Name = "Child 3"};
+            var childrenD = new TestPointPartWithGroupSupport { Name = "Child 4"};
             
             rootPart.ConfigureStartAs<StartInBackground>();
             childrenAWithChild.ConfigureStartAs<StartInBackground>();
@@ -46,11 +46,11 @@ namespace XDataFlow.Tests.Parts
         public async Task PointPartCanReturnDirectChildren()
         {
             // Arrange
-            var rootPart = new TestPointPartWithGroupSupport() { Name = "Root"};
-            var childrenAWithChild = new TestPointPartWithGroupSupport(){ Name = "Child 1"};
-            var childrenB = new TestPointPartWithGroupSupport(){ Name = "Child 2"};
-            var childrenC = new TestPointPartWithGroupSupport(){ Name = "Child 3"};
-            var childrenD = new TestPointPartWithGroupSupport(){ Name = "Child 4"};
+            var rootPart = new TestPointPartWithGroupSupport { Name = "Root"};
+            var childrenAWithChild = new TestPointPartWithGroupSupport { Name = "Child 1"};
+            var childrenB = new TestPointPartWithGroupSupport { Name = "Child 2"};
+            var childrenC = new TestPointPartWithGroupSupport { Name = "Child 3"};
+            var childrenD = new TestPointPartWithGroupSupport { Name = "Child 4"};
             
             rootPart.AddChild(childrenAWithChild);
             rootPart.AddChild(childrenB);
@@ -68,11 +68,11 @@ namespace XDataFlow.Tests.Parts
         public async Task PointPartShouldBuildPartTree()
         {
             // Arrange
-            var rootPart = new TestPointPartWithGroupSupport() { Name = "Root"};
-            var childrenAWithChild = new TestPointPartWithGroupSupport(){ Name = "Child 1"};
-            var childrenB = new TestPointPartWithGroupSupport(){ Name = "Child 2"};
-            var childrenC = new TestPointPartWithGroupSupport(){ Name = "Child 3"};
-            var childrenD = new TestPointPartWithGroupSupport(){ Name = "Child 4"};
+            var rootPart = new TestPointPartWithGroupSupport { Name = "Root"};
+            var childrenAWithChild = new TestPointPartWithGroupSupport { Name = "Child 1"};
+            var childrenB = new TestPointPartWithGroupSupport { Name = "Child 2"};
+            var childrenC = new TestPointPartWithGroupSupport { Name = "Child 3"};
+            var childrenD = new TestPointPartWithGroupSupport { Name = "Child 4"};
             
             rootPart.AddChild(childrenAWithChild);
             childrenAWithChild.AddChild(childrenB);
@@ -99,11 +99,11 @@ namespace XDataFlow.Tests.Parts
         public async Task PointPartCanReturnDeepChildrenUsingRecursive()
         {
             // Arrange
-            var rootPart = new TestPointPartWithGroupSupport() { Name = "Root"};
-            var childrenAWithChild = new TestPointPartWithGroupSupport(){ Name = "Child 1"};
-            var childrenB = new TestPointPartWithGroupSupport(){ Name = "Child 2"};
-            var childrenC = new TestPointPartWithGroupSupport(){ Name = "Child 3"};
-            var childrenD = new TestPointPartWithGroupSupport(){ Name = "Child 4"};
+            var rootPart = new TestPointPartWithGroupSupport { Name = "Root"};
+            var childrenAWithChild = new TestPointPartWithGroupSupport { Name = "Child 1"};
+            var childrenB = new TestPointPartWithGroupSupport { Name = "Child 2"};
+            var childrenC = new TestPointPartWithGroupSupport { Name = "Child 3"};
+            var childrenD = new TestPointPartWithGroupSupport { Name = "Child 4"};
             
             rootPart.AddChild(childrenAWithChild);
             childrenAWithChild.AddChild(childrenB);
@@ -125,11 +125,11 @@ namespace XDataFlow.Tests.Parts
         public async Task PointPartCanIterateThroughDirectChildren()
         {
             // Arrange
-            var rootPart = new TestPointPartWithGroupSupport() { Name = "Root"};
-            var childrenAWithChild = new TestPointPartWithGroupSupport(){ Name = "Child 1"};
-            var childrenB = new TestPointPartWithGroupSupport(){ Name = "Child 2"};
-            var childrenC = new TestPointPartWithGroupSupport(){ Name = "Child 3"};
-            var childrenD = new TestPointPartWithGroupSupport(){ Name = "Child 4"};
+            var rootPart = new TestPointPartWithGroupSupport { Name = "Root"};
+            var childrenAWithChild = new TestPointPartWithGroupSupport { Name = "Child 1"};
+            var childrenB = new TestPointPartWithGroupSupport { Name = "Child 2"};
+            var childrenC = new TestPointPartWithGroupSupport { Name = "Child 3"};
+            var childrenD = new TestPointPartWithGroupSupport { Name = "Child 4"};
             
             rootPart.AddChild(childrenAWithChild);
             rootPart.AddChild(childrenB);
@@ -138,10 +138,10 @@ namespace XDataFlow.Tests.Parts
 
             // Act
             var childrenNames = new List<string>();
-            rootPart.EnumerateChildren((part) =>
+            rootPart.EnumerateChildren(part =>
             {
                 childrenNames.Add(part.Name);
-            }, false);
+            });
             
             // Assert
             childrenNames.Count.Should().Be(4);
@@ -155,11 +155,11 @@ namespace XDataFlow.Tests.Parts
         public async Task PointPartCanIterateThroughAllChildren()
         {
             // Arrange
-            var rootPart = new TestPointPartWithGroupSupport() { Name = "Root"};
-            var childrenAWithChild = new TestPointPartWithGroupSupport(){ Name = "Child 1"};
-            var childrenB = new TestPointPartWithGroupSupport(){ Name = "Child 2"};
-            var childrenC = new TestPointPartWithGroupSupport(){ Name = "Child 3"};
-            var childrenD = new TestPointPartWithGroupSupport(){ Name = "Child 4"};
+            var rootPart = new TestPointPartWithGroupSupport { Name = "Root"};
+            var childrenAWithChild = new TestPointPartWithGroupSupport { Name = "Child 1"};
+            var childrenB = new TestPointPartWithGroupSupport { Name = "Child 2"};
+            var childrenC = new TestPointPartWithGroupSupport { Name = "Child 3"};
+            var childrenD = new TestPointPartWithGroupSupport { Name = "Child 4"};
             
             rootPart.AddChild(childrenAWithChild);
             childrenAWithChild.AddChild(childrenB);
@@ -168,7 +168,7 @@ namespace XDataFlow.Tests.Parts
 
             // Act
             var childrenNames = new List<string>();
-            rootPart.EnumerateChildren((part) =>
+            rootPart.EnumerateChildren(part =>
             {
                 childrenNames.Add(part.Name);
             }, true);

@@ -8,11 +8,11 @@ namespace XDataFlow.Tests.Stubs
     {
         public RegistryStubWithGroupAndMetadataContext()
         {
-            this.Set<IMetaDataContext>(() => new MetaDataContext());
-            this.Set<IGroupContext>(()=>new GroupContext());
-            this.Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
-            this.Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
-            this.Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
+            Set<IMetaDataContext>(() => new MetaDataContext());
+            Set<IGroupContext>(()=>new GroupContext());
+            Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
+            Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
+            Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
         }
     }
 }

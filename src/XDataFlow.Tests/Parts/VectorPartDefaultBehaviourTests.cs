@@ -2,13 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Moq;
 using XDataFlow.Behaviours;
-using XDataFlow.Context;
-using XDataFlow.Parts.Abstractions;
-using XDataFlow.Registry;
 using XDataFlow.Tests.Model;
-using XDataFlow.Tests.Stubs;
 using XDataFlow.Tunnels.InMemory;
 using XDataFlow.Tunnels.InMemory.Messaging;
 using Xunit;
@@ -37,12 +32,12 @@ namespace XDataFlow.Tests.Parts
             partWithFailure.ConfigureStartAs<TryCatchStart>(() => new TryCatchStartInBackground(
                 () => partWithFailureStarted = true,
                 () => partWithFailureProcessedOk = true,
-                (ex) => partWithFailureProcessedFailed = true,
+                ex => partWithFailureProcessedFailed = true,
                 () => partWithFailureFinalized = true));
             partStable.ConfigureStartAs<TryCatchStart>(() => new TryCatchStartInBackground(
                 () => partStableStarted = true,
                 () => partStableProcessedOk = true,
-                (ex) => partStableProcessedFailed = true,
+                ex => partStableProcessedFailed = true,
                 () => partStableFinalized = true));
 
             partWithFailure.SetupConsumeAsQueueFromTopic(
@@ -56,11 +51,11 @@ namespace XDataFlow.Tests.Parts
             // Act
             var result = await Assert.ThrowsAsync<Exception>(async () =>
             {
-                partWithFailure.ConsumeData(new TestVectorPartWithFailure.Input() { });
+                partWithFailure.ConsumeData(new TestVectorPartWithFailure.Input());
                 await partWithFailure.StartAsync();
             });
 
-            partStable.ConsumeData(new TestVectorPart.Input() { });
+            partStable.ConsumeData(new TestVectorPart.Input());
             await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
 
             result.Message.Should().Be("Some Exception");
@@ -94,15 +89,15 @@ namespace XDataFlow.Tests.Parts
             var partWithFailure = new TestVectorPartWithFailure();
             var partStable = new TestVectorPart();
 
-            partWithFailure.ConfigureStartAs<TryCatchStart>(() => new TryCatchStart(
+            partWithFailure.ConfigureStartAs(() => new TryCatchStart(
                 () => partWithFailureStarted = true,
                 () => partWithFailureProcessedOk = true,
-                (ex) => partWithFailureProcessedFailed = true,
+                ex => partWithFailureProcessedFailed = true,
                 () => partWithFailureFinalized = true));
-            partStable.ConfigureStartAs<TryCatchStart>(() => new TryCatchStart(
+            partStable.ConfigureStartAs(() => new TryCatchStart(
                 () => partStableStarted = true,
                 () => partStableProcessedOk = true,
-                (ex) => partStableProcessedFailed = true,
+                ex => partStableProcessedFailed = true,
                 () => partStableFinalized = true));
 
             partWithFailure.SetupConsumeAsQueueFromTopic(
@@ -116,11 +111,11 @@ namespace XDataFlow.Tests.Parts
             // Act
             var result = await Assert.ThrowsAsync<Exception>(async () =>
             {
-                partWithFailure.ConsumeData(new TestVectorPartWithFailure.Input() { });
+                partWithFailure.ConsumeData(new TestVectorPartWithFailure.Input());
                 await partWithFailure.StartAsync();
             });
 
-            partStable.ConsumeData(new TestVectorPart.Input() { });
+            partStable.ConsumeData(new TestVectorPart.Input());
             await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
 
             result.Message.Should().Be("Some Exception");
@@ -144,14 +139,14 @@ namespace XDataFlow.Tests.Parts
             var cts = new CancellationTokenSource();
             var part = new TestVectorPart();
 
-            part.ConfigureStartAs<StartInBackground>(() => new StartInBackground());
+            part.ConfigureStartAs(() => new StartInBackground());
             
             part.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
                 "t2", "q2", "r2");
 
             // Act
-            part.ConsumeData(new TestVectorPart.Input() { });
+            part.ConsumeData(new TestVectorPart.Input());
             await part.StartAndStopAsync(TimeSpan.FromSeconds(1));
 
             // Assert

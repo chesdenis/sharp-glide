@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using XDataFlow.Behaviours;
 using XDataFlow.Context;
 using XDataFlow.Extensions;
-using XDataFlow.Renders;
 
 namespace XDataFlow.Parts.Abstractions
 {
@@ -51,10 +47,10 @@ namespace XDataFlow.Parts.Abstractions
 
             var children = new List<IBasePart>();
             
-            this.EnumerateChildren( part =>
+            EnumerateChildren( part =>
             {
                 children.Add(part);
-            }, false);
+            });
 
             foreach (var basePart in children)
             {
@@ -74,10 +70,10 @@ namespace XDataFlow.Parts.Abstractions
             
             var children = new List<IBasePart>();
             
-            this.EnumerateChildren( part =>
+            EnumerateChildren( part =>
             {
                 children.Add(part);
-            }, false);
+            });
 
             foreach (var basePart in children)
             {
@@ -90,28 +86,17 @@ namespace XDataFlow.Parts.Abstractions
             return Context.SettingsContext.GetByKey<TSettings>(keyPath);
         }
         
-        public void ReportInfo(string status) => this.Context.MetaDataContext.Status["Info"] = status;
-
-        // TODO: Console.Write(statusTextBuilder.ToString());
-        // TODO: File.WriteAllText("PartStatus.txt", statusTextBuilder.ToString());
-        // TODO: Implement console redirection component
-        // public static void RedirectStatusToConsole(Timer timer, IEnumerable<IPart> parts)
-        // {
-        //     RenderToConsole(parts);
-        //     timer.Interval = TimeSpan.FromSeconds(5).TotalMilliseconds;
-        //     timer.Start();
-        //
-        //     timer.Elapsed += (sender, eventArgs) => RenderToConsole(parts);
-        // }
-        public string GetStatusTable() => this.Context.HeartBeatContext.GetStatusTable(this);
+        public void ReportInfo(string status) => Context.MetaDataContext.Status["Info"] = status;
         
-        public Dictionary<string, string> Status => this.Context.MetaDataContext.Status;
+        public string GetStatusTable() => Context.HeartBeatContext.GetStatusTable(this);
+        
+        public Dictionary<string, string> Status => Context.MetaDataContext.Status;
         
         public void AddChild(IBasePart part) => Context.GroupContext.AddChild(part);
 
-        public IBasePart GetChild(string name, bool recursive = false) => this.Context.GroupContext.GetChild(name, recursive);
+        public IBasePart GetChild(string name, bool recursive = false) => Context.GroupContext.GetChild(name, recursive);
 
         public void EnumerateChildren(Action<IBasePart> partAction, bool recursive = false) =>
-            this.Context.GroupContext.EnumerateChildren(partAction, recursive);
+            Context.GroupContext.EnumerateChildren(partAction, recursive);
     }
 }

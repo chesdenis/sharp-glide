@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using XDataFlow.Parts.Abstractions;
@@ -20,7 +19,7 @@ namespace XDataFlow.Parts.Generic
         {
             if (IsAllow(data))
             {
-                this.Publish(data);
+                Publish(data);
             }
 
             return Task.CompletedTask;

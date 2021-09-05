@@ -21,7 +21,7 @@ namespace XDataFlow.Parts.Abstractions
                                   throw new ArgumentNullException(nameof(ISettingsContext));
             var switchContext = new PointPartSwitchContext(this);
             
-            this.Context = new PointPartContext(
+            Context = new PointPartContext(
                 metaDataContext,
                 groupContext,
                 heartBeatContext,

@@ -46,8 +46,9 @@ namespace XDataFlow.Context
 
             return deepChildren;
         }
- 
-        public IEnumerable<IBasePart> GetChildren() => this.Children.Select(s => s.Value);
+
+        private IEnumerable<IBasePart> GetChildren() => Children.Select(s => s.Value);
+        
         public IEnumerable<Tuple<int, IBasePart>> GetPartTree(IBasePart parentPart, int parentLevel = 0)
         {
             var total = new List<Tuple<int, IBasePart>>();
@@ -67,7 +68,7 @@ namespace XDataFlow.Context
         
         public void EnumerateChildren(Action<IBasePart> partAction, bool recursive = false)
         {
-            foreach (var part in this.GetChildren())
+            foreach (var part in GetChildren())
             {
                 partAction(part);
                 

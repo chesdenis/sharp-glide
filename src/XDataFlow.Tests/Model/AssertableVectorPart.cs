@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using XDataFlow.Parts.Abstractions;
-using XDataFlow.Registry;
 using XDataFlow.Tests.Stubs;
 
 namespace XDataFlow.Tests.Model

@@ -114,10 +114,8 @@ namespace XDataFlow.Renders
             {
                 return "";
             }
-            else
-            {
-                return "-";
-            }
+
+            return "-";
         }
 
         private List<int> ColumnLengths()
