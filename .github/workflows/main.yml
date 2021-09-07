@@ -28,14 +28,14 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Install dependencies
-        run: dotnet restore XDataFlow.sln
+        run: dotnet restore DechFlow.sln
         working-directory: src
       - name: Build
-        run: dotnet build XDataFlow.sln --configuration Release --no-restore
+        run: dotnet build DechFlow.sln --configuration Release --no-restore
         working-directory: src
       - name: Test
-        run: dotnet test XDataFlow.Tests.csproj --no-restore --verbosity normal
-        working-directory: src/XDataFlow.Tests
+        run: dotnet test DechFlow.Tests.csproj --no-restore --verbosity normal
+        working-directory: src/DechFlow.Tests
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v2
         with:
