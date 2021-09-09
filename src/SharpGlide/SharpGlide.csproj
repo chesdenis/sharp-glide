@@ -2,6 +2,21 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
+        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>1.0.0-alpha</PackageVersion>
+        <Title>Sharp Glide</Title>
+        <Authors>Denis Chesnokov aka chesdenis</Authors>
+        <Description>SharpGlide aims to be simple, fluent, reusable, extensible approach to build data processing parts and connect them into data flow pipelines using any kind transfer tunnels.</Description>
+        <Copyright>Copyright (c) Denis Chesnokov 2021</Copyright>
+        <PackageProjectUrl>https://www.sharp-glide.dev</PackageProjectUrl>
+        <PackageLicenseUrl>https://www.sharp-glide.dev/license</PackageLicenseUrl>
+        <PackageIconUrl>https://www.sharp-glide.dev/icon128x128.png</PackageIconUrl>
+        <RepositoryUrl>https://github.com/chesdenis/sharp-glide</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>flow, pipelines, data flow, processing, mapping, publishing, consuming, eta</PackageTags>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <PackageReleaseNotes>initial release</PackageReleaseNotes>
     </PropertyGroup>
 
 </Project>
