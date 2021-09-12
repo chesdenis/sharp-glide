@@ -1,6 +1,7 @@
 using SharpGlide.Context;
 using SharpGlide.Registry;
 using Moq;
+using SharpGlide.Context.HeartBeat;
 
 namespace SharpGlide.Tests.Stubs
 {

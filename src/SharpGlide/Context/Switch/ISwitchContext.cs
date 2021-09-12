@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Behaviours;
 
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Switch
 {
     public interface ISwitchContext
     {

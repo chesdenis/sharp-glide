@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using SharpGlide.Behaviours;
 using SharpGlide.Exceptions;
 
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Switch
 {
     public abstract class SwitchContext : ISwitchContext
     {

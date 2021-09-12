@@ -2,7 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
 
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Switch
 {
     public class PointPartSwitchContext : SwitchContext
     {

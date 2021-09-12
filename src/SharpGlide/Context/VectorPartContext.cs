@@ -1,3 +1,6 @@
+using SharpGlide.Context.HeartBeat;
+using SharpGlide.Context.Switch;
+
 namespace SharpGlide.Context
 {
     public class VectorPartContext<TConsumeData, TPublishData> : PointPartContext
@@ -8,8 +11,7 @@ namespace SharpGlide.Context
         public VectorPartContext(
             IMetaDataContext metaDataContext, 
             IGroupContext groupContext, 
-            IHeartBeatContext heartBeatContext,
-            IConsumeMetrics consumeMetrics, 
+            IHeartBeatContext heartBeatContext, 
             ISwitchContext switchContext,
             ISettingsContext settingsContext,
             IConsumeContext<TConsumeData> consumeContext,

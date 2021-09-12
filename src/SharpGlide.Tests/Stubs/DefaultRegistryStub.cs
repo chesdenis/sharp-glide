@@ -1,6 +1,7 @@
 using SharpGlide.Context;
 using SharpGlide.Registry;
 using Moq;
+using SharpGlide.Providers;
 
 namespace SharpGlide.Tests.Stubs
 {
@@ -8,10 +9,9 @@ namespace SharpGlide.Tests.Stubs
     {
         public DefaultRegistryStub()
         {
+            Set<IDateTimeProvider>(() => new Mock<IDateTimeProvider>().Object);
             Set<IMetaDataContext>(() => new Mock<IMetaDataContext>().Object);
             Set<IGroupContext>(()=>new Mock<IGroupContext>().Object);
-            Set<IHeartBeatContext>(()=>new Mock<IHeartBeatContext>().Object);
-            Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
             Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
         }
     }

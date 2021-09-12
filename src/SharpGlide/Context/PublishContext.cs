@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SharpGlide.Context.HeartBeat;
 using SharpGlide.Tunnels;
 using SharpGlide.Wrappers;
 
@@ -7,12 +8,12 @@ namespace SharpGlide.Context
 {
     public class PublishContext<TPublishData> : IPublishContext<TPublishData>
     {
-        private readonly IHeartBeatContext _heartBeatContext;
+        private readonly IVectorHeartBeatContext _heartBeatContext;
 
         public IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels { get; } =
             new Dictionary<string, IPublishTunnel<TPublishData>>();
 
-        public PublishContext(IHeartBeatContext heartBeatContext)
+        public PublishContext(IVectorHeartBeatContext heartBeatContext)
         {
             _heartBeatContext = heartBeatContext;
         }

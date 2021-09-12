@@ -2,6 +2,7 @@ using SharpGlide.Context;
 using SharpGlide.Providers;
 using SharpGlide.Registry;
 using Moq;
+using SharpGlide.Context.HeartBeat;
 
 namespace SharpGlide.Tests.Stubs
 {
@@ -18,7 +19,7 @@ namespace SharpGlide.Tests.Stubs
             Set<IConsumeMetrics>(()=>new Mock<IConsumeMetrics>().Object);
             Set<ISettingsContext>(()=>new Mock<ISettingsContext>().Object);
             
-            Set<IHeartBeatContext>(()=>new HeartBeatContext(new Mock<IDateTimeProvider>().Object,
+            Set<IHeartBeatContext>(()=>new VectorHeartBeatContext(new Mock<IDateTimeProvider>().Object,
                 Get<IConsumeMetrics>(),
                 Get<IGroupContext>(),
                 Get<IMetaDataContext>()

@@ -35,19 +35,19 @@ namespace SharpGlide.Tests.Parts
 
             // Assert
             statusTable.Should().Contain("Root");
-            statusTable.Should().Contain("----------------------------------------------------");
-            statusTable.Should().Contain("| Name      | Available | _ETA     | _Speed, n/sec |");
-            statusTable.Should().Contain("----------------------------------------------------");
-            statusTable.Should().Contain("| Root      | 0         | 00:00:00 | 0             |");
-            statusTable.Should().Contain("----------------------------------------------------");
-            statusTable.Should().Contain("| -Child 1  | 0         | 00:00:00 | 0             |");
-            statusTable.Should().Contain("----------------------------------------------------");
-            statusTable.Should().Contain("| --Child 2 | 0         | 00:00:00 | 0             |");
-            statusTable.Should().Contain("----------------------------------------------------");
-            statusTable.Should().Contain("| --Child 3 | 0         | 00:00:00 | 0             |");
-            statusTable.Should().Contain("----------------------------------------------------");
-            statusTable.Should().Contain("| -Child 4  | 0         | 00:00:00 | 0             |");
-            statusTable.Should().Contain("----------------------------------------------------");
+            statusTable.Should().Contain("-------------");
+            statusTable.Should().Contain("| Name      |");
+            statusTable.Should().Contain("-------------");
+            statusTable.Should().Contain("| Root      |");
+            statusTable.Should().Contain("-------------");
+            statusTable.Should().Contain("| -Child 1  |");
+            statusTable.Should().Contain("-------------");
+            statusTable.Should().Contain("| --Child 2 |");
+            statusTable.Should().Contain("-------------");
+            statusTable.Should().Contain("| --Child 3 |");
+            statusTable.Should().Contain("-------------");
+            statusTable.Should().Contain("| -Child 4  |");
+            statusTable.Should().Contain("-------------");
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using SharpGlide.Exceptions;
 using SharpGlide.Parts.Abstractions;
 
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Switch
 {
     public class VectorPartSwitchContext<TConsumeData, TPublishData> : SwitchContext
     {

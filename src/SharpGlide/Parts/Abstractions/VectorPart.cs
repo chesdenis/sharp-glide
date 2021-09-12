@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Context;
+using SharpGlide.Context.HeartBeat;
+using SharpGlide.Context.Switch;
+using SharpGlide.Providers;
 using SharpGlide.Registry;
 using SharpGlide.Tunnels;
 
@@ -24,13 +27,17 @@ namespace SharpGlide.Parts.Abstractions
         {
             var metaDataContext = defaultRegistry.Get<IMetaDataContext>() ?? throw new ArgumentNullException(nameof(IMetaDataContext));
             var groupContext = defaultRegistry.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext)); 
-            var heartBeatContext = defaultRegistry.Get<IHeartBeatContext>() ?? throw new ArgumentNullException(nameof(IHeartBeatContext));
-            var consumeMetrics = defaultRegistry.Get<IConsumeMetrics>() ?? throw new ArgumentNullException(nameof(IConsumeMetrics));
-
+            
+            var dateTimeProvider = defaultRegistry.Get<IDateTimeProvider>() ??
+                                   throw new ArgumentNullException(nameof(IDateTimeProvider));
+            
             var settingsContext = defaultRegistry.Get<ISettingsContext>() ??
                                   throw new ArgumentNullException(nameof(ISettingsContext));
             
             var consumeContext = new ConsumeContext<TConsumeData>();
+            var heartBeatContext =
+                new VectorHeartBeatContext(dateTimeProvider, consumeContext, groupContext, metaDataContext);
+            
             var publishContext = new PublishContext<TPublishData>(heartBeatContext);
             
             var switchContext = new VectorPartSwitchContext<TConsumeData, TPublishData>(
@@ -41,7 +48,6 @@ namespace SharpGlide.Parts.Abstractions
                 (metaDataContext,
                     groupContext,
                     heartBeatContext,
-                    consumeMetrics,
                     switchContext,
                     settingsContext,
                     consumeContext,

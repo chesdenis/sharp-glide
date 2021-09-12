@@ -1,3 +1,6 @@
+using SharpGlide.Context.HeartBeat;
+using SharpGlide.Context.Switch;
+
 namespace SharpGlide.Context
 {
     public class PointPartContext : IPartContext
