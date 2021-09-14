@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace SharpGlide.Context
@@ -5,17 +6,17 @@ namespace SharpGlide.Context
     public class MetaDataContext : IMetaDataContext
     {
         public string Name { get; set; }
-        public Dictionary<string, string> Status { get; } = new Dictionary<string, string>();
+        public ConcurrentDictionary<string, string> Status { get; } = new ConcurrentDictionary<string, string>();
         
         public void UpsertStatus(string key, string value)
         {
             if (Status.ContainsKey(key))
             {
-                Status[key] = value;
+                Status.TryUpdate(key, value, Status[key]);
                 return;
             }
             
-            Status.Add(key, value);
+            Status.TryAdd(key, value);
         }
     }
 }

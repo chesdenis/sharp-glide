@@ -11,6 +11,8 @@ namespace SharpGlide.Context.HeartBeat
     {
         private readonly IGroupContext _groupContext;
 
+        private static readonly object _syncRoot = new object();
+
         protected HeartBeatContext(IGroupContext groupContext)
         {
             _groupContext = groupContext;
@@ -56,18 +58,21 @@ namespace SharpGlide.Context.HeartBeat
 
         public string GetStatusTable(IBasePart startPart)
         {
-            var stringBuilder = new StringBuilder();
+            lock (_syncRoot)
+            {
+                var stringBuilder = new StringBuilder();
 
-            var statusInfo = startPart.Context.HeartBeatContext.GetStatus(startPart);
+                var statusInfo = startPart.Context.HeartBeatContext.GetStatus(startPart);
 
-            if (!statusInfo.Any()) return string.Empty;
+                if (!statusInfo.Any()) return string.Empty;
 
-            stringBuilder.AppendLine(startPart.Name);
-            var statusTable = ConsoleTable.FromDynamic(statusInfo);
+                stringBuilder.AppendLine(startPart.Name);
+                var statusTable = ConsoleTable.FromDynamic(statusInfo);
 
-            stringBuilder.AppendLine(statusTable.ToString());
+                stringBuilder.AppendLine(statusTable.ToString());
              
-            return stringBuilder.ToString();
+                return stringBuilder.ToString();
+            }
         }
     }
 }

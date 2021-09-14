@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpGlide.Context;
@@ -9,7 +10,7 @@ namespace SharpGlide.Parts.Abstractions
     {
         string Name { get; set; }
         IPartContext Context { get; set; }
-        Dictionary<string, string> Status { get; }
+        ConcurrentDictionary<string, string> Status { get; }
         void ReportInfo(string status);
         void AddChild(IBasePart part);
         IBasePart GetChild(string name, bool recursive = false);

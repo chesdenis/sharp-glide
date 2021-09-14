@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace SharpGlide.Context
@@ -6,7 +7,7 @@ namespace SharpGlide.Context
     {
         string Name { get; set; }
 
-        Dictionary<string,string> Status { get; }
+        ConcurrentDictionary<string,string> Status { get; }
         
         void UpsertStatus(string key, string value);
     }

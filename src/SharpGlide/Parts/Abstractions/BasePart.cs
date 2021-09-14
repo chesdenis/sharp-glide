@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpGlide.Behaviours;
@@ -94,7 +95,7 @@ namespace SharpGlide.Parts.Abstractions
         
         public string GetStatusTable() => Context.HeartBeatContext.GetStatusTable(this);
         
-        public Dictionary<string, string> Status => Context.MetaDataContext.Status;
+        public ConcurrentDictionary<string, string> Status => Context.MetaDataContext.Status;
         
         public void AddChild(IBasePart part) => Context.GroupContext.AddChild(part);
 
