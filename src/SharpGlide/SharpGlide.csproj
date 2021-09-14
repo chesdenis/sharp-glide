@@ -4,10 +4,10 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.0.1-alpha</PackageVersion>
+        <PackageVersion>1.0.2-alpha</PackageVersion>
         <Title>Sharp Glide</Title>
         <Authors>Denis Chesnokov aka chesdenis</Authors>
-        <Description>SharpGlide aims to be simple, fluent, reusable, extensible approach to build data processing parts and connect them into data flow pipelines using any kind transfer tunnels.</Description>
+        <Description>SharpGlide aims to be simple, zero dependency, fluent, reusable, extensible approach to build data processing parts and connect them into data flow pipelines using any kind transfer tunnels.</Description>
         <Copyright>Copyright (c) Denis Chesnokov 2021</Copyright>
         <PackageProjectUrl>https://www.sharp-glide.dev</PackageProjectUrl>
         <PackageLicenseUrl>https://www.sharp-glide.dev/license</PackageLicenseUrl>
@@ -16,7 +16,8 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>flow, pipelines, data flow, processing, mapping, publishing, consuming, eta</PackageTags>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <PackageReleaseNotes>+ Heart beat interface segregation and responsibility context improvements</PackageReleaseNotes>
+        <PackageReleaseNotes>+ Removed build in container to avoid incorrect usage and stack overflow exceptions
++ Default name assignments to parts</PackageReleaseNotes>
     </PropertyGroup>
 
 </Project>

@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
-using SharpGlide.Registry;
 
 namespace SharpGlide.Parts.Generic
 {
@@ -10,7 +9,7 @@ namespace SharpGlide.Parts.Generic
     {
         private readonly Func<TConsumeData, TPublishData> _mapFunc;
 
-        public GenericMapper(Func<TConsumeData, TPublishData> mapFunc, IDefaultRegistry registry) : base(registry)
+        public GenericMapper(Func<TConsumeData, TPublishData> mapFunc) : base()
         {
             _mapFunc = mapFunc;
         }

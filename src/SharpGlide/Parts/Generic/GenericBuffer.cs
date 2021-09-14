@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
-using SharpGlide.Registry;
 
 namespace SharpGlide.Parts.Generic
 {
@@ -12,7 +11,7 @@ namespace SharpGlide.Parts.Generic
         private readonly List<TBufferData> _buffer = new List<TBufferData>();
 
 
-        public GenericBuffer(IDefaultRegistry defaultRegistry) : base(defaultRegistry)
+        public GenericBuffer() : base()
         {
         }
 

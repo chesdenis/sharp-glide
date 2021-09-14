@@ -1,13 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
-using SharpGlide.Registry;
 
 namespace SharpGlide.Parts.Generic
 {
     public abstract class GenericGuard<TConsumeData> : VectorPart<TConsumeData, TConsumeData>
     {
-        protected GenericGuard(IDefaultRegistry defaultRegistry) : base(defaultRegistry)
+        protected GenericGuard() : base()
         {
         }
 

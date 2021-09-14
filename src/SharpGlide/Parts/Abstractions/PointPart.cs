@@ -5,7 +5,6 @@ using SharpGlide.Context;
 using SharpGlide.Context.HeartBeat;
 using SharpGlide.Context.Switch;
 using SharpGlide.Providers;
-using SharpGlide.Registry;
 
 namespace SharpGlide.Parts.Abstractions
 {
@@ -13,13 +12,12 @@ namespace SharpGlide.Parts.Abstractions
     {
         public abstract Task ProcessAsync(CancellationToken cancellationToken);
 
-        protected PointPart(IDefaultRegistry defaultRegistry)
+        protected PointPart()
         {
-            var metaDataContext = defaultRegistry.Get<IMetaDataContext>() ?? throw new ArgumentNullException(nameof(IMetaDataContext));
-            var groupContext = defaultRegistry.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext));
+            var metaDataContext = new MetaDataContext();
+            var groupContext = new GroupContext();
 
-            var settingsContext = defaultRegistry.Get<ISettingsContext>() ??
-                                  throw new ArgumentNullException(nameof(ISettingsContext));
+            var settingsContext = new SettingsContext();
             var switchContext = new PointPartSwitchContext(this);
             
             var heartBeatContext =

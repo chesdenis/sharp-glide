@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
-using SharpGlide.Tests.Stubs;
 
 namespace SharpGlide.Tests.Model
 {
@@ -18,7 +17,7 @@ namespace SharpGlide.Tests.Model
                 
         }
 
-        public TestVectorPartWithFailure() : base(new DefaultRegistryStub())
+        public TestVectorPartWithFailure() : base()
         {
         }
 

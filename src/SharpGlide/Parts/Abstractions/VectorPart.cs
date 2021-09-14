@@ -6,7 +6,6 @@ using SharpGlide.Context;
 using SharpGlide.Context.HeartBeat;
 using SharpGlide.Context.Switch;
 using SharpGlide.Providers;
-using SharpGlide.Registry;
 using SharpGlide.Tunnels;
 
 namespace SharpGlide.Parts.Abstractions
@@ -23,16 +22,14 @@ namespace SharpGlide.Parts.Abstractions
             TConsumeData data, 
             CancellationToken cancellationToken);
 
-        protected VectorPart(IDefaultRegistry defaultRegistry)
+        protected VectorPart()
         {
-            var metaDataContext = defaultRegistry.Get<IMetaDataContext>() ?? throw new ArgumentNullException(nameof(IMetaDataContext));
-            var groupContext = defaultRegistry.Get<IGroupContext>() ?? throw new ArgumentNullException(nameof(IGroupContext)); 
+            var metaDataContext = new MetaDataContext();
+            var groupContext = new GroupContext(); 
             
-            var dateTimeProvider = defaultRegistry.Get<IDateTimeProvider>() ??
-                                   throw new ArgumentNullException(nameof(IDateTimeProvider));
+            var dateTimeProvider = new DateTimeProvider();
             
-            var settingsContext = defaultRegistry.Get<ISettingsContext>() ??
-                                  throw new ArgumentNullException(nameof(ISettingsContext));
+            var settingsContext = new SettingsContext();
             
             var consumeContext = new ConsumeContext<TConsumeData>();
             var heartBeatContext =

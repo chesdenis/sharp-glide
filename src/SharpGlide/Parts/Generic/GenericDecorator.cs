@@ -2,13 +2,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
-using SharpGlide.Registry;
 
 namespace SharpGlide.Parts.Generic
 {
     public class GenericDecorator<TDecorateData, TInput, TOutput> : VectorPart<TDecorateData, TDecorateData>
     {
-        public GenericDecorator(IDefaultRegistry defaultRegistry) : base(defaultRegistry)
+        public GenericDecorator() : base()
         {
         }
 

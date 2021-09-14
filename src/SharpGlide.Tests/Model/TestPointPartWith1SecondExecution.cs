@@ -1,24 +1,19 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
 
 namespace SharpGlide.Tests.Model
 {
-    public class TestPointPartWithGroupAndMetadataAndHeartbeatSupport : PointPart
+    public class TestPointPartWith1SecondExecution : PointPart
     {
         public string TestProperty { get; set; }
         
-        public TestPointPartWithGroupAndMetadataAndHeartbeatSupport() 
-            : base()
-        {
-            
-        }
-
         public override async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            TestProperty = "Started";
+            await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
 
-            await StopAsync();
+            TestProperty = "Completed";
         }
     }
 }

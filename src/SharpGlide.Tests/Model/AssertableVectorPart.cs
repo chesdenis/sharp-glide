@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using SharpGlide.Parts.Abstractions;
-using SharpGlide.Tests.Stubs;
 
 namespace SharpGlide.Tests.Model
 {
     public abstract class AssertableVectorPart<TConsumeData, TPublishData> : VectorPart<TConsumeData, TPublishData>
     {
-        protected AssertableVectorPart() : base(new DefaultRegistryStub())
+        protected AssertableVectorPart() : base()
         {
         }
 

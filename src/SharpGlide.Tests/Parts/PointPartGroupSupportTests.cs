@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using SharpGlide.Behaviours;
@@ -10,6 +11,72 @@ namespace SharpGlide.Tests.Parts
 {
     public class PointPartGroupSupportTests
     {
+        [Fact]
+        public async Task PointPartStartsChildrenInParallelWay()
+        {
+            // Arrange
+            var rootPart = new TestPointPartWithGroupSupport { Name = "Root"};
+            var childrenAWithChild = new TestPointPartWith1SecondExecution() { Name = "Child 1"};
+            var childrenB = new TestPointPartWith1SecondExecution { Name = "Child 2"};
+            var childrenC = new TestPointPartWith1SecondExecution { Name = "Child 3"};
+            var childrenD = new TestPointPartWith1SecondExecution { Name = "Child 4"};
+            
+            rootPart.ConfigureStartAs<StartInBackground>();
+            childrenAWithChild.ConfigureStartAs<StartInBackground>();
+            childrenB.ConfigureStartAs<StartInBackground>();
+            childrenC.ConfigureStartAs<StartInBackground>();
+            childrenD.ConfigureStartAs<StartInBackground>();
+            
+            rootPart.AddChild(childrenAWithChild);
+            childrenAWithChild.AddChild(childrenB);
+            childrenAWithChild.AddChild(childrenC);
+            rootPart.AddChild(childrenD);
+
+            // Act
+            var sw = new Stopwatch();
+            sw.Start();
+            await rootPart.StartAsync();
+            sw.Stop();
+
+            // Assert
+            (sw.Elapsed.TotalSeconds < 3).Should().BeTrue(); // we expect that execution time will be lower than total count of children
+            rootPart.TestProperty.Should().Be("Started");
+            childrenAWithChild.TestProperty.Should().Be("Completed");
+            childrenB.TestProperty.Should().Be("Completed");
+            childrenC.TestProperty.Should().Be("Completed");
+            childrenD.TestProperty.Should().Be("Completed");
+        }
+        
+        [Fact]
+        public async Task PointPartChildrenAddsWithDefaultName()
+        {
+            // Arrange
+            var rootPart = new TestPointPartWithGroupSupport { Name = "Root"};
+            var childrenAWithChild = new TestPointPartWithGroupSupport();
+            var childrenB = new TestPointPartWithGroupSupport ();
+            var childrenC = new TestPointPartWithGroupSupport();
+            var childrenD = new TestPointPartWithGroupSupport();
+            
+            rootPart.ConfigureStartAs<StartInBackground>();
+            childrenAWithChild.ConfigureStartAs<StartInBackground>();
+            childrenB.ConfigureStartAs<StartInBackground>();
+            childrenC.ConfigureStartAs<StartInBackground>();
+            childrenD.ConfigureStartAs<StartInBackground>();
+            
+            // Act
+            rootPart.AddChild(childrenAWithChild);
+            childrenAWithChild.AddChild(childrenB);
+            childrenAWithChild.AddChild(childrenC);
+            rootPart.AddChild(childrenD);
+
+            // Assert
+            rootPart.Name.Should().Be("Root");
+            childrenAWithChild.Name.Should().Be("TestPointPartWithGroupSupport");
+            childrenB.Name.Should().Be("TestPointPartWithGroupSupport");
+            childrenC.Name.Should().Be("Copy of TestPointPartWithGroupSupport");
+            childrenD.Name.Should().Be("Copy of TestPointPartWithGroupSupport");
+        }
+        
         [Fact]
         public async Task PointPartStartsChildrenOnceStarted()
         {

@@ -51,11 +51,15 @@ namespace SharpGlide.Parts.Abstractions
             {
                 children.Add(part);
             });
-
+ 
+            var tasks = new List<Task>();
+            
             foreach (var basePart in children)
             {
-                await basePart.StartAsync();
+                tasks.Add(Task.Run(() =>  basePart.StartAsync()));
             }
+            
+            await Task.WhenAll(tasks);
         }
 
         public async Task StartAndStopAsync(TimeSpan onlinePeriod)
