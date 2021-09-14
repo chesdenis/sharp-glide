@@ -11,6 +11,16 @@ namespace SharpGlide.Context
 
         public void AddChild(IBasePart child)
         {
+            if (string.IsNullOrWhiteSpace(child.Name))
+            {
+                child.Name = child.GetType().Name;
+            }
+
+            if (Children.ContainsKey(child.Name))
+            {
+                child.Name = "Copy of " + child.Name;
+            }
+            
             Children.Add(child.Name, child);
         }
 
