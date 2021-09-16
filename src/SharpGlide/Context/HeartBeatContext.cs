@@ -58,6 +58,17 @@ namespace SharpGlide.Context
             return dataToPlot;
         }
 
+        public string GetException(IBasePart startPart)
+        {
+            var result = new List<string>();
+            
+            startPart.EnumerateChildren(part => result.AddRange(
+                part.Errors
+                    .ToList()), true);
+             
+            return string.Join("\n", result);
+        }
+
         public string GetStatusTable(IBasePart startPart)
         {
             lock (_syncRoot)
@@ -83,7 +94,7 @@ namespace SharpGlide.Context
             {
                 var stringBuilder = new StringBuilder();
 
-                var exceptionList = startPart.Context.HeartBeatContext.GetExceptionList(startPart);
+                var exceptionList = startPart.Context.HeartBeatContext.GetException(startPart);
 
                 if (!exceptionList.Any()) return string.Empty;
 

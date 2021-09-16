@@ -25,10 +25,7 @@ namespace SharpGlide.Tests.Parts
                 ex => processedWithFailure = true,
                 () => finalized = true));
             // Act
-            await Assert.ThrowsAsync<Exception>(async () =>
-            {
-                await part.StartAsync();
-            });
+            await part.StartAsync();
 
             // Assert
             started.Should().BeTrue();

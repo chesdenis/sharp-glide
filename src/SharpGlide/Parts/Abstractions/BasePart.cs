@@ -101,6 +101,7 @@ namespace SharpGlide.Parts.Abstractions
         public string GetExceptionList() => Context.HeartBeatContext.GetExceptionList(this);
         
         public ConcurrentDictionary<string, string> Status => Context.MetaDataContext.Status;
+        public ConcurrentBag<string> Errors => Context.MetaDataContext.Errors;
         
         public IBasePart AddChild(IBasePart part)
         {

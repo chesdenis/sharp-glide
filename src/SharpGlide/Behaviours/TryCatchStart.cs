@@ -33,12 +33,10 @@ namespace SharpGlide.Behaviours
                 await base.ExecuteAsync(switchContext);
 
                 _onProcessedOk();
-
             }
             catch (Exception e)
             {
                 _onProcessedWithFailure(e);
-                throw;
             }
             finally
             {

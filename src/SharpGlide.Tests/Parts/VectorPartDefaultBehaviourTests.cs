@@ -49,17 +49,12 @@ namespace SharpGlide.Tests.Parts
 
 
             // Act
-            var result = await Assert.ThrowsAsync<Exception>(async () =>
-            {
-                partWithFailure.Push(new TestVectorPartWithFailure.Input());
-                await partWithFailure.StartAsync();
-            });
+            partWithFailure.Push(new TestVectorPartWithFailure.Input());
+            await partWithFailure.StartAsync();
 
             partStable.Push(new TestVectorPart.Input());
             await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
-
-            result.Message.Should().Be("Some Exception");
-
+ 
             // Assert
             partWithFailureStarted.Should().BeTrue();
             partWithFailureFinalized.Should().BeTrue();
@@ -109,16 +104,11 @@ namespace SharpGlide.Tests.Parts
 
 
             // Act
-            var result = await Assert.ThrowsAsync<Exception>(async () =>
-            {
-                partWithFailure.Push(new TestVectorPartWithFailure.Input());
-                await partWithFailure.StartAsync();
-            });
+            partWithFailure.Push(new TestVectorPartWithFailure.Input());
+            await partWithFailure.StartAsync();
 
             partStable.Push(new TestVectorPart.Input());
             await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
-
-            result.Message.Should().Be("Some Exception");
 
             // Assert
             partWithFailureStarted.Should().BeTrue();

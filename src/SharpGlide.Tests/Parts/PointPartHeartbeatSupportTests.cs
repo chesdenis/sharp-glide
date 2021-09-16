@@ -60,13 +60,7 @@ namespace SharpGlide.Tests.Parts
             var childrenB = new TestPointPartWithFailure() { Name = "Child 2" };
             var childrenC = new TestPointPartWithFailure { Name = "Child 3" };
             var childrenD = new TestPointPartWithFailure { Name = "Child 4" };
-
-            rootPart.ConfigureStartAs<StartInBackground>();
-            childrenAWithChild.ConfigureStartAs<StartInBackground>();
-            childrenB.ConfigureStartAs<StartInBackground>();
-            childrenC.ConfigureStartAs<StartInBackground>();
-            childrenD.ConfigureStartAs<StartInBackground>();
-
+            
             rootPart.AddChild(childrenAWithChild);
             childrenAWithChild.AddChild(childrenB);
             childrenAWithChild.AddChild(childrenC);
@@ -77,7 +71,13 @@ namespace SharpGlide.Tests.Parts
             var exceptionList = rootPart.GetExceptionList();
 
             // Assert
+            exceptionList.Should().Contain("Failure of Child 2: System.Exception: Some Exception");
+            exceptionList.Should().Contain("Failure of Child 3: System.Exception: Some Exception");
+            exceptionList.Should().Contain("Failure of Child 4: System.Exception: Some Exception");
             
+            exceptionList.Should().NotContain("Failure of Child 1: System.Exception: Some Exception");
+            exceptionList.Should().NotContain("Failure of Root: System.Exception: Some Exception");
+
         }
     }
 }

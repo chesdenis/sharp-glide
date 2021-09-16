@@ -18,7 +18,7 @@ namespace SharpGlide.Tests.Parts
 
             // Act
             multiThreadVectorPart.PushRange(new int[] { 1, 2, 3, 4, 5, 6 });
-            await multiThreadVectorPart.StartAndStopAsync(TimeSpan.FromSeconds(2));
+            await multiThreadVectorPart.StartAndStopAsync(TimeSpan.FromSeconds(3));
 
             // Assert
             multiThreadVectorPart.PushedData.Count.Should().Be(6);
