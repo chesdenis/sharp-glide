@@ -1,7 +1,8 @@
 using System;
+using SharpGlide.Context.Abstractions;
 using SharpGlide.Extensions;
 
-namespace SharpGlide.Context.HeartBeat
+namespace SharpGlide.Context
 {
     public class PointHeartBeatContext : HeartBeatContext, IPointHeartBeatContext
     {

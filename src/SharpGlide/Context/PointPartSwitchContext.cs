@@ -2,14 +2,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
 
-namespace SharpGlide.Context.Switch
+namespace SharpGlide.Context
 {
     public class PointPartSwitchContext : SwitchContext
     {
         private readonly PointPart _pointPart;
         private CancellationTokenSource _cts;
 
-        public PointPartSwitchContext(PointPart pointPart)
+        public PointPartSwitchContext(PointPart pointPart) : base(pointPart)
         {
             _pointPart = pointPart;
         }

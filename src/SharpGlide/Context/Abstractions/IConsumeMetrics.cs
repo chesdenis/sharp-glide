@@ -1,6 +1,6 @@
 using System;
 
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Abstractions
 {
     public interface IConsumeMetrics
     {

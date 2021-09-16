@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Context;
-using SharpGlide.Context.HeartBeat;
-using SharpGlide.Context.Switch;
 using SharpGlide.Providers;
 using SharpGlide.Tunnels;
 
@@ -76,15 +74,9 @@ namespace SharpGlide.Parts.Abstractions
             }
         }
 
-        public void ConsumeData(TConsumeData data)
-        {
-            VectorPartContext.ConsumeContext.ConsumeData(data);
-        }
+        public void Push(TConsumeData data) => VectorPartContext.ConsumeContext.Push(data);
 
-        public void ConsumeData(TConsumeData data, string tunnelKey)
-        {
-            VectorPartContext.ConsumeContext.ConsumeData(data, tunnelKey);
-        }
+        public void PushRange(IEnumerable<TConsumeData> data) => VectorPartContext.ConsumeContext.PushRange(data);
 
         public void SetupConsumeAsQueueFromTopic<TConsumeTunnel>(
             TConsumeTunnel tunnel, 

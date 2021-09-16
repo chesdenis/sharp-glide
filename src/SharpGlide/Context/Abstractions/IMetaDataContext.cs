@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Abstractions
 {
     public interface IMetaDataContext
     {
@@ -9,6 +9,9 @@ namespace SharpGlide.Context
 
         ConcurrentDictionary<string,string> Status { get; }
         
+        ConcurrentBag<string> Errors { get; }
+        
         void UpsertStatus(string key, string value);
+        void ReportException(Exception ex);
     }
 }

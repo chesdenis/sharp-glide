@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SharpGlide.Tunnels;
 using SharpGlide.Wrappers;
 
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Abstractions
 {
     public interface IConsumeContext<TConsumeData> : IConsumeMetrics
     {
@@ -14,7 +14,8 @@ namespace SharpGlide.Context
         void SetupBindingToTopic(IConsumeTunnel<TConsumeData> tunnel, string topicName, string queueName, string routingKey);
         
         IEnumerable<TConsumeData> ReadAndConsumeData();
-        void ConsumeData(TConsumeData data);
-        void ConsumeData(TConsumeData data, string tunnelKey);
+        void Push(TConsumeData data);
+        void Push(TConsumeData data, string tunnelKey);
+        void PushRange(IEnumerable<TConsumeData> data);
     }
 }

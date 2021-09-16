@@ -1,11 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
+using SharpGlide.Context.Abstractions;
 using SharpGlide.Parts.Abstractions;
 using SharpGlide.Renders;
 
-namespace SharpGlide.Context.HeartBeat
+namespace SharpGlide.Context
 {
     public abstract class HeartBeatContext : IHeartBeatContext
     {
@@ -70,6 +72,24 @@ namespace SharpGlide.Context.HeartBeat
                 var statusTable = ConsoleTable.FromDynamic(statusInfo);
 
                 stringBuilder.AppendLine(statusTable.ToString());
+             
+                return stringBuilder.ToString();
+            }
+        }
+
+        public string GetExceptionList(IBasePart startPart)
+        {
+            lock (_syncRoot)
+            {
+                var stringBuilder = new StringBuilder();
+
+                var exceptionList = startPart.Context.HeartBeatContext.GetExceptionList(startPart);
+
+                if (!exceptionList.Any()) return string.Empty;
+
+                stringBuilder.AppendLine(startPart.Name);
+
+                stringBuilder.AppendLine(exceptionList);
              
                 return stringBuilder.ToString();
             }

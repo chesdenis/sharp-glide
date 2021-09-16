@@ -28,7 +28,7 @@ namespace SharpGlide.Tests.Parts
             partA.FlowTo(partC, "Rk.BFlow");
 
             // Act
-            partA.ConsumeData(10);
+            partA.Push(10);
             await partA.StartAsync();
             await partB.StartAsync();
             await partC.StartAsync();

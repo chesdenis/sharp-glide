@@ -1,8 +1,9 @@
 using System;
+using SharpGlide.Context.Abstractions;
 using SharpGlide.Extensions;
 using SharpGlide.Providers;
 
-namespace SharpGlide.Context.HeartBeat
+namespace SharpGlide.Context
 {
     public class VectorHeartBeatContext : HeartBeatContext, IVectorHeartBeatContext
     {
@@ -37,8 +38,8 @@ namespace SharpGlide.Context.HeartBeat
         {
             _metaDataContext.UpsertStatus("Name", _metaDataContext.Name.IndentLeft('-', indentation));
             _metaDataContext.UpsertStatus("Available", _consumeMetrics.GetWaitingToConsumeAmount().ToString());
-            _metaDataContext.UpsertStatus("_ETA",_consumeMetrics.GetEstimatedTime().ToString("c"));
-            _metaDataContext.UpsertStatus("_Speed, n/sec", _consumeMetrics.GetMessagesPerSecond().ToString());
+            _metaDataContext.UpsertStatus("ETA",_consumeMetrics.GetEstimatedTime().ToString("c"));
+            _metaDataContext.UpsertStatus("Speed, n/sec", _consumeMetrics.GetMessagesPerSecond().ToString());
         }
 
         public override void UpdateStatus(string key, string value)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpGlide.Behaviours;
 using SharpGlide.Context;
+using SharpGlide.Context.Abstractions;
 using SharpGlide.Extensions;
 
 namespace SharpGlide.Parts.Abstractions
@@ -92,12 +93,20 @@ namespace SharpGlide.Parts.Abstractions
         }
         
         public void ReportInfo(string status) => Context.MetaDataContext.Status["Info"] = status;
-        
+        public void ReportThreads(int threadsAmount) => Context.MetaDataContext.Status["Threads"] = threadsAmount.ToString();
+        public void Report(string key, string value) => Context.MetaDataContext.Status[key] = value;
+        public void ReportException(Exception ex) => Context.MetaDataContext.ReportException(ex);
+
         public string GetStatusTable() => Context.HeartBeatContext.GetStatusTable(this);
+        public string GetExceptionList() => Context.HeartBeatContext.GetExceptionList(this);
         
         public ConcurrentDictionary<string, string> Status => Context.MetaDataContext.Status;
         
-        public void AddChild(IBasePart part) => Context.GroupContext.AddChild(part);
+        public IBasePart AddChild(IBasePart part)
+        {
+            Context.GroupContext.AddChild(part);
+            return part;
+        }
 
         public IBasePart GetChild(string name, bool recursive = false) => Context.GroupContext.GetChild(name, recursive);
 

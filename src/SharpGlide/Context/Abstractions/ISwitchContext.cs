@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Behaviours;
 
-namespace SharpGlide.Context.Switch
+namespace SharpGlide.Context.Abstractions
 {
     public interface ISwitchContext
     {

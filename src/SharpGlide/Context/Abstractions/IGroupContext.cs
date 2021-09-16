@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using SharpGlide.Parts.Abstractions;
 
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Abstractions
 {
     public interface IGroupContext
     {

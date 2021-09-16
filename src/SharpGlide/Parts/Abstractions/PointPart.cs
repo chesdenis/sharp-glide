@@ -2,8 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Context;
-using SharpGlide.Context.HeartBeat;
-using SharpGlide.Context.Switch;
 using SharpGlide.Providers;
 
 namespace SharpGlide.Parts.Abstractions

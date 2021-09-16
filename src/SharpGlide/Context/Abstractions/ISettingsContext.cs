@@ -1,4 +1,4 @@
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Abstractions
 {
     public interface ISettingsContext
     {

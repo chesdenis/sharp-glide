@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SharpGlide.Tunnels;
 using SharpGlide.Wrappers;
 
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Abstractions
 {
     public interface IPublishContext<TPublishData>
     { 

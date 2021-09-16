@@ -1,6 +1,6 @@
 using System;
 
-namespace SharpGlide.Context.HeartBeat
+namespace SharpGlide.Context.Abstractions
 {
     public interface IPointHeartBeatContext : IHeartBeatContext
     {

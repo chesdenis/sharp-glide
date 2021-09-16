@@ -1,5 +1,4 @@
-using SharpGlide.Context.HeartBeat;
-using SharpGlide.Context.Switch;
+using SharpGlide.Context.Abstractions;
 
 namespace SharpGlide.Context
 {

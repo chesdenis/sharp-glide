@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using SharpGlide.Context;
-using SharpGlide.Context.Switch;
+using SharpGlide.Context.Abstractions;
 
 namespace SharpGlide.Behaviours
 {

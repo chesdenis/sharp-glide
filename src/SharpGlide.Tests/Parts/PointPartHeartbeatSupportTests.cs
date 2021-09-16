@@ -49,5 +49,35 @@ namespace SharpGlide.Tests.Parts
             statusTable.Should().Contain("| -Child 4  |");
             statusTable.Should().Contain("-------------");
         }
+        
+        
+        [Fact]
+        public async Task PointPartShouldPrintExceptionList()
+        {
+            // Arrange 
+            var rootPart = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport { Name = "Root" };
+            var childrenAWithChild = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport { Name = "Child 1" };
+            var childrenB = new TestPointPartWithFailure() { Name = "Child 2" };
+            var childrenC = new TestPointPartWithFailure { Name = "Child 3" };
+            var childrenD = new TestPointPartWithFailure { Name = "Child 4" };
+
+            rootPart.ConfigureStartAs<StartInBackground>();
+            childrenAWithChild.ConfigureStartAs<StartInBackground>();
+            childrenB.ConfigureStartAs<StartInBackground>();
+            childrenC.ConfigureStartAs<StartInBackground>();
+            childrenD.ConfigureStartAs<StartInBackground>();
+
+            rootPart.AddChild(childrenAWithChild);
+            childrenAWithChild.AddChild(childrenB);
+            childrenAWithChild.AddChild(childrenC);
+            rootPart.AddChild(childrenD);
+
+            // Act
+            await rootPart.StartAsync();
+            var exceptionList = rootPart.GetExceptionList();
+
+            // Assert
+            
+        }
     }
 }

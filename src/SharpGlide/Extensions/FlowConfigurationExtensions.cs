@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
 using SharpGlide.Tunnels.InMemory;
 using SharpGlide.Tunnels.InMemory.Messaging;
@@ -7,7 +8,7 @@ namespace SharpGlide.Extensions
 {
     public static class FlowConfigurationExtensions
     {
-        public static void FlowFromSelf<TConsumeData, TPublishData>
+        public static VectorPart<TConsumeData, TPublishData> FlowFromSelf<TConsumeData, TPublishData>
             (this VectorPart<TConsumeData, TPublishData> sourcePart)
         {
             var linkId = Guid.NewGuid().ToString("N");
@@ -18,9 +19,11 @@ namespace SharpGlide.Extensions
             var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TConsumeData>(InMemoryBroker.Current);
             
             sourcePart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
+
+            return sourcePart;
         }
         
-        public static void FlowTo<TTargetConsumeData, TTargetPublishData, TConsumeData, TPublishData>(
+        public static VectorPart<TTargetConsumeData, TTargetPublishData> FlowTo<TTargetConsumeData, TTargetPublishData, TConsumeData, TPublishData>(
             this VectorPart<TConsumeData, TPublishData> sourcePart,
             VectorPart<TTargetConsumeData, TTargetPublishData> targetPart)
         {
@@ -34,9 +37,11 @@ namespace SharpGlide.Extensions
             
             sourcePart.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, topicName, routingKey);
             targetPart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
+
+            return targetPart;
         }
         
-        public static void FlowTo<TTargetConsumeData, TTargetPublishData, TConsumeData, TPublishData>(
+        public static VectorPart<TTargetConsumeData, TTargetPublishData> FlowTo<TTargetConsumeData, TTargetPublishData, TConsumeData, TPublishData>(
             this VectorPart<TConsumeData, TPublishData> sourcePart,
             VectorPart<TTargetConsumeData, TTargetPublishData> targetPart, string routingKey)
         {
@@ -49,9 +54,11 @@ namespace SharpGlide.Extensions
             
             sourcePart.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, topicName, routingKey);
             targetPart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
+
+            return targetPart;
         }
 
-        public static void FlowFrom<TSourceConsumeData, TSourcePublishData, TConsumeData, TPublishData>(
+        public static VectorPart<TSourceConsumeData, TSourcePublishData> FlowFrom<TSourceConsumeData, TSourcePublishData, TConsumeData, TPublishData>(
            this VectorPart<TConsumeData, TPublishData> targetPart,
            VectorPart<TSourceConsumeData, TSourcePublishData> sourcePart)
         {
@@ -65,6 +72,8 @@ namespace SharpGlide.Extensions
             
             targetPart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
             sourcePart.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, topicName, routingKey);
+
+            return sourcePart;
         }
     }
 }

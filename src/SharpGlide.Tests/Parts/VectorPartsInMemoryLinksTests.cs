@@ -20,11 +20,10 @@ namespace SharpGlide.Tests.Parts
             partA.ConfigureStartAs<StartInBackground>();
             partB.ConfigureStartAs<StartInBackground>();
             
-            partA.FlowFromSelf();
-            partA.FlowTo(partB);
+            partA.FlowFromSelf().FlowTo(partB);
 
             // Act
-            partA.ConsumeData(123);
+            partA.Push(123);
             await partA.StartAsync();
             await partB.StartAsync();
 
@@ -44,12 +43,11 @@ namespace SharpGlide.Tests.Parts
             partB.ConfigureStartAs<StartInBackground>();
             partC.ConfigureStartAs<StartInBackground>();
             
-            partA.FlowFromSelf();
-            partA.FlowTo(partB);
+            partA.FlowFromSelf().FlowTo(partB);
             partA.FlowTo(partC);
             
             // Act
-            partA.ConsumeData(123);
+            partA.Push(123);
             await partA.StartAsync();
             await partB.StartAsync();
             await partC.StartAsync();
@@ -69,11 +67,10 @@ namespace SharpGlide.Tests.Parts
             partA.ConfigureStartAs<StartInBackground>();
             partB.ConfigureStartAs<StartInBackground>();
             
-            partA.FlowFromSelf();
-            partB.FlowFrom(partA);
-            
+            partA.FlowFromSelf().FlowTo(partB);
+
             // Act
-            partA.ConsumeData(123);
+            partA.Push(123);
             await partA.StartAsync();
             await partB.StartAsync();
 

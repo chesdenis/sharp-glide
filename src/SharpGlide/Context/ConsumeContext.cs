@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpGlide.Context.Abstractions;
 using SharpGlide.Tunnels;
 using SharpGlide.Wrappers;
 
@@ -33,15 +34,26 @@ namespace SharpGlide.Context
             ConsumeTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
         }
         
-        public void ConsumeData(TConsumeData data)
+        public void Push(TConsumeData data)
         {
             ConsumeTunnels.First().Value.Put(data);
         }
+        
+        public void PushRange(IEnumerable<TConsumeData> data)
+        {
+            var firstConsumer = ConsumeTunnels.First().Value;
+            foreach (var consumeData in data)
+            {
+                firstConsumer.Put(consumeData);
+            }
+        }
 
-        public void ConsumeData(TConsumeData data, string tunnelKey)
+        public void Push(TConsumeData data, string tunnelKey)
         {
             ConsumeTunnels.First(f=>f.Key == tunnelKey).Value.Put(data);
         }
+
+       
 
         // TODO: make it async
         public IEnumerable<TConsumeData> ReadAndConsumeData()

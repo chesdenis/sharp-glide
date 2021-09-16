@@ -2,14 +2,21 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Behaviours;
-using SharpGlide.Exceptions;
+using SharpGlide.Context.Abstractions;
+using SharpGlide.Parts.Abstractions;
 
-namespace SharpGlide.Context.Switch
+namespace SharpGlide.Context
 {
     public abstract class SwitchContext : ISwitchContext
     {
+        private readonly IBasePart _part;
         private CancellationTokenSource _cts;
         public CancellationTokenSource GetExecutionTokenSource() => _cts;
+
+        protected SwitchContext(IBasePart part)
+        {
+            _part = part;
+        }
         
         public Func<Task> GetStartAsyncCall() => OnStartAsync;
 
@@ -27,10 +34,21 @@ namespace SharpGlide.Context.Switch
         {
             ReissueToken();
 
-            if (StartBehaviour == null)
+            StartBehaviour ??= new TryCatchStartInBackground(() =>
             {
-                throw new StartBehaviourWasNotConfiguredException();
-            }
+                // TODO: implement start timestamps here + reporting
+            }, () =>
+            {
+                
+            },
+                ex =>
+                {
+                    _part.ReportException(ex);
+                },
+                () =>
+                {
+                    
+                });
             
             await StartBehaviour.ExecuteAsync(this);
         }

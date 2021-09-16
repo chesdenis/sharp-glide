@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SharpGlide.Context.HeartBeat;
+using SharpGlide.Context.Abstractions;
 using SharpGlide.Tunnels;
 using SharpGlide.Wrappers;
 

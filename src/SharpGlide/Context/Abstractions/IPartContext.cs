@@ -1,7 +1,4 @@
-using SharpGlide.Context.HeartBeat;
-using SharpGlide.Context.Switch;
-
-namespace SharpGlide.Context
+namespace SharpGlide.Context.Abstractions
 {
     public interface IPartContext
     {
