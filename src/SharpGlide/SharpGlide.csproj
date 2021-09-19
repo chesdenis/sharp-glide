@@ -4,7 +4,7 @@
         <TargetFramework>netstandard2.1</TargetFramework>
         <IsPackable>true</IsPackable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.0.4-alpha</PackageVersion>
+        <PackageVersion>1.0.5-alpha</PackageVersion>
         <Title>Sharp Glide</Title>
         <Authors>Denis Chesnokov aka chesdenis</Authors>
         <Description>SharpGlide aims to be simple, zero dependency, fluent, reusable, extensible approach to build data processing parts and connect them into data flow pipelines using any kind transfer tunnels.</Description>
@@ -16,8 +16,7 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>flow, pipelines, data flow, processing, mapping, publishing, consuming, eta</PackageTags>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <PackageReleaseNotes>+ Multithreading part;
-+ Errors reporting.</PackageReleaseNotes>
+        <PackageReleaseNotes>+ Fixed max thread reporting</PackageReleaseNotes>
     </PropertyGroup>
 
 </Project>

@@ -35,7 +35,7 @@ namespace SharpGlide.Parts.Abstractions
                 }
             }
             
-            ReportThreads(_backgroundTasks.Count);
+            ReportThreads(GetNotFinishedThreadsCount());
 
             _backgroundTasks.TryAdd(Guid.NewGuid(), Task.Run(async () =>
             {
