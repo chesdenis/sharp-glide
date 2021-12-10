@@ -16,9 +16,11 @@ namespace SharpGlide.Context
         public override int IdleTimeoutMs { get; set; }
         public override bool Idle { get; }
         public override bool Failed { get; }
-        public override void UpdateStatus(int indentation = 0)
+        public override void UpdateStatus()
         {
-            _metaDataContext.UpsertStatus("Name", _metaDataContext.Name.IndentLeft('-', indentation));
+            _metaDataContext.UpsertStatus("Name", _metaDataContext.Name);
+            _metaDataContext.UpsertStatus("IdleTimeoutMs", IdleTimeoutMs.ToString());
+            _metaDataContext.UpsertStatus("Idle", Idle.ToString());
         }
 
         public override void UpdateStatus(string key, string value)

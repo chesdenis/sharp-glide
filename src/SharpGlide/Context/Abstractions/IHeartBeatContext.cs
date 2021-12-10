@@ -12,7 +12,7 @@ namespace SharpGlide.Context.Abstractions
 
         bool Failed { get; }
 
-        void UpdateStatus(int indentation = 0);
+        void UpdateStatus();
         
         void UpdateStatus(string key, string value);
         

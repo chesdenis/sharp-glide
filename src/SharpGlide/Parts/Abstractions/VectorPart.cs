@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Context;
-using SharpGlide.Providers;
 using SharpGlide.Tunnels;
 
 namespace SharpGlide.Parts.Abstractions
@@ -23,15 +21,13 @@ namespace SharpGlide.Parts.Abstractions
         protected VectorPart()
         {
             var metaDataContext = new MetaDataContext();
-            var groupContext = new GroupContext(); 
-            
-            var dateTimeProvider = new DateTimeProvider();
-            
+            var groupContext = new GroupContext();
+
             var settingsContext = new SettingsContext();
             
             var consumeContext = new ConsumeContext<TConsumeData>();
             var heartBeatContext =
-                new VectorHeartBeatContext(dateTimeProvider, consumeContext, groupContext, metaDataContext);
+                new VectorHeartBeatContext(groupContext, metaDataContext);
             
             var publishContext = new PublishContext<TPublishData>(heartBeatContext);
             

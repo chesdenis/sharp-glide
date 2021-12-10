@@ -4,12 +4,12 @@ using SharpGlide.Wrappers;
 
 namespace SharpGlide.Context.Abstractions
 {
-    public interface IConsumeContext<TConsumeData> : IConsumeMetrics
+    public interface IConsumeContext<TConsumeData>
     {
         IDictionary<string, IConsumeTunnel<TConsumeData>> ConsumeTunnels { get; }
 
         TConsumeWrapper AddConsumeWrapper<TConsumeWrapper>(TConsumeWrapper wrapper)
-            where TConsumeWrapper : IWrapperWithOutput<TConsumeData>;
+            where TConsumeWrapper : IConsumeWrapper<TConsumeData>;
 
         void SetupBindingToTopic(IConsumeTunnel<TConsumeData> tunnel, string topicName, string queueName, string routingKey);
         

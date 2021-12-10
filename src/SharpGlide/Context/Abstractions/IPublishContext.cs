@@ -9,7 +9,7 @@ namespace SharpGlide.Context.Abstractions
         IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels { get; }
 
         TPublishWrapper AddPublishWrapper<TPublishWrapper>(TPublishWrapper wrapper)
-            where TPublishWrapper : IWrapperWithInput<TPublishData>;
+            where TPublishWrapper : IPublishWrapper<TPublishData>;
 
         void SetupBindingToTopic(IPublishTunnel<TPublishData> tunnel, string topicName, string routingKey);
     }

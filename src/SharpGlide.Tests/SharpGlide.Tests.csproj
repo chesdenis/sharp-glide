@@ -25,4 +25,9 @@
       <ProjectReference Include="..\SharpGlide\SharpGlide.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Behaviour" />
+      <Folder Include="Unit" />
+    </ItemGroup>
+
 </Project>

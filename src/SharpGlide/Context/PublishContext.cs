@@ -19,7 +19,7 @@ namespace SharpGlide.Context
         }
         
         public TPublishWrapper AddPublishWrapper<TPublishWrapper>(TPublishWrapper wrapper)
-            where TPublishWrapper : IWrapperWithInput<TPublishData>
+            where TPublishWrapper : IPublishWrapper<TPublishData>
         {
             foreach (var tunnelKey in PublishTunnels.Keys)
             {

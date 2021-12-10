@@ -1,6 +1,5 @@
 using System;
 using SharpGlide.Context.Abstractions;
-using SharpGlide.Extensions;
 using SharpGlide.Providers;
 
 namespace SharpGlide.Context
@@ -8,38 +7,37 @@ namespace SharpGlide.Context
     public class VectorHeartBeatContext : HeartBeatContext, IVectorHeartBeatContext
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly IConsumeMetrics _consumeMetrics;
+
         private readonly IMetaDataContext _metaDataContext;
 
         public VectorHeartBeatContext(
-            IDateTimeProvider dateTimeProvider,
-            IConsumeMetrics consumeMetrics,
             IGroupContext groupContext,
             IMetaDataContext metaDataContext) : base(groupContext)
         {
-            _dateTimeProvider = dateTimeProvider;
-            _consumeMetrics = consumeMetrics;
             _metaDataContext = metaDataContext;
 
-            LastPublishedAt = _dateTimeProvider.GetNow();
-            LastConsumedAt = _dateTimeProvider.GetNow();
+            LastPublishedAt = DateTimeProvider.Now;
+            LastConsumedAt = DateTimeProvider.Now;
         }
 
-        public DateTime LastPublishedAt { get; set; } 
+        public DateTime LastPublishedAt { get; set; }
         public DateTime LastConsumedAt { get; set; }
-        public override int IdleTimeoutMs { get; set; }
         
-        public override bool Idle => DateTime.Now.Subtract(LastPublishedAt).TotalMilliseconds > IdleTimeoutMs &
-                            DateTime.Now.Subtract(LastConsumedAt).TotalMilliseconds > IdleTimeoutMs;
+        public int Buffer { get; set; }
+        public override int IdleTimeoutMs { get; set; }
+
+        public override bool Idle => DateTimeProvider.Now.Subtract(LastPublishedAt).TotalMilliseconds > IdleTimeoutMs &
+                                     DateTimeProvider.Now.Subtract(LastConsumedAt).TotalMilliseconds > IdleTimeoutMs;
 
         public override bool Failed { get; }
 
-        public override void UpdateStatus(int indentation = 0)
+        public override void UpdateStatus()
         {
-            _metaDataContext.UpsertStatus("Name", _metaDataContext.Name.IndentLeft('-', indentation));
-            _metaDataContext.UpsertStatus("Available", _consumeMetrics.GetWaitingToConsumeAmount().ToString());
-            _metaDataContext.UpsertStatus("ETA",_consumeMetrics.GetEstimatedTime().ToString("c"));
-            _metaDataContext.UpsertStatus("Speed, n/sec", _consumeMetrics.GetMessagesPerSecond().ToString());
+            _metaDataContext.UpsertStatus("Name", _metaDataContext.Name);
+            _metaDataContext.UpsertStatus("LastPublishedAt", LastPublishedAt.ToString("s"));
+            _metaDataContext.UpsertStatus("LastConsumedAt", LastConsumedAt.ToString("s"));
+            _metaDataContext.UpsertStatus("IdleTimeoutMs", IdleTimeoutMs.ToString());
+            _metaDataContext.UpsertStatus("Idle", Idle.ToString());
         }
 
         public override void UpdateStatus(string key, string value)

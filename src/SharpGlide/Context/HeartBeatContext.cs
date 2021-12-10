@@ -23,7 +23,7 @@ namespace SharpGlide.Context
         public abstract int IdleTimeoutMs { get; set; }
         public abstract bool Idle { get; }
         public abstract bool Failed { get; }
-        public abstract void UpdateStatus(int indentation = 0);
+        public abstract void UpdateStatus();
         public abstract void UpdateStatus(string key, string value);
         public List<ExpandoObject> GetStatus(IBasePart startPart)
         {
@@ -31,7 +31,7 @@ namespace SharpGlide.Context
             
             foreach (var leaf in partTree)
             {
-                leaf.Item2.Context.HeartBeatContext.UpdateStatus(leaf.Item1);
+                leaf.Item2.Context.HeartBeatContext.UpdateStatus();
             }
             
             var partsStatusKeys = partTree

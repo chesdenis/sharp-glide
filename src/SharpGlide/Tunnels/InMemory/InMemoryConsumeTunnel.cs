@@ -31,59 +31,6 @@ namespace SharpGlide.Tunnels.InMemory
                 throw new NoDataException();
             };
         }
-        
-        private int _previousWaitingToConsume;
-        private DateTime _previousWaitingToConsumeDateTime = DateTime.Now;
-        
-        public override int WaitingToConsume
-        {
-            get
-            {
-                var waitingToConsume = _broker.FindQueues(TopicName, RoutingKey)
-                    .Select(inMemoryQueue => inMemoryQueue.Count).Sum();
-
-                return waitingToConsume;
-            }
-        }
-
-        public override int EstimatedTimeInSeconds
-        {
-            get
-            {
-                var currentWaitingToConsume = WaitingToConsume;
-
-                if (_previousWaitingToConsume > currentWaitingToConsume)
-                {
-                    var processedMessagesDelta = Math.Abs(_previousWaitingToConsume - currentWaitingToConsume);
-                    if (processedMessagesDelta == 0)
-                    {
-                        return 0;
-                    }
-                    
-                    var timeRangeDeltaInSeconds = DateTime.Now.Subtract(_previousWaitingToConsumeDateTime).TotalSeconds;
-
-                    var secondsPerMessage = timeRangeDeltaInSeconds / processedMessagesDelta;
-                    var estimatedTime = Convert.ToInt32(secondsPerMessage * currentWaitingToConsume);
-                    _messagesPerSecond = Convert.ToInt32(timeRangeDeltaInSeconds > 0 ? processedMessagesDelta / timeRangeDeltaInSeconds : 0);
-                    
-                    return estimatedTime;
-                }
-                
-                _previousWaitingToConsume = currentWaitingToConsume;
-                _previousWaitingToConsumeDateTime = DateTime.Now;
-
-                return 0;
-            }
-        }
-
-        private int _messagesPerSecond;
-        public override int MessagesPerSecond
-        {
-            get
-            {
-                return _messagesPerSecond;
-            }
-        }
 
         public override void Put(T input, string topicName, string queueName, string routingKey)
         {

@@ -13,7 +13,7 @@ namespace SharpGlide.Context
             new Dictionary<string, IConsumeTunnel<TConsumeData>>();
         
         public TConsumeWrapper AddConsumeWrapper<TConsumeWrapper>(TConsumeWrapper wrapper)
-            where TConsumeWrapper : IWrapperWithOutput<TConsumeData>
+            where TConsumeWrapper : IConsumeWrapper<TConsumeData>
         {
             foreach (var tunnelKey in ConsumeTunnels.Keys)
             {
@@ -52,9 +52,7 @@ namespace SharpGlide.Context
         {
             ConsumeTunnels.First(f=>f.Key == tunnelKey).Value.Put(data);
         }
-
-       
-
+        
         // TODO: make it async
         public IEnumerable<TConsumeData> ReadAndConsumeData()
         {
@@ -67,21 +65,5 @@ namespace SharpGlide.Context
                 yield return consumeData;
             }
         }
-
-        public int GetWaitingToConsumeAmount() =>
-            ConsumeTunnels
-                .Select(s => s.Value.WaitingToConsume)
-                .Sum();
-
-        public TimeSpan GetEstimatedTime() =>
-            TimeSpan.FromSeconds(
-                ConsumeTunnels
-                    .Select(s => s.Value.EstimatedTimeInSeconds)
-                    .Sum());
-
-        public int GetMessagesPerSecond() =>
-            ConsumeTunnels
-                .Select(s => s.Value.MessagesPerSecond)
-                .Sum();
     }
 }
