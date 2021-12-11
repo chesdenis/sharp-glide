@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using SharpGlide.Context.Abstractions;
+using SharpGlide.Providers;
 using SharpGlide.Tunnels.Abstractions;
+using SharpGlide.Tunnels.Routes;
 using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Context
@@ -29,40 +31,39 @@ namespace SharpGlide.Context
             return wrapper;
         }
         
-        public void SetupBindingToTopic(IPublishTunnel<TPublishData> tunnel, string topicName, string routingKey)
+        public void SetupBindingToTopic(IPublishTunnel<TPublishData> tunnel, IPublishRoute publishRoute)
         {
-            tunnel.RoutingKey = routingKey;
-            tunnel.TopicName = topicName;
+            tunnel.PublishRoute = publishRoute;
 
-            tunnel.SetupInfrastructure(topicName, routingKey);
+            tunnel.SetupInfrastructure(publishRoute);
             
             PublishTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
         }
 
+        public void Publish(TPublishData data, IPublishRoute publishRoute)
+        {
+            foreach (var tunnelKey in PublishTunnels.Keys)
+            {
+                PublishTunnels[tunnelKey].Publish(data, publishRoute);
+                _heartBeatContext.LastPublishedAt = DateTimeProvider.Now;
+            }
+        }
+         
         public void Publish(TPublishData data)
         {
-            foreach (var t in PublishTunnels)
+            foreach (var tunnelKey in PublishTunnels.Keys)
             {
-                t.Value.Publish(data);
-                _heartBeatContext.LastPublishedAt = DateTime.Now;
+                PublishTunnels[tunnelKey].Publish(data);
+                _heartBeatContext.LastPublishedAt = DateTimeProvider.Now;
             }
         }
-
+        
         public void Publish(TPublishData data, string routingKey)
         {
-            foreach (var t in PublishTunnels)
+            foreach (var tunnelKey in PublishTunnels.Keys)
             {
-                t.Value.Publish(data, routingKey);
-                _heartBeatContext.LastPublishedAt = DateTime.Now;
-            }
-        }
-
-        public void Publish(TPublishData data, string topicName, string routingKey)
-        {
-            foreach (var t in PublishTunnels)
-            {
-                t.Value.Publish(data, topicName, routingKey);
-                _heartBeatContext.LastPublishedAt = DateTime.Now;
+                PublishTunnels[tunnelKey].Publish(data, routingKey);
+                _heartBeatContext.LastPublishedAt = DateTimeProvider.Now;
             }
         }
     }

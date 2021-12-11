@@ -1,6 +1,7 @@
 using System;
 using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.InMemory.Messaging;
+using SharpGlide.Tunnels.Routes;
 
 namespace SharpGlide.Tunnels.InMemory
 {
@@ -13,20 +14,20 @@ namespace SharpGlide.Tunnels.InMemory
             _broker = broker;
         }
 
-        public override Action<T, string, string> PublishPointer()
+        public override Action<T, IPublishRoute> PublishPointer()
         {
-            return (data, topicName, routingKey) =>
+            return (data, publishRoute) =>
             {
-                foreach (var inMemoryQueue in _broker.FindQueues(topicName, routingKey))
+                foreach (var inMemoryQueue in _broker.EnumerateQueues(publishRoute))
                 {
                     inMemoryQueue.Enqueue(data);
                 }
             };
         }
 
-        public override void SetupInfrastructure(string topicName, string routingKey)
+        public override void SetupInfrastructure(IPublishRoute publishRoute)
         {
-            _broker.SetupInfrastructure(topicName);
+            _broker.SetupInfrastructure(publishRoute);
         }
     }
 }

@@ -6,6 +6,7 @@ using SharpGlide.Behaviours;
 using SharpGlide.Tests.Model.VectorPart;
 using SharpGlide.Tunnels.InMemory;
 using SharpGlide.Tunnels.InMemory.Messaging;
+using SharpGlide.Tunnels.Routes;
 using Xunit;
 
 namespace SharpGlide.Tests.Behaviour.Parts
@@ -42,10 +43,20 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             partWithFailure.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPartWithFailure.Input>(InMemoryBroker.Current),
-                "t1", "q1", "r1");
+                new ConsumeRoute
+                {
+                    Topic = "t1",
+                    Queue = "q1",
+                    RoutingKey = "r1"
+                });
             partStable.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
-                "t2", "q2", "r2");
+                new ConsumeRoute()
+                {
+                    Topic = "t2", 
+                    Queue = "q2", 
+                    RoutingKey = "r2"
+                });
 
 
             // Act
@@ -97,10 +108,20 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             partWithFailure.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPartWithFailure.Input>(InMemoryBroker.Current),
-                "t1", "q1", "r1");
+                new ConsumeRoute()
+                {
+                    Topic = "t1",
+                    Queue = "q1",
+                    RoutingKey = "r1"
+                });
             partStable.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
-                "t2", "q2", "r2");
+                new ConsumeRoute()
+                {
+                    Topic = "t2",
+                    Queue = "q2",
+                    RoutingKey = "r2"
+                });
 
 
             // Act
@@ -133,7 +154,12 @@ namespace SharpGlide.Tests.Behaviour.Parts
             
             part.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
-                "t2", "q2", "r2");
+                new ConsumeRoute()
+                {
+                    Topic = "t2",
+                    Queue = "q2",
+                    RoutingKey = "r2"
+                });
 
             // Act
             part.Push(new TestVectorPart.Input());

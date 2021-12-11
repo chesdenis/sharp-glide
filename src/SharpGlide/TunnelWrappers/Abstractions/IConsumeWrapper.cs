@@ -1,9 +1,10 @@
 using System;
+using SharpGlide.Tunnels.Routes;
 
 namespace SharpGlide.TunnelWrappers.Abstractions
 {
     public interface IConsumeWrapper<T>
     {
-        Func<string, string, string, T> Wrap(Func<string, string, string, T> funcToWrap);
+        Func<IConsumeRoute, T> Wrap(Func<IConsumeRoute, T> funcToWrap);
     }
 }

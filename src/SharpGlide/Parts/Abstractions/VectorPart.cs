@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Context;
 using SharpGlide.Tunnels.Abstractions;
+using SharpGlide.Tunnels.Routes;
 
 namespace SharpGlide.Parts.Abstractions
 {
@@ -10,10 +11,7 @@ namespace SharpGlide.Parts.Abstractions
     {
         public VectorPartContext<TConsumeData, TPublishData> VectorPartContext => 
             (VectorPartContext<TConsumeData, TPublishData>) Context;
-        
-        public IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels => 
-            VectorPartContext.PublishContext.PublishTunnels;
-        
+
         public abstract Task ProcessAsync(
             TConsumeData data, 
             CancellationToken cancellationToken);
@@ -46,29 +44,14 @@ namespace SharpGlide.Parts.Abstractions
                     );
         }
 
-        public void Publish(TPublishData data)
-        {
-            foreach (var tunnelKey in PublishTunnels.Keys)
-            {
-                PublishTunnels[tunnelKey].Publish(data);
-            }
-        }
+        public void Publish(TPublishData data, IPublishRoute publishRoute)=>
+            VectorPartContext.PublishContext.Publish(data, publishRoute);
         
-        public void Publish(TPublishData data, string routingKey)
-        {
-            foreach (var tunnelKey in PublishTunnels.Keys)
-            {
-                PublishTunnels[tunnelKey].Publish(data, routingKey);
-            }
-        }
-        
-        public void Publish(TPublishData data, string exchange, string routingKey)
-        {
-            foreach (var tunnelKey in PublishTunnels.Keys)
-            {
-                PublishTunnels[tunnelKey].Publish(data, exchange ,routingKey);
-            }
-        }
+        public void Publish(TPublishData data) =>
+            VectorPartContext.PublishContext.Publish(data);
+
+        public void Publish(TPublishData data, string routingKey) =>
+            VectorPartContext.PublishContext.Publish(data, routingKey);
 
         public void Push(TConsumeData data) => VectorPartContext.ConsumeContext.Push(data);
 
@@ -76,21 +59,18 @@ namespace SharpGlide.Parts.Abstractions
 
         public void SetupConsumeAsQueueFromTopic<TConsumeTunnel>(
             TConsumeTunnel tunnel, 
-            string topicName, 
-            string queueName, 
-            string routingKey) 
+            IConsumeRoute consumeRoute) 
             where TConsumeTunnel : IConsumeTunnel<TConsumeData>
         {
-            VectorPartContext.ConsumeContext.SetupBindingToTopic(tunnel, topicName, queueName, routingKey);
+            VectorPartContext.ConsumeContext.SetupBindingToTopic(tunnel, consumeRoute);
         }
 
         public void SetupPublishAsTopicToQueue<TPublishTunnel>(
             TPublishTunnel tunnel, 
-            string topicName, 
-            string routingKey) 
+            IPublishRoute publishRoute) 
             where TPublishTunnel : IPublishTunnel<TPublishData>
         {
-            VectorPartContext.PublishContext.SetupBindingToTopic(tunnel, topicName, routingKey);
+            VectorPartContext.PublishContext.SetupBindingToTopic(tunnel, publishRoute);
         }
     }
 }

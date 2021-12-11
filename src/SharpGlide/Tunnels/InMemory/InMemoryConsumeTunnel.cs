@@ -2,6 +2,7 @@ using System;
 using SharpGlide.Exceptions;
 using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.InMemory.Messaging;
+using SharpGlide.Tunnels.Routes;
 
 namespace SharpGlide.Tunnels.InMemory
 {
@@ -14,13 +15,13 @@ namespace SharpGlide.Tunnels.InMemory
             _broker = broker;
         }
 
-        public override Func<string, string, string, T> ConsumePointer()
+        public override Func<IConsumeRoute, T> ConsumePointer()
         {
-            return (topicName, queueName, routingKey) =>
+            return (consumeRoute) =>
             {
-                _broker.SetupInfrastructure(topicName, queueName, routingKey);
+                _broker.SetupInfrastructure(consumeRoute);
 
-                foreach (var inMemoryQueue in _broker.FindQueues(topicName, routingKey))
+                foreach (var inMemoryQueue in _broker.EnumerateQueues(consumeRoute))
                 {
                     if (inMemoryQueue.TryDequeue(out var result))
                     {
@@ -32,19 +33,19 @@ namespace SharpGlide.Tunnels.InMemory
             };
         }
 
-        public override void Put(T input, string topicName, string queueName, string routingKey)
+        public override void Put(T input, IConsumeRoute consumeRoute)
         {
-            _broker.SetupInfrastructure(topicName, queueName, routingKey);
+            _broker.SetupInfrastructure(consumeRoute);
             
-            foreach (var inMemoryQueue in _broker.FindQueues(topicName, routingKey))
+            foreach (var inMemoryQueue in _broker.EnumerateQueues(consumeRoute))
             {
                 inMemoryQueue.Enqueue(input);
             }
         }
 
-        public override void SetupInfrastructure(string topicName, string queueName, string routingKey)
+        public override void SetupInfrastructure(IConsumeRoute consumeRoute)
         {
-            _broker.SetupInfrastructure(topicName, queueName, routingKey);
+            _broker.SetupInfrastructure(consumeRoute);
         }
     }
 }

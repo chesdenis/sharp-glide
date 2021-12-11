@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SharpGlide.Providers;
+using SharpGlide.Tunnels.Routes;
 using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.TunnelWrappers.Performance
@@ -14,15 +15,13 @@ namespace SharpGlide.TunnelWrappers.Performance
         
         public SpeedMetric GetMetric() => new SpeedMetric(_data.ToArray());
 
-        public Action<T, string, string> Wrap(Action<T, string, string> actionToWrap, string exchange,
-            string routingKey)
+        public Action<T, IPublishRoute> Wrap(Action<T, IPublishRoute> actionToWrap)
         {
-            return (arg, topicName, key) =>
+            return (arg, publishRoute) =>
             {
-                _sw.Reset();
-                _sw.Start();
+                _sw.Restart();
 
-                actionToWrap(arg, topicName, key);
+                actionToWrap(arg, publishRoute);
 
                 _sw.Stop();
 

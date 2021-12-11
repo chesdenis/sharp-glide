@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SharpGlide.Tunnels.Routes;
 using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Tunnels.Abstractions
@@ -7,20 +8,16 @@ namespace SharpGlide.Tunnels.Abstractions
     {
         IList<IConsumeWrapper<T>> OnConsumeWrappers { get; }
         
-        string RoutingKey { get; set; }
-
-        string TopicName { get; set; }
-
-        string QueueName { get; set; }
+        IConsumeRoute ConsumeRoute { get; set; }
 
         T Consume();
 
-        T Consume(string topicName, string queueName, string routingKey);
+        T Consume(IConsumeRoute consumeRoute);
         
-        void Put(T input, string topicName, string queueName, string routingKey);
+        void Put(T input, IConsumeRoute consumeRoute);
         
         void Put(T input);
         
-        void SetupInfrastructure(string topicName, string queueName, string routingKey);
+        void SetupInfrastructure(IConsumeRoute consumeRoute);
     }
 }

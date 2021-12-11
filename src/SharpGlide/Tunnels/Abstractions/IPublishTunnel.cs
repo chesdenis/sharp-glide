@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SharpGlide.Tunnels.Routes;
 using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Tunnels.Abstractions
@@ -7,16 +8,12 @@ namespace SharpGlide.Tunnels.Abstractions
     {
         IList<IPublishWrapper<T>> OnPublishWrappers { get; }
 
-        string TopicName { get; set; }
-
-        string RoutingKey { get; set; }
+        IPublishRoute PublishRoute { get; set; }
 
         void Publish(T data);
-        
         void Publish(T data, string routingKey);
+        void Publish(T data, IPublishRoute publishRoute);
 
-        void Publish(T data, string exchange, string routingKey);
-        
-        void SetupInfrastructure(string topicName, string routingKey);
+        void SetupInfrastructure(IPublishRoute publishRoute);
     }
 }

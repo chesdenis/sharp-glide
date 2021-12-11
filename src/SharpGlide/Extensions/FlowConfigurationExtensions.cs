@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SharpGlide.Parts.Abstractions;
 using SharpGlide.Tunnels.InMemory;
 using SharpGlide.Tunnels.InMemory.Messaging;
+using SharpGlide.Tunnels.Routes;
 using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Extensions
@@ -22,7 +23,14 @@ namespace SharpGlide.Extensions
 
             configureWrappers?.Invoke(inMemoryConsumeTunnel.OnConsumeWrappers);
 
-            sourcePart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
+            var consumeRoute = new ConsumeRoute()
+            {
+                Topic = topicName,
+                Queue = queueName,
+                RoutingKey = routingKey
+            };
+            
+            sourcePart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, consumeRoute);
 
             return sourcePart;
         }
@@ -45,8 +53,20 @@ namespace SharpGlide.Extensions
             var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TTargetConsumeData>(InMemoryBroker.Current);
             configureOutputWrappers?.Invoke(inMemoryConsumeTunnel.OnConsumeWrappers);
             
-            sourcePart.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, topicName, routingKey);
-            targetPart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
+            var publishRoute = new PublishRoute()
+            {
+                Topic = topicName,
+                RoutingKey = routingKey
+            };
+            var consumeRoute = new ConsumeRoute()
+            {
+                Topic = topicName,
+                Queue = queueName,
+                RoutingKey = routingKey
+            };
+            
+            sourcePart.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, publishRoute);
+            targetPart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, consumeRoute);
 
             return targetPart;
         }
@@ -63,8 +83,20 @@ namespace SharpGlide.Extensions
             var inMemoryPublishTunnel = new InMemoryPublishTunnel<TPublishData>(InMemoryBroker.Current);
             var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TTargetConsumeData>(InMemoryBroker.Current);
 
-            sourcePart.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, topicName, routingKey);
-            targetPart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
+            var publishRoute = new PublishRoute()
+            {
+                Topic = topicName,
+                RoutingKey = routingKey
+            };
+            var consumeRoute = new ConsumeRoute()
+            {
+                Topic = topicName,
+                Queue = queueName,
+                RoutingKey = routingKey
+            };
+            
+            sourcePart.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, publishRoute);
+            targetPart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, consumeRoute);
 
             return targetPart;
         }
@@ -81,9 +113,22 @@ namespace SharpGlide.Extensions
 
             var inMemoryPublishTunnel = new InMemoryPublishTunnel<TSourcePublishData>(InMemoryBroker.Current);
             var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TConsumeData>(InMemoryBroker.Current);
+            
+            var publishRoute = new PublishRoute()
+            {
+                Topic = topicName,
+                RoutingKey = routingKey
+            };
+            
+            var consumeRoute = new ConsumeRoute()
+            {
+                Topic = topicName,
+                Queue = queueName,
+                RoutingKey = routingKey
+            };
 
-            targetPart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, topicName, queueName, routingKey);
-            sourcePart.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, topicName, routingKey);
+            targetPart.SetupConsumeAsQueueFromTopic(inMemoryConsumeTunnel, consumeRoute);
+            sourcePart.SetupPublishAsTopicToQueue(inMemoryPublishTunnel, publishRoute);
 
             return sourcePart;
         }

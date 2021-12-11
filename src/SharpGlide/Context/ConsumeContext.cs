@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SharpGlide.Context.Abstractions;
 using SharpGlide.Tunnels.Abstractions;
+using SharpGlide.Tunnels.Routes;
 using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Context
@@ -23,13 +24,12 @@ namespace SharpGlide.Context
             return wrapper;
         }
         
-        public void SetupBindingToTopic(IConsumeTunnel<TConsumeData> tunnel, string topicName, string queueName, string routingKey)
+        // TODO: possible move this and related to flow configuration
+        public void SetupBindingToTopic(IConsumeTunnel<TConsumeData> tunnel, IConsumeRoute consumeRoute)
         {
-            tunnel.RoutingKey = routingKey;
-            tunnel.QueueName = queueName;
-            tunnel.TopicName = topicName;
+            tunnel.ConsumeRoute = consumeRoute;
 
-            tunnel.SetupInfrastructure(topicName, queueName, routingKey);
+            tunnel.SetupInfrastructure(consumeRoute);
             
             ConsumeTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
         }
