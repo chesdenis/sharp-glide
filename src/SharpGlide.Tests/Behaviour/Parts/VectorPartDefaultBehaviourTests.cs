@@ -60,10 +60,10 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
 
             // Act
-            partWithFailure.Push(new TestVectorPartWithFailure.Input());
+            partWithFailure.Consume(new TestVectorPartWithFailure.Input());
             await partWithFailure.StartAsync();
 
-            partStable.Push(new TestVectorPart.Input());
+            partStable.Consume(new TestVectorPart.Input());
             await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
  
             // Assert
@@ -125,10 +125,10 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
 
             // Act
-            partWithFailure.Push(new TestVectorPartWithFailure.Input());
+            partWithFailure.Consume(new TestVectorPartWithFailure.Input());
             await partWithFailure.StartAsync();
 
-            partStable.Push(new TestVectorPart.Input());
+            partStable.Consume(new TestVectorPart.Input());
             await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
 
             // Assert
@@ -162,7 +162,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
                 });
 
             // Act
-            part.Push(new TestVectorPart.Input());
+            part.Consume(new TestVectorPart.Input());
             await part.StartAndStopAsync(TimeSpan.FromSeconds(1));
 
             // Assert

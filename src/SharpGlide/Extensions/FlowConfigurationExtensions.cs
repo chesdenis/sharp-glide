@@ -39,20 +39,20 @@ namespace SharpGlide.Extensions
             TConsumeData, TPublishData>(
             this VectorPart<TConsumeData, TPublishData> sourcePart,
             VectorPart<TTargetConsumeData, TTargetPublishData> targetPart,
-            Action<IList<IPublishWrapper<TPublishData>>> configureInputWrappers = null,
-            Action<IList<IConsumeWrapper<TTargetConsumeData>>> configureOutputWrappers = null)
+            Action<IList<IConsumeWrapper<TTargetConsumeData>>> configureTargetConsumeWrappers = null,
+            Action<IList<IPublishWrapper<TPublishData>>> configureSourcePublishWrappers = null)
         {
             var linkId = Guid.NewGuid().ToString("N");
             var topicName = $"{linkId}:{sourcePart.Name}->{targetPart.Name}";
             var queueName = $"{linkId}:{sourcePart.Name}->{targetPart.Name}";
             var routingKey = "#";
+            
+            var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TTargetConsumeData>(InMemoryBroker.Current);
+            configureTargetConsumeWrappers?.Invoke(inMemoryConsumeTunnel.OnConsumeWrappers);
 
             var inMemoryPublishTunnel = new InMemoryPublishTunnel<TPublishData>(InMemoryBroker.Current);
-            configureInputWrappers?.Invoke(inMemoryPublishTunnel.OnPublishWrappers);
+            configureSourcePublishWrappers?.Invoke(inMemoryPublishTunnel.OnPublishWrappers);
           
-            var inMemoryConsumeTunnel = new InMemoryConsumeTunnel<TTargetConsumeData>(InMemoryBroker.Current);
-            configureOutputWrappers?.Invoke(inMemoryConsumeTunnel.OnConsumeWrappers);
-            
             var publishRoute = new PublishRoute()
             {
                 Topic = topicName,

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SharpGlide.Context;
 using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.Routes;
+using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Parts.Abstractions
 {
@@ -53,9 +54,9 @@ namespace SharpGlide.Parts.Abstractions
         public void Publish(TPublishData data, string routingKey) =>
             VectorPartContext.PublishContext.Publish(data, routingKey);
 
-        public void Push(TConsumeData data) => VectorPartContext.ConsumeContext.Push(data);
+        public void Consume(TConsumeData data) => VectorPartContext.ConsumeContext.Consume(data);
 
-        public void PushRange(IEnumerable<TConsumeData> data) => VectorPartContext.ConsumeContext.PushRange(data);
+        public void ConsumeRange(IEnumerable<TConsumeData> data) => VectorPartContext.ConsumeContext.ConsumeRange(data);
 
         public void SetupConsumeAsQueueFromTopic<TConsumeTunnel>(
             TConsumeTunnel tunnel, 
@@ -71,6 +72,39 @@ namespace SharpGlide.Parts.Abstractions
             where TPublishTunnel : IPublishTunnel<TPublishData>
         {
             VectorPartContext.PublishContext.SetupBindingToTopic(tunnel, publishRoute);
+        }
+
+        public IEnumerable<TWrapper> GetConsumeWrapper<T, TWrapper>() where TWrapper: IConsumeWrapper<T>
+        {
+            foreach (var tunnelKey in 
+                VectorPartContext.ConsumeContext.ConsumeTunnels.Keys)
+            {
+                var tunnel = VectorPartContext.ConsumeContext.ConsumeTunnels[tunnelKey];
+                
+                foreach (var wrapper in tunnel.OnConsumeWrappers)
+                {
+                    if (wrapper is TWrapper consumeWrapper)
+                    {
+                        yield return consumeWrapper;
+                    }
+                }
+            }
+        }
+        public IEnumerable<TWrapper> GetPublishWrapper<T, TWrapper>() where TWrapper: IPublishWrapper<T>
+        {
+            foreach (var tunnelKey in 
+                VectorPartContext.PublishContext.PublishTunnels.Keys)
+            {
+                var tunnel = VectorPartContext.PublishContext.PublishTunnels[tunnelKey];
+                
+                foreach (var wrapper in tunnel.OnPublishWrappers)
+                {
+                    if (wrapper is TWrapper getPublishWrapper)
+                    {
+                        yield return getPublishWrapper;
+                    }
+                }
+            }
         }
     }
 }

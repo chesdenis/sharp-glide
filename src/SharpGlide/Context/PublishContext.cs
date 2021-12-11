@@ -4,7 +4,6 @@ using SharpGlide.Context.Abstractions;
 using SharpGlide.Providers;
 using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.Routes;
-using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Context
 {
@@ -19,18 +18,7 @@ namespace SharpGlide.Context
         {
             _heartBeatContext = heartBeatContext;
         }
-        
-        public TPublishWrapper AddPublishWrapper<TPublishWrapper>(TPublishWrapper wrapper)
-            where TPublishWrapper : IPublishWrapper<TPublishData>
-        {
-            foreach (var tunnelKey in PublishTunnels.Keys)
-            {
-                PublishTunnels[tunnelKey].OnPublishWrappers.Add(wrapper);
-            }
 
-            return wrapper;
-        }
-        
         public void SetupBindingToTopic(IPublishTunnel<TPublishData> tunnel, IPublishRoute publishRoute)
         {
             tunnel.PublishRoute = publishRoute;

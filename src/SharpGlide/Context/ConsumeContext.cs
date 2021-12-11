@@ -4,7 +4,6 @@ using System.Linq;
 using SharpGlide.Context.Abstractions;
 using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.Routes;
-using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Context
 {
@@ -12,18 +11,7 @@ namespace SharpGlide.Context
     {
         public IDictionary<string, IConsumeTunnel<TConsumeData>> ConsumeTunnels { get; } =
             new Dictionary<string, IConsumeTunnel<TConsumeData>>();
-        
-        public TConsumeWrapper AddConsumeWrapper<TConsumeWrapper>(TConsumeWrapper wrapper)
-            where TConsumeWrapper : IConsumeWrapper<TConsumeData>
-        {
-            foreach (var tunnelKey in ConsumeTunnels.Keys)
-            {
-                ConsumeTunnels[tunnelKey].OnConsumeWrappers.Add(wrapper);
-            }
-            
-            return wrapper;
-        }
-        
+
         // TODO: possible move this and related to flow configuration
         public void SetupBindingToTopic(IConsumeTunnel<TConsumeData> tunnel, IConsumeRoute consumeRoute)
         {
@@ -34,12 +22,12 @@ namespace SharpGlide.Context
             ConsumeTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
         }
         
-        public void Push(TConsumeData data)
+        public void Consume(TConsumeData data)
         {
             ConsumeTunnels.First().Value.Put(data);
         }
         
-        public void PushRange(IEnumerable<TConsumeData> data)
+        public void ConsumeRange(IEnumerable<TConsumeData> data)
         {
             var firstConsumer = ConsumeTunnels.First().Value;
             foreach (var consumeData in data)
@@ -48,7 +36,7 @@ namespace SharpGlide.Context
             }
         }
 
-        public void Push(TConsumeData data, string tunnelKey)
+        public void Consume(TConsumeData data, string tunnelKey)
         {
             ConsumeTunnels.First(f=>f.Key == tunnelKey).Value.Put(data);
         }
