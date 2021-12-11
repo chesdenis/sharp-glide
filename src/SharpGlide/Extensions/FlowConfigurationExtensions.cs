@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using SharpGlide.Parts.Abstractions;
-using SharpGlide.Tunnels;
 using SharpGlide.Tunnels.InMemory;
 using SharpGlide.Tunnels.InMemory.Messaging;
-using SharpGlide.Wrappers;
-using SharpGlide.Wrappers.Performance;
+using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Extensions
 {

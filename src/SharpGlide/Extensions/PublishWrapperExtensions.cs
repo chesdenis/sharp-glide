@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SharpGlide.Wrappers;
+using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Extensions
 {

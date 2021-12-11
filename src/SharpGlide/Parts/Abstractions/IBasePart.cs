@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using SharpGlide.Context;
 using SharpGlide.Context.Abstractions;
 
 namespace SharpGlide.Parts.Abstractions

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using SharpGlide.Wrappers;
+using SharpGlide.TunnelWrappers.Abstractions;
 
-namespace SharpGlide.Tunnels
+namespace SharpGlide.Tunnels.Abstractions
 {
     public interface IPublishTunnel<T>
     {

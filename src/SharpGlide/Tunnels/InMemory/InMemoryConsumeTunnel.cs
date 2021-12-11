@@ -1,6 +1,6 @@
 using System;
-using System.Linq;
 using SharpGlide.Exceptions;
+using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.InMemory.Messaging;
 
 namespace SharpGlide.Tunnels.InMemory

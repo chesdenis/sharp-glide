@@ -7,9 +7,8 @@ namespace SharpGlide.Fields
     {
         private readonly TimeSpan _minDelay;
         private readonly TimeSpan _maxDelay;
-        private readonly TimeSpan _approxDelay;
-        
-        private Random _random = new Random();
+
+        private readonly Random _random = new Random();
         
         public RandomWaitBeforeRead(Func<T> func, TimeSpan minDelay, TimeSpan maxDelay) : base(func)
         {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Context;
-using SharpGlide.Tunnels;
+using SharpGlide.Tunnels.Abstractions;
 
 namespace SharpGlide.Parts.Abstractions
 {

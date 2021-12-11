@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using SharpGlide.Context.Abstractions;
-using SharpGlide.Tunnels;
-using SharpGlide.Wrappers;
+using SharpGlide.Tunnels.Abstractions;
+using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Context
 {

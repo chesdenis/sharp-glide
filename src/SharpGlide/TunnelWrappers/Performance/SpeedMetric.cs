@@ -1,7 +1,7 @@
 using System.Linq;
 using SharpGlide.Providers;
 
-namespace SharpGlide.Wrappers.Performance
+namespace SharpGlide.TunnelWrappers.Performance
 {
     public class SpeedMetric
     {

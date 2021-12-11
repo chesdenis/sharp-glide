@@ -44,16 +44,18 @@ namespace SharpGlide.Tunnels.InMemory.Messaging
 
         public IEnumerable<InMemoryQueue<object>> FindQueues(string topicName, string routingKey)
         {
+            IEnumerable<InMemoryRoute> routes;
+            
             lock (Current)
             {
-                var routes = Routes.Where(
+                routes = Routes.Where(
                     w=> string.Equals(w.TopicName, topicName, StringComparison.InvariantCultureIgnoreCase)
                         && string.Equals(w.RoutingKey, routingKey, StringComparison.InvariantCultureIgnoreCase));
-
-                foreach (var route in routes)
-                {
-                    yield return Queues[route.QueueName];
-                }
+            }
+            
+            foreach (var route in routes)
+            {
+                yield return Queues[route.QueueName];
             }
         }
     }

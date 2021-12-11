@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using SharpGlide.Behaviours;
 using SharpGlide.Extensions;
 using SharpGlide.Tests.Model.VectorPart;
-using SharpGlide.Wrappers;
-using SharpGlide.Wrappers.Performance;
+using SharpGlide.TunnelWrappers.Performance;
 using Xunit;
 
 namespace SharpGlide.Tests.Behaviour.Parts

@@ -1,8 +1,6 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Context;
-using SharpGlide.Providers;
 
 namespace SharpGlide.Parts.Abstractions
 {

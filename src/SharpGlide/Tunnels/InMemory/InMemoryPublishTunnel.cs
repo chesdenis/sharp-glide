@@ -1,4 +1,5 @@
 using System;
+using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.InMemory.Messaging;
 
 namespace SharpGlide.Tunnels.InMemory
@@ -16,7 +17,6 @@ namespace SharpGlide.Tunnels.InMemory
         {
             return (data, topicName, routingKey) =>
             {
-                _broker.SetupInfrastructure(topicName);
                 foreach (var inMemoryQueue in _broker.FindQueues(topicName, routingKey))
                 {
                     inMemoryQueue.Enqueue(data);

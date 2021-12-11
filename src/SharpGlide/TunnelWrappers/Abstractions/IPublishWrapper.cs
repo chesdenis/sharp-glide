@@ -1,6 +1,6 @@
 using System;
 
-namespace SharpGlide.Wrappers
+namespace SharpGlide.TunnelWrappers.Abstractions
 {
     public interface IPublishWrapper<T>
     {

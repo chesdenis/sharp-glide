@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpGlide.Behaviours;
-using SharpGlide.Context;
 using SharpGlide.Context.Abstractions;
 using SharpGlide.Extensions;
 

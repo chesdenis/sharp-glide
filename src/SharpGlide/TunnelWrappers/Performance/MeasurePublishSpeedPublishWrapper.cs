@@ -2,35 +2,35 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using SharpGlide.Providers;
+using SharpGlide.TunnelWrappers.Abstractions;
 
-namespace SharpGlide.Wrappers.Performance
+namespace SharpGlide.TunnelWrappers.Performance
 {
-    public class MeasureConsumeSpeedConsumeWrapper<T> : IConsumeWrapper<T>
+    public class MeasurePublishSpeedPublishWrapper<T> : IPublishWrapper<T>
     {
         private readonly Stopwatch _sw = new Stopwatch();
 
-        private readonly List<Metric> _data   = new List<Metric>();
-
+        private readonly List<Metric> _data = new List<Metric>();
+        
         public SpeedMetric GetMetric() => new SpeedMetric(_data.ToArray());
 
-        public Func<string, string, string, T> Wrap(Func<string, string, string, T> funcToWrap)
+        public Action<T, string, string> Wrap(Action<T, string, string> actionToWrap, string exchange,
+            string routingKey)
         {
-            return (topicName, queueName, routingKeys) =>
+            return (arg, topicName, key) =>
             {
                 _sw.Reset();
                 _sw.Start();
 
-                var dataToReturn = funcToWrap(topicName, queueName, routingKeys);
-                
+                actionToWrap(arg, topicName, key);
+
                 _sw.Stop();
-                
+
                 _data.Add(new Metric
                 {
                     TimestampUtc = DateTimeProvider.NowUtc,
                     MetricValue = _sw.Elapsed.TotalMilliseconds
                 });
-                
-                return dataToReturn;
             };
         }
     }

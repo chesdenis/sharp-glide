@@ -1,6 +1,6 @@
 using System;
 
-namespace SharpGlide.Wrappers.Performance
+namespace SharpGlide.TunnelWrappers.Performance
 {
     public struct Metric : IEquatable<Metric>
     {

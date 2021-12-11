@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using SharpGlide.Context;
 using SharpGlide.Context.Abstractions;
 
 namespace SharpGlide.Behaviours

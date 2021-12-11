@@ -6,8 +6,6 @@ namespace SharpGlide.Context
 {
     public class VectorHeartBeatContext : HeartBeatContext, IVectorHeartBeatContext
     {
-        private readonly IDateTimeProvider _dateTimeProvider;
-
         private readonly IMetaDataContext _metaDataContext;
 
         public VectorHeartBeatContext(

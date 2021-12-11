@@ -1,6 +1,5 @@
 using System;
 using SharpGlide.Context.Abstractions;
-using SharpGlide.Extensions;
 
 namespace SharpGlide.Context
 {

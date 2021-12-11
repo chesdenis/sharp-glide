@@ -1,6 +1,7 @@
 using System;
+using SharpGlide.TunnelWrappers.Abstractions;
 
-namespace SharpGlide.Wrappers.Handlers
+namespace SharpGlide.TunnelWrappers.Handlers
 {
     public class CatchExceptionWrapper : IWrapper
     {
