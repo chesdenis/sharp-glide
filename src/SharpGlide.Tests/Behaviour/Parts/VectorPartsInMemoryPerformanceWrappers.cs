@@ -25,7 +25,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             partA.FlowFromSelf(
                 x =>
-                    x.AddConsumeWrapper<int, MeasureConsumeSpeedConsumeWrapper<int>>());
+                    x.AddConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>());
 
             // Act
             partA.Consume(10);
@@ -35,9 +35,9 @@ namespace SharpGlide.Tests.Behaviour.Parts
             partA.WasPublished("10").Should().BeTrue();
 
             var wrapper = partA
-                .GetConsumeWrapper<int, MeasureConsumeSpeedConsumeWrapper<int>>().First();
+                .GetConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>().First();
 
-            var speedMetric = wrapper.GetMetric();
+            var speedMetric = wrapper.PerformanceReports;
             speedMetric.Count.Should().BePositive();
         }
 
@@ -52,33 +52,33 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             var partFlow = partA.FlowFromSelf(
                 x =>
-                    x.AddConsumeWrapper<int, MeasureConsumeSpeedConsumeWrapper<int>>());
+                    x.AddConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>());
 
             // because partA publish string data and partB consume string data - both wrappers are string based
             partFlow.FlowTo(partB,
                 x =>
-                    x.AddConsumeWrapper<string, MeasureConsumeSpeedConsumeWrapper<string>>(),
-                x => x.AddPublishWrapper<string, MeasurePublishSpeedPublishWrapper<string>>());
+                    x.AddConsumeWrapper<string, MeasureConsumePerformanceWrapper<string>>(),
+                x => x.AddPublishWrapper<string, MeasurePublishPerformanceWrapper<string>>());
 
             // Act
             partA.Consume(10);
-            await partA.StartAsync();
-            await partB.StartAsync();
+            await partA.StartAndStopAsync(TimeSpan.FromSeconds(2));
+            await partB.StartAndStopAsync(TimeSpan.FromSeconds(2));
 
             // Assert
             partA.WasPublished("10").Should().BeTrue();
             partB.WasConsumed("10").Should().BeTrue();
 
             var partAFlowInWrapper = partA
-                .GetConsumeWrapper<int, MeasureConsumeSpeedConsumeWrapper<int>>().First();
+                .GetConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>().First();
 
             var partAFlowOutWrapper =
-                partA.GetPublishWrapper<string, MeasurePublishSpeedPublishWrapper<string>>().First();
+                partA.GetPublishWrapper<string, MeasurePublishPerformanceWrapper<string>>().First();
 
-            var partAFlowInMetric = partAFlowInWrapper.GetMetric();
-            partAFlowInMetric.Count.Should().BePositive();   
-            
-            var partAFlowOutMetric = partAFlowOutWrapper.GetMetric();
+            var partAFlowInMetric = partAFlowInWrapper.PerformanceReports;
+            partAFlowInMetric.Count.Should().BePositive();
+
+            var partAFlowOutMetric = partAFlowOutWrapper.PerformanceReports;
             partAFlowOutMetric.Count.Should().BePositive();
         }
 

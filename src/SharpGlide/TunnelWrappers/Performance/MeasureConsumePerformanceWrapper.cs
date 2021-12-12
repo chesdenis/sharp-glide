@@ -7,29 +7,24 @@ using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.TunnelWrappers.Performance
 {
-    public class MeasureConsumeSpeedConsumeWrapper<T> : IConsumeWrapper<T>
+    public class MeasureConsumePerformanceWrapper<T> : MeasurePerformanceWrapper, IConsumeWrapper<T>
     {
-        private readonly Stopwatch _sw = new Stopwatch();
-
-        private readonly List<Metric> _data = new List<Metric>();
-
-        public SpeedMetric GetMetric() => new SpeedMetric(_data.ToArray());
-
         public Func<IConsumeRoute, T> Wrap(Func<IConsumeRoute, T> funcToWrap)
         {
             return consumeRoute =>
             {
-                _sw.Restart();
+                Sw.Restart();
 
                 var dataToReturn = funcToWrap(consumeRoute);
                 
-                _sw.Stop();
+                Sw.Stop();
                 
-                _data.Add(new Metric
+                var metric = new Metric
                 {
-                    TimestampUtc = DateTimeProvider.NowUtc,
-                    MetricValue = _sw.Elapsed.TotalMilliseconds
-                });
+                    EventTimestamp = DateTimeProvider.NowUtc
+                };
+
+                StoreMetric(metric);
                 
                 return dataToReturn;
             };
