@@ -9,7 +9,7 @@ namespace SharpGlide.Context.Abstractions
 
         ConcurrentDictionary<string,string> Status { get; }
         
-        ConcurrentBag<string> Errors { get; }
+        ConcurrentBag<string> Exceptions { get; }
         
         void UpsertStatus(string key, string value);
         void ReportException(Exception ex);

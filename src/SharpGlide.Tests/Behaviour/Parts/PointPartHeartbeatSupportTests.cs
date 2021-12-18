@@ -9,7 +9,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
     public class PointPartHeartbeatSupportTests
     {
         [Fact]
-        public async Task PointPartShouldPrintStatusTree()
+        public async Task PointPartShouldGetStatusAsXml()
         {
             // Arrange 
             var rootPart = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport { Name = "Root" };
@@ -31,17 +31,17 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             // Act
             await rootPart.StartAsync();
-            var statusTable = rootPart.GetStatusTable();
+            var reportAsXml = rootPart.ReportAsXml();
 
             // Assert
-            statusTable.Should().Contain("Root");
-            statusTable.Should().Contain("Child 1");
-            statusTable.Should().Contain("Child 2");
-            statusTable.Should().Contain("Child 3");
-            statusTable.Should().Contain("Child 4");
+            reportAsXml.Should().Contain("Root");
+            reportAsXml.Should().Contain("Child 1");
+            reportAsXml.Should().Contain("Child 2");
+            reportAsXml.Should().Contain("Child 3");
+            reportAsXml.Should().Contain("Child 4");
         }
-        
-        
+
+
         [Fact]
         public async Task PointPartShouldPrintExceptionList()
         {
@@ -51,7 +51,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
             var childrenB = new TestPointPartWithFailure() { Name = "Child 2" };
             var childrenC = new TestPointPartWithFailure { Name = "Child 3" };
             var childrenD = new TestPointPartWithFailure { Name = "Child 4" };
-            
+
             rootPart.AddChild(childrenAWithChild);
             childrenAWithChild.AddChild(childrenB);
             childrenAWithChild.AddChild(childrenC);
@@ -59,16 +59,15 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             // Act
             await rootPart.StartAsync();
-            var exceptionList = rootPart.GetExceptionList();
+            var reportAsXml = rootPart.ReportAsXml();
 
             // Assert
-            exceptionList.Should().Contain("Failure of Child 2: System.Exception: Some Exception");
-            exceptionList.Should().Contain("Failure of Child 3: System.Exception: Some Exception");
-            exceptionList.Should().Contain("Failure of Child 4: System.Exception: Some Exception");
-            
-            exceptionList.Should().NotContain("Failure of Child 1: System.Exception: Some Exception");
-            exceptionList.Should().NotContain("Failure of Root: System.Exception: Some Exception");
+            reportAsXml.Should().Contain("Failure of Child 2: System.Exception: Some Exception");
+            reportAsXml.Should().Contain("Failure of Child 3: System.Exception: Some Exception");
+            reportAsXml.Should().Contain("Failure of Child 4: System.Exception: Some Exception");
 
+            reportAsXml.Should().NotContain("Failure of Child 1: System.Exception: Some Exception");
+            reportAsXml.Should().NotContain("Failure of Root: System.Exception: Some Exception");
         }
     }
 }

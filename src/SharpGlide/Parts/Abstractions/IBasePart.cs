@@ -9,8 +9,6 @@ namespace SharpGlide.Parts.Abstractions
     {
         string Name { get; set; }
         IPartContext Context { get; set; }
-        ConcurrentDictionary<string, string> Status { get; }
-        ConcurrentBag<string> Errors { get; }
         void ReportInfo(string status);
         void Report(string key, string value);
         void ReportThreads(int threadsAmount);
@@ -20,8 +18,7 @@ namespace SharpGlide.Parts.Abstractions
         Task StartAsync();
         Task StartAndStopAsync(TimeSpan onlinePeriod);
         Task StopAsync();
-
-        string GetExceptionList();
+        
         void ReportException(Exception ex);
     }
 }

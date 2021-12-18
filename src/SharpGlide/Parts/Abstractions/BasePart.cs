@@ -90,18 +90,14 @@ namespace SharpGlide.Parts.Abstractions
         {
             return Context.SettingsContext.GetByKey<TSettings>(keyPath);
         }
-        
+
+        public string ReportAsXml() => this.Context.HeartBeatContext.ReportAsXml(this);
+
         public void ReportInfo(string status) => Context.MetaDataContext.Status["Info"] = status;
         public void ReportThreads(int threadsAmount) => Context.MetaDataContext.Status["Threads"] = threadsAmount.ToString();
         public void Report(string key, string value) => Context.MetaDataContext.Status[key] = value;
         public void ReportException(Exception ex) => Context.MetaDataContext.ReportException(ex);
 
-        public string GetStatusTable() => Context.HeartBeatContext.GetStatusTable(this);
-        public string GetExceptionList() => Context.HeartBeatContext.GetExceptionList(this);
-        
-        public ConcurrentDictionary<string, string> Status => Context.MetaDataContext.Status;
-        public ConcurrentBag<string> Errors => Context.MetaDataContext.Errors;
-        
         public IBasePart AddChild(IBasePart part)
         {
             Context.GroupContext.AddChild(part);

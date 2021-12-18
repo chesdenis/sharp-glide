@@ -29,7 +29,7 @@ namespace SharpGlide.Context
 
         public override bool Failed { get; }
 
-        public override void UpdateStatus()
+        public override void Collect()
         {
             _metaDataContext.UpsertStatus("Name", _metaDataContext.Name);
             _metaDataContext.UpsertStatus("LastPublishedAt", LastPublishedAt.ToString("s"));
@@ -38,7 +38,7 @@ namespace SharpGlide.Context
             _metaDataContext.UpsertStatus("Idle", Idle.ToString());
         }
 
-        public override void UpdateStatus(string key, string value)
+        public override void Collect(string key, string value)
         {
             _metaDataContext.UpsertStatus(key, value);
         }

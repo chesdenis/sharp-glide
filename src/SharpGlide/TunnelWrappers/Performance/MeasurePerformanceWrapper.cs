@@ -10,8 +10,6 @@ namespace SharpGlide.TunnelWrappers.Performance
     {
         protected readonly Stopwatch Sw = new Stopwatch();
 
-        private readonly Timer _timer = new Timer(1000);
-
         private readonly List<Metric> _tempStorage = new List<Metric>();
 
         private readonly List<Metric> _snapshotStorage = new List<Metric>();
@@ -20,26 +18,18 @@ namespace SharpGlide.TunnelWrappers.Performance
 
         private bool _isCalculating = false;
 
-        protected MeasurePerformanceWrapper()
+        public void Calculate()
         {
-            _timer.Elapsed += DoCalculation;
+            _isCalculating = true;
+
+            var performanceReport = new PerformanceReport();
+            performanceReport.PopulateReport(_snapshotStorage);
+            PerformanceReports.Add(performanceReport);
+            _snapshotStorage.Clear();
+
+            _isCalculating = false;
         }
 
-        private void DoCalculation(object sender, ElapsedEventArgs e)
-        {
-            lock (_timer)
-            {
-                _isCalculating = true;
-
-                var performanceReport = new PerformanceReport();
-                performanceReport.PopulateReport(_snapshotStorage);
-                PerformanceReports.Add(performanceReport);
-                _snapshotStorage.Clear();
-                
-                _isCalculating = false;
-            }
-        }
-        
         protected void StoreMetric(Metric metric)
         {
             if (_isCalculating)

@@ -36,6 +36,8 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             var wrapper = partA
                 .GetConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>().First();
+            
+            wrapper.Calculate();
 
             var speedMetric = wrapper.PerformanceReports;
             speedMetric.Count.Should().BePositive();
@@ -74,6 +76,9 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             var partAFlowOutWrapper =
                 partA.GetPublishWrapper<string, MeasurePublishPerformanceWrapper<string>>().First();
+            
+            partAFlowInWrapper.Calculate();
+            partAFlowOutWrapper.Calculate();
 
             var partAFlowInMetric = partAFlowInWrapper.PerformanceReports;
             partAFlowInMetric.Count.Should().BePositive();

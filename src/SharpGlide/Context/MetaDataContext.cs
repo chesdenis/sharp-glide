@@ -8,7 +8,7 @@ namespace SharpGlide.Context
     {
         public string Name { get; set; }
         public ConcurrentDictionary<string, string> Status { get; } = new ConcurrentDictionary<string, string>();
-        public ConcurrentBag<string> Errors { get; } = new ConcurrentBag<string>();
+        public ConcurrentBag<string> Exceptions { get; } = new ConcurrentBag<string>();
 
         public void UpsertStatus(string key, string value)
         {
@@ -23,7 +23,7 @@ namespace SharpGlide.Context
 
         public void ReportException(Exception ex)
         {
-            Errors.Add($"Failure of {Name}: {ex}");
+            Exceptions.Add($"Failure of {Name}: {ex}");
         }
     }
 }
