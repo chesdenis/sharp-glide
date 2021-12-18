@@ -1,6 +1,6 @@
-using System.Collections.Generic;
-using System.Dynamic;
+using SharpGlide.Model;
 using SharpGlide.Parts.Abstractions;
+using SharpGlide.Tunnels.Abstractions;
 
 namespace SharpGlide.Context.Abstractions
 {
@@ -11,11 +11,11 @@ namespace SharpGlide.Context.Abstractions
         bool Idle { get; }
 
         bool Failed { get; }
+        
+        IPublishTunnel<string> HeartBeatTunnel { get; set; }
 
         void Collect();
-        
-        void Collect(string key, string value);
-        
+
         string ReportAsXml(IBasePart startPart);
     }
 }

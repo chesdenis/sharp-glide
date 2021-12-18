@@ -1,13 +1,43 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SharpGlide.Behaviours;
 using SharpGlide.Tests.Model.PointPart;
+using SharpGlide.Tests.Model.Tunnel;
 using Xunit;
 
 namespace SharpGlide.Tests.Behaviour.Parts
 {
     public class PointPartHeartbeatSupportTests
     {
+        [Fact]
+        public async Task PointPartShouldReportHeartBeatOnceRequested()
+        {
+            // Arrange
+            var sut = new TestPointPartWithGroupAndMetadataAndHeartbeatSupport { Name = "Root" };
+            var testWorkingContext = new TestWorkingContext();
+            sut.ConfigureHeartBeatTunnel<StringListPublishTunnel, TestWorkingContext>(
+                (context, tunnel, part) =>
+                {
+                    context.TestEvent += (sender, s) =>
+                    {
+                        var heartBeat = part.ReportAsXml();
+                        tunnel.Publish(heartBeat);
+                    };
+                },
+                testWorkingContext);
+            
+            // Act
+            testWorkingContext.OnTestEvent();
+
+            // Assert
+            var tunnel = sut.Context.HeartBeatContext.HeartBeatTunnel as StringListPublishTunnel;
+            tunnel?.PublishedData.Should().NotBeEmpty();
+            var reportAsXml = tunnel?.PublishedData.First();
+            reportAsXml.Should().Contain("Root");
+        }
+
         [Fact]
         public async Task PointPartShouldGetStatusAsXml()
         {
@@ -68,6 +98,17 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             reportAsXml.Should().NotContain("Failure of Child 1: System.Exception: Some Exception");
             reportAsXml.Should().NotContain("Failure of Root: System.Exception: Some Exception");
+        }
+
+
+        private class TestWorkingContext
+        {
+            public event EventHandler TestEvent;
+
+            public void OnTestEvent()
+            {
+                TestEvent?.Invoke(this, null);
+            }
         }
     }
 }

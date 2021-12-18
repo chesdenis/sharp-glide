@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using SharpGlide.Behaviours;
 using SharpGlide.Context.Abstractions;
 using SharpGlide.Extensions;
+using SharpGlide.Model;
+using SharpGlide.Tunnels.Abstractions;
 
 namespace SharpGlide.Parts.Abstractions
 {
@@ -42,24 +44,30 @@ namespace SharpGlide.Parts.Abstractions
             Context.SwitchContext.StopBehaviour = new TBehaviour();
         }
 
+        public void ConfigureHeartBeatTunnel<TTunnel, TContext>(
+            Action<TContext, IPublishTunnel<string>, BasePart> configureReportEvent, TContext context)
+            where TTunnel : IPublishTunnel<string>, new()
+            where TContext : class
+        {
+            Context.HeartBeatContext.HeartBeatTunnel = new TTunnel();
+            configureReportEvent(context, Context.HeartBeatContext.HeartBeatTunnel, this);
+        }
+
         public async Task StartAsync()
         {
             await Context.SwitchContext.TearUpAsync();
 
             var children = new List<IBasePart>();
-            
-            EnumerateChildren( part =>
-            {
-                children.Add(part);
-            });
- 
+
+            EnumerateChildren(part => { children.Add(part); });
+
             var tasks = new List<Task>();
-            
+
             foreach (var basePart in children)
             {
-                tasks.Add(Task.Run(() =>  basePart.StartAsync()));
+                tasks.Add(Task.Run(() => basePart.StartAsync()));
             }
-            
+
             await Task.WhenAll(tasks);
         }
 
@@ -72,20 +80,17 @@ namespace SharpGlide.Parts.Abstractions
         public async Task StopAsync()
         {
             await Context.SwitchContext.TearDownAsync();
-            
+
             var children = new List<IBasePart>();
-            
-            EnumerateChildren( part =>
-            {
-                children.Add(part);
-            });
+
+            EnumerateChildren(part => { children.Add(part); });
 
             foreach (var basePart in children)
             {
                 await basePart.StopAsync();
             }
         }
-        
+
         public TSettings GetSettings<TSettings>(string keyPath)
         {
             return Context.SettingsContext.GetByKey<TSettings>(keyPath);
@@ -94,7 +99,10 @@ namespace SharpGlide.Parts.Abstractions
         public string ReportAsXml() => this.Context.HeartBeatContext.ReportAsXml(this);
 
         public void ReportInfo(string status) => Context.MetaDataContext.Status["Info"] = status;
-        public void ReportThreads(int threadsAmount) => Context.MetaDataContext.Status["Threads"] = threadsAmount.ToString();
+
+        public void ReportThreads(int threadsAmount) =>
+            Context.MetaDataContext.Status["Threads"] = threadsAmount.ToString();
+
         public void Report(string key, string value) => Context.MetaDataContext.Status[key] = value;
         public void ReportException(Exception ex) => Context.MetaDataContext.ReportException(ex);
 
@@ -104,7 +112,8 @@ namespace SharpGlide.Parts.Abstractions
             return part;
         }
 
-        public IBasePart GetChild(string name, bool recursive = false) => Context.GroupContext.GetChild(name, recursive);
+        public IBasePart GetChild(string name, bool recursive = false) =>
+            Context.GroupContext.GetChild(name, recursive);
 
         public void EnumerateChildren(Action<IBasePart> partAction, bool recursive = false) =>
             Context.GroupContext.EnumerateChildren(partAction, recursive);

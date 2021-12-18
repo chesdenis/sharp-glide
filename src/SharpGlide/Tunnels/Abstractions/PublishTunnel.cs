@@ -11,13 +11,19 @@ namespace SharpGlide.Tunnels.Abstractions
 
         public IPublishRoute PublishRoute { get; set; }
 
+        protected readonly IPublishRoute DefaultRoute = new PublishRoute
+        {
+            Topic = $"{typeof(T)}_default",
+            RoutingKey = "#"
+        };
+
         public abstract Action<T, IPublishRoute> PublishPointer();
         
         public void Publish(T data)
         {
             var resultAction = PublishPointer();
 
-            var childRoute = PublishRoute.CreateChild();
+            var childRoute = GetPublishRoute().CreateChild();
             
             foreach (var wrapper in OnPublishWrappers)
             {
@@ -31,7 +37,7 @@ namespace SharpGlide.Tunnels.Abstractions
         {
             var resultAction = PublishPointer();
 
-            var childRoute = PublishRoute.CreateChild(routingKey);
+            var childRoute = GetPublishRoute().CreateChild(routingKey);
             
             foreach (var wrapper in OnPublishWrappers)
             {
@@ -50,9 +56,14 @@ namespace SharpGlide.Tunnels.Abstractions
                 resultAction = wrapper.Wrap(resultAction);
             }
 
-            resultAction(data, PublishRoute);
+            resultAction(data, publishRoute);
         }
 
         public abstract void SetupInfrastructure(IPublishRoute publishRoute);
+
+        private IPublishRoute GetPublishRoute()
+        {
+            return PublishRoute ?? DefaultRoute;
+        }
     }
 }

@@ -1,8 +1,10 @@
 using System.Linq;
+using System.Timers;
 using SharpGlide.Context.Abstractions;
 using SharpGlide.Extensions;
 using SharpGlide.Model;
 using SharpGlide.Parts.Abstractions;
+using SharpGlide.Tunnels.Abstractions;
 
 namespace SharpGlide.Context
 {
@@ -18,8 +20,10 @@ namespace SharpGlide.Context
         public abstract int IdleTimeoutMs { get; set; }
         public abstract bool Idle { get; }
         public abstract bool Failed { get; }
+        
+        public IPublishTunnel<string> HeartBeatTunnel { get; set; }
+        
         public abstract void Collect();
-        public abstract void Collect(string key, string value);
 
         public string ReportAsXml(IBasePart startPart)
         {

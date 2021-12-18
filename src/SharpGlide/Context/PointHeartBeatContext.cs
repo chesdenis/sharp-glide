@@ -22,11 +22,6 @@ namespace SharpGlide.Context
             _metaDataContext.UpsertStatus("Idle", Idle.ToString());
         }
 
-        public override void Collect(string key, string value)
-        {
-            _metaDataContext.UpsertStatus(key, value);
-        }
-
         public DateTime LastActivity { get; set; }
     }
 }

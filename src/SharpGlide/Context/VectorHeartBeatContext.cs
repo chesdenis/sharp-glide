@@ -37,10 +37,5 @@ namespace SharpGlide.Context
             _metaDataContext.UpsertStatus("IdleTimeoutMs", IdleTimeoutMs.ToString());
             _metaDataContext.UpsertStatus("Idle", Idle.ToString());
         }
-
-        public override void Collect(string key, string value)
-        {
-            _metaDataContext.UpsertStatus(key, value);
-        }
     }
 }

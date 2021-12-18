@@ -27,7 +27,6 @@
 
     <ItemGroup>
       <Folder Include="Behaviour" />
-      <Folder Include="Unit" />
     </ItemGroup>
 
 </Project>
