@@ -61,7 +61,7 @@ namespace SharpGlide.Tunnels.InMemory.Messaging
             {
                 routes = Routes.Where(
                     w=> string.Equals(w.TopicName, topic, StringComparison.OrdinalIgnoreCase)
-                        && string.Equals(w.RoutingKey, routingKey, StringComparison.OrdinalIgnoreCase));
+                        && string.Equals(w.RoutingKey, routingKey, StringComparison.OrdinalIgnoreCase)).ToList();
             }
             
             foreach (var route in routes)

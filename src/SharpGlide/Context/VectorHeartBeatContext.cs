@@ -10,7 +10,8 @@ namespace SharpGlide.Context
 
         public VectorHeartBeatContext(
             IGroupContext groupContext,
-            IMetaDataContext metaDataContext) : base(groupContext)
+            IMetaDataContext metaDataContext)
+            : base(groupContext, metaDataContext)
         {
             _metaDataContext = metaDataContext;
 

@@ -7,7 +7,8 @@ namespace SharpGlide.Context
     {
         private readonly IMetaDataContext _metaDataContext;
 
-        public PointHeartBeatContext(IGroupContext groupContext, IMetaDataContext metaDataContext) : base(groupContext)
+        public PointHeartBeatContext(IGroupContext groupContext, IMetaDataContext metaDataContext) 
+            : base(groupContext, metaDataContext)
         {
             _metaDataContext = metaDataContext;
         }

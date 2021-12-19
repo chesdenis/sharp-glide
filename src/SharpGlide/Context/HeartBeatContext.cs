@@ -1,9 +1,6 @@
 using System.Linq;
-using System.Timers;
 using SharpGlide.Context.Abstractions;
-using SharpGlide.Extensions;
 using SharpGlide.Model;
-using SharpGlide.Parts.Abstractions;
 using SharpGlide.Tunnels.Abstractions;
 
 namespace SharpGlide.Context
@@ -11,42 +8,41 @@ namespace SharpGlide.Context
     public abstract class HeartBeatContext : IHeartBeatContext
     {
         private readonly IGroupContext _groupContext;
+        private readonly IMetaDataContext _metaDataContext;
 
-        protected HeartBeatContext(IGroupContext groupContext)
+        protected HeartBeatContext(
+            IGroupContext groupContext,
+            IMetaDataContext metaDataContext)
         {
             _groupContext = groupContext;
+            _metaDataContext = metaDataContext;
         }
 
         public abstract int IdleTimeoutMs { get; set; }
         public abstract bool Idle { get; }
         public abstract bool Failed { get; }
-        
-        public IPublishTunnel<string> HeartBeatTunnel { get; set; }
-        
+
+        public IPublishTunnel<HeartBeat> HeartBeatTunnel { get; set; }
+
         public abstract void Collect();
 
-        public string ReportAsXml(IBasePart startPart)
+        public HeartBeat Get()
         {
-            var tree = _groupContext.GetPartTree(startPart).ToList();
+            Collect();
 
-            foreach (var leaf in tree)
+            return new HeartBeat
             {
-                leaf.Item2.Context.HeartBeatContext.Collect();
-            }
-
-            var statusTree = tree.Select(
-                s => new HeartBeat()
+                Level = 0,
+                Children = _groupContext.Children
+                    .Select(s => s.Value.Context.HeartBeatContext.Get())
+                    .ToArray(),
+                Data = _metaDataContext.Status.Select(ss => new HeartBeatEntry()
                 {
-                    Level = s.Item1,
-                    Exceptions = s.Item2.Context.MetaDataContext.Exceptions.ToArray(),
-                    Data = s.Item2.Context.MetaDataContext.Status.Select(ss => new HeartBeatEntry()
-                    {
-                        Name = ss.Key,
-                        Value = ss.Value
-                    }).ToArray()
-                }).ToArray();
-
-            return statusTree.AsXml();
+                    Name = ss.Key,
+                    Value = ss.Value
+                }).ToArray(),
+                Exceptions = _metaDataContext.Exceptions.ToArray()
+            };
         }
     }
 }

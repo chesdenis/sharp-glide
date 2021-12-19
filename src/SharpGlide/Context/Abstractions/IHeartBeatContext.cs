@@ -12,10 +12,10 @@ namespace SharpGlide.Context.Abstractions
 
         bool Failed { get; }
         
-        IPublishTunnel<string> HeartBeatTunnel { get; set; }
+        IPublishTunnel<HeartBeat> HeartBeatTunnel { get; set; }
 
         void Collect();
 
-        string ReportAsXml(IBasePart startPart);
+        HeartBeat Get();
     }
 }

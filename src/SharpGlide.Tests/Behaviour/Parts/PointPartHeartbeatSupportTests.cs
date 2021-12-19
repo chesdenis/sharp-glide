@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SharpGlide.Behaviours;
+using SharpGlide.Extensions;
 using SharpGlide.Tests.Model.PointPart;
 using SharpGlide.Tests.Model.Tunnel;
 using Xunit;
@@ -22,8 +23,8 @@ namespace SharpGlide.Tests.Behaviour.Parts
                 {
                     context.TestEvent += (sender, s) =>
                     {
-                        var heartBeat = part.ReportAsXml();
-                        tunnel.Publish(heartBeat);
+                       var heartBeat = part.GetHeartBeat();
+                       tunnel.Publish(heartBeat);
                     };
                 },
                 testWorkingContext);
@@ -61,17 +62,16 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             // Act
             await rootPart.StartAsync();
-            var reportAsXml = rootPart.ReportAsXml();
+            var heartBeat = rootPart.GetHeartBeat().AsXml();
 
             // Assert
-            reportAsXml.Should().Contain("Root");
-            reportAsXml.Should().Contain("Child 1");
-            reportAsXml.Should().Contain("Child 2");
-            reportAsXml.Should().Contain("Child 3");
-            reportAsXml.Should().Contain("Child 4");
+            heartBeat.Should().Contain("Root");
+            heartBeat.Should().Contain("Child 1");
+            heartBeat.Should().Contain("Child 2");
+            heartBeat.Should().Contain("Child 3");
+            heartBeat.Should().Contain("Child 4");
         }
-
-
+        
         [Fact]
         public async Task PointPartShouldPrintExceptionList()
         {
@@ -89,7 +89,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             // Act
             await rootPart.StartAsync();
-            var reportAsXml = rootPart.ReportAsXml();
+            var reportAsXml = rootPart.GetHeartBeat().AsXml();
 
             // Assert
             reportAsXml.Should().Contain("Failure of Child 2: System.Exception: Some Exception");

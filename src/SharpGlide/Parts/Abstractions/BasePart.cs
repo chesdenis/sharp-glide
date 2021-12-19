@@ -45,8 +45,8 @@ namespace SharpGlide.Parts.Abstractions
         }
 
         public void ConfigureHeartBeatTunnel<TTunnel, TContext>(
-            Action<TContext, IPublishTunnel<string>, BasePart> configureReportEvent, TContext context)
-            where TTunnel : IPublishTunnel<string>, new()
+            Action<TContext, IPublishTunnel<HeartBeat>, BasePart> configureReportEvent, TContext context)
+            where TTunnel : IPublishTunnel<HeartBeat>, new()
             where TContext : class
         {
             Context.HeartBeatContext.HeartBeatTunnel = new TTunnel();
@@ -96,7 +96,7 @@ namespace SharpGlide.Parts.Abstractions
             return Context.SettingsContext.GetByKey<TSettings>(keyPath);
         }
 
-        public string ReportAsXml() => this.Context.HeartBeatContext.ReportAsXml(this);
+        public HeartBeat GetHeartBeat() => this.Context.HeartBeatContext.Get();
 
         public void ReportInfo(string status) => Context.MetaDataContext.Status["Info"] = status;
 
