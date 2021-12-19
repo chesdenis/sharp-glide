@@ -23,7 +23,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
             partA.FlowFromSelf().FlowTo(partB);
 
             // Act
-            partA.Consume(123);
+            partA.TakeAndConsume(123);
             await partA.StartAsync();
             await partB.StartAsync();
 
@@ -47,7 +47,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
             partA.FlowTo(partC);
             
             // Act
-            partA.Consume(123);
+            partA.TakeAndConsume(123);
             await partA.StartAsync();
             await partB.StartAsync();
             await partC.StartAsync();
@@ -70,7 +70,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
             partA.FlowFromSelf().FlowTo(partB);
 
             // Act
-            partA.Consume(123);
+            partA.TakeAndConsume(123);
             await partA.StartAsync();
             await partB.StartAsync();
 

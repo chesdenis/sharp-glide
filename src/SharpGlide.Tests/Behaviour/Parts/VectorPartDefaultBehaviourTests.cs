@@ -60,10 +60,10 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
 
             // Act
-            partWithFailure.Consume(new TestVectorPartWithFailure.Input());
+            partWithFailure.TakeAndConsume(new TestVectorPartWithFailure.Input());
             await partWithFailure.StartAsync();
 
-            partStable.Consume(new TestVectorPart.Input());
+            partStable.TakeAndConsume(new TestVectorPart.Input());
             await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
  
             // Assert
@@ -125,10 +125,10 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
 
             // Act
-            partWithFailure.Consume(new TestVectorPartWithFailure.Input());
+            partWithFailure.TakeAndConsume(new TestVectorPartWithFailure.Input());
             await partWithFailure.StartAsync();
 
-            partStable.Consume(new TestVectorPart.Input());
+            partStable.TakeAndConsume(new TestVectorPart.Input());
             await partStable.StartAndStopAsync(TimeSpan.FromSeconds(1));
 
             // Assert
@@ -154,15 +154,10 @@ namespace SharpGlide.Tests.Behaviour.Parts
             
             part.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
-                new ConsumeRoute()
-                {
-                    Topic = "t2",
-                    Queue = "q2",
-                    RoutingKey = "r2"
-                });
+                ConsumeRoute.Default);
 
             // Act
-            part.Consume(new TestVectorPart.Input());
+            part.TakeAndConsume(new TestVectorPart.Input());
             await part.StartAndStopAsync(TimeSpan.FromSeconds(1));
 
             // Assert

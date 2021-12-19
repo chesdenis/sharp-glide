@@ -33,7 +33,7 @@ namespace SharpGlide.Tunnels.InMemory
             };
         }
 
-        public override void Put(T input, IConsumeRoute consumeRoute)
+        public override void TakeAndConsume(T input, IConsumeRoute consumeRoute)
         {
             _broker.SetupInfrastructure(consumeRoute);
             
@@ -45,6 +45,7 @@ namespace SharpGlide.Tunnels.InMemory
 
         public override void SetupInfrastructure(IConsumeRoute consumeRoute)
         {
+            this.Routes.Add(consumeRoute.Name, consumeRoute);
             _broker.SetupInfrastructure(consumeRoute);
         }
     }

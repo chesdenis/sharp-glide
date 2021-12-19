@@ -6,6 +6,7 @@ using SharpGlide.Behaviours;
 using SharpGlide.Extensions;
 using SharpGlide.Tests.Model.PointPart;
 using SharpGlide.Tests.Model.Tunnel;
+using SharpGlide.Tunnels.Routes;
 using Xunit;
 
 namespace SharpGlide.Tests.Behaviour.Parts
@@ -24,7 +25,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
                     context.TestEvent += (sender, s) =>
                     {
                        var heartBeat = part.GetHeartBeat();
-                       tunnel.Publish(heartBeat);
+                       tunnel.Publish(heartBeat, PublishRoute.Default);
                     };
                 },
                 testWorkingContext);

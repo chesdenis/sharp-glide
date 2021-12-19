@@ -10,9 +10,18 @@ namespace SharpGlide.Context.Abstractions
 
         void SetupBindingToTopic(IConsumeTunnel<TConsumeData> tunnel, IConsumeRoute consumeRoute);
         
-        IEnumerable<TConsumeData> ReadAndConsumeData();
-        void Consume(TConsumeData data);
-        void Consume(TConsumeData data, string tunnelKey);
-        void ConsumeRange(IEnumerable<TConsumeData> data);
+        IEnumerable<TConsumeData> Consume();
+
+
+        void TakeAndConsume<TConsumeRoute>(
+            TConsumeRoute consumeRoute, 
+            params TConsumeData[] data) 
+            where TConsumeRoute : IConsumeRoute;
+
+        void TakeAndConsume<TConsumeRoute>(
+            string tunnelKey, 
+            TConsumeRoute consumeRoute, 
+            params TConsumeData[] data)
+            where TConsumeRoute : IConsumeRoute;
     }
 }

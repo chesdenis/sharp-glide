@@ -17,7 +17,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
             multiThreadVectorPart.FlowFromSelf();
 
             // Act
-            multiThreadVectorPart.ConsumeRange(new int[] { 1, 2, 3, 4, 5, 6 });
+            multiThreadVectorPart.TakeAndConsumeRange(new int[] { 1, 2, 3, 4, 5, 6 });
             await multiThreadVectorPart.StartAndStopAsync(TimeSpan.FromSeconds(3));
 
             // Assert

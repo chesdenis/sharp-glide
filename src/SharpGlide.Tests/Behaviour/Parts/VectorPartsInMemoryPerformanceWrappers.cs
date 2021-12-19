@@ -28,7 +28,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
                     x.AddConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>());
 
             // Act
-            partA.Consume(10);
+            partA.TakeAndConsume(10);
             await partA.StartAsync();
 
             // Assert
@@ -63,7 +63,7 @@ namespace SharpGlide.Tests.Behaviour.Parts
                 x => x.AddPublishWrapper<string, MeasurePublishPerformanceWrapper<string>>());
 
             // Act
-            partA.Consume(10);
+            partA.TakeAndConsume(10);
             await partA.StartAndStopAsync(TimeSpan.FromSeconds(2));
             await partB.StartAndStopAsync(TimeSpan.FromSeconds(2));
 

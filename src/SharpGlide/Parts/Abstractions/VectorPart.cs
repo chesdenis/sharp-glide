@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Context;
@@ -49,14 +50,17 @@ namespace SharpGlide.Parts.Abstractions
             VectorPartContext.PublishContext.Publish(data, publishRoute);
         
         public void Publish(TPublishData data) =>
-            VectorPartContext.PublishContext.Publish(data);
+            VectorPartContext.PublishContext.Publish(data, PublishRoute.Default);
 
         public void Publish(TPublishData data, string routingKey) =>
-            VectorPartContext.PublishContext.Publish(data, routingKey);
+            VectorPartContext.PublishContext.Publish(data, 
+                PublishRoute.Default.CreateChild<PublishRoute>(routingKey));
 
-        public void Consume(TConsumeData data) => VectorPartContext.ConsumeContext.Consume(data);
+        public void TakeAndConsume(TConsumeData data) => 
+            VectorPartContext.ConsumeContext.TakeAndConsume(ConsumeRoute.Default, data);
 
-        public void ConsumeRange(IEnumerable<TConsumeData> data) => VectorPartContext.ConsumeContext.ConsumeRange(data);
+        public void TakeAndConsumeRange(IEnumerable<TConsumeData> data) => 
+            VectorPartContext.ConsumeContext.TakeAndConsume(ConsumeRoute.Default, data.ToArray());
 
         public void SetupConsumeAsQueueFromTopic<TConsumeTunnel>(
             TConsumeTunnel tunnel, 

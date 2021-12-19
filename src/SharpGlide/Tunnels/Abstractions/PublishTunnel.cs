@@ -9,46 +9,18 @@ namespace SharpGlide.Tunnels.Abstractions
     {
         public IList<IPublishWrapper<T>> OnPublishWrappers { get; } = new List<IPublishWrapper<T>>();
 
-        public IPublishRoute PublishRoute { get; set; }
-
-        protected readonly IPublishRoute DefaultRoute = new PublishRoute
-        {
-            Topic = $"{typeof(T)}_default",
-            RoutingKey = "#"
-        };
+        public IDictionary<string, IPublishRoute> Routes { get; set; } = new Dictionary<string, IPublishRoute>();
 
         public abstract Action<T, IPublishRoute> PublishPointer();
-        
-        public void Publish(T data)
-        {
-            var resultAction = PublishPointer();
 
-            var childRoute = GetPublishRoute().CreateChild();
-            
-            foreach (var wrapper in OnPublishWrappers)
-            {
-                resultAction = wrapper.Wrap(resultAction);
-            }
-
-            resultAction(data, childRoute);
-        }
-
-        public void Publish(T data, string routingKey)
-        {
-            var resultAction = PublishPointer();
-
-            var childRoute = GetPublishRoute().CreateChild(routingKey);
-            
-            foreach (var wrapper in OnPublishWrappers)
-            {
-                resultAction = wrapper.Wrap(resultAction);
-            }
-
-            resultAction(data, childRoute);
-        }
-        
         public void Publish(T data, IPublishRoute publishRoute)
         {
+            if (!Routes.ContainsKey(publishRoute.Name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(publishRoute),
+                    "Route was not registered. Please create to get correct visualization map");
+            }
+            
             var resultAction = PublishPointer();
 
             foreach (var wrapper in OnPublishWrappers)
@@ -60,10 +32,5 @@ namespace SharpGlide.Tunnels.Abstractions
         }
 
         public abstract void SetupInfrastructure(IPublishRoute publishRoute);
-
-        private IPublishRoute GetPublishRoute()
-        {
-            return PublishRoute ?? DefaultRoute;
-        }
     }
 }

@@ -7,17 +7,12 @@ namespace SharpGlide.Tunnels.Abstractions
     public interface IConsumeTunnel<T>
     {
         IList<IConsumeWrapper<T>> OnConsumeWrappers { get; }
-        
-        IConsumeRoute ConsumeRoute { get; set; }
-
-        T Consume();
+        IDictionary<string, IConsumeRoute> Routes { get; set; }
 
         T Consume(IConsumeRoute consumeRoute);
         
-        void Put(T input, IConsumeRoute consumeRoute);
-        
-        void Put(T input);
-        
+        void TakeAndConsume(T input, IConsumeRoute consumeRoute);
+
         void SetupInfrastructure(IConsumeRoute consumeRoute);
     }
 }

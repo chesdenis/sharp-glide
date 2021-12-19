@@ -34,7 +34,7 @@ namespace SharpGlide.Context
 
                     try
                     {
-                        foreach (var data in _consumeContext.ReadAndConsumeData())
+                        foreach (var data in _consumeContext.Consume())
                         {
                             await _vectorPart.ProcessAsync(data, cancellationTokenSource.Token);
                         }
