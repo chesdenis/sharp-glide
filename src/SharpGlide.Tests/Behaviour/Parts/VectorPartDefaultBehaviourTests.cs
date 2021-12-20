@@ -43,20 +43,10 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             partWithFailure.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPartWithFailure.Input>(InMemoryBroker.Current),
-                new ConsumeRoute
-                {
-                    Topic = "t1",
-                    Queue = "q1",
-                    RoutingKey = "r1"
-                });
+                ConsumeRoute.Default);
             partStable.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
-                new ConsumeRoute()
-                {
-                    Topic = "t2", 
-                    Queue = "q2", 
-                    RoutingKey = "r2"
-                });
+                ConsumeRoute.Default);
 
 
             // Act
@@ -108,20 +98,10 @@ namespace SharpGlide.Tests.Behaviour.Parts
 
             partWithFailure.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPartWithFailure.Input>(InMemoryBroker.Current),
-                new ConsumeRoute()
-                {
-                    Topic = "t1",
-                    Queue = "q1",
-                    RoutingKey = "r1"
-                });
+                ConsumeRoute.Default);
             partStable.SetupConsumeAsQueueFromTopic(
                 new InMemoryConsumeTunnel<TestVectorPart.Input>(InMemoryBroker.Current),
-                new ConsumeRoute()
-                {
-                    Topic = "t2",
-                    Queue = "q2",
-                    RoutingKey = "r2"
-                });
+                ConsumeRoute.Default);
 
 
             // Act
