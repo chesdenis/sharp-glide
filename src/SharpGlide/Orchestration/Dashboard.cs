@@ -37,30 +37,51 @@ namespace SharpGlide.Orchestration
 
         public IList<IBasePart> Selection => _dashboardSelection.Selection;
 
-        public IConsumeRouteConfigurator<IXConsumeRoute> ConsumeFrom(string topic, string queue, string routingKey,
-            IBasePart basePart) =>
-            _consumeRouteConfigurator.ConsumeFrom(topic, queue, routingKey, basePart);
-
-        public IConsumeRouteConfigurator<IXConsumeRoute> ConsumeFrom(string queue, string routingKey, IBasePart appliedPart) =>
-            _consumeRouteConfigurator.ConsumeFrom(queue, routingKey, appliedPart);
-
-        public IConsumeRouteConfigurator<IXConsumeRoute> ConsumeFrom(string queue, IBasePart appliedPart) =>
-            _consumeRouteConfigurator.ConsumeFrom(queue, appliedPart);
-
-        public IConsumeRouteConfigurator<IXConsumeRoute> ConsumeFrom(IBasePart appliedPart) => _consumeRouteConfigurator.ConsumeFrom(appliedPart);
-
-        public IPublishRouteConfigurator<IXPublishRoute> PublishTo(string topic, string routingKey, string queue, IBasePart appliedPart) =>
-            _publishRouteConfigurator.PublishTo(topic, routingKey, queue, appliedPart);
-
-        public IPublishRouteConfigurator<IXPublishRoute> PublishTo(string topic, string routingKey, IBasePart appliedPart) =>
-            _publishRouteConfigurator.PublishTo(topic, routingKey, appliedPart);
-
-        public IPublishRouteConfigurator<IXPublishRoute> PublishTo(string topic, IBasePart appliedPart) =>
-            _publishRouteConfigurator.PublishTo(topic, appliedPart);
-
-        public IPublishRouteConfigurator<IXPublishRoute> PublishTo(IBasePart appliedPart) => _publishRouteConfigurator.PublishTo(appliedPart);
         
         public IEnumerable<RouteLink> EnumerateRoutes() => _routesLinks.AsEnumerable();
         public IEnumerable<IBasePart> EnumerateSelection() => Selection.AsEnumerable();
+
+        public IConsumeRouteConfigurator<IXConsumeRoute> ConsumeFrom<TConsumeData, TPublishData>(string topic, string queue, string routingKey,
+            VectorPart<TConsumeData, TPublishData> vectorPart)
+        {
+            return _consumeRouteConfigurator.ConsumeFrom(topic, queue, routingKey, vectorPart);
+        }
+
+        public IConsumeRouteConfigurator<IXConsumeRoute> ConsumeFrom<TConsumeData, TPublishData>(string queue, string routingKey,
+            VectorPart<TConsumeData, TPublishData> vectorPart)
+        {
+            return _consumeRouteConfigurator.ConsumeFrom(queue, routingKey, vectorPart);
+        }
+
+        public IConsumeRouteConfigurator<IXConsumeRoute> ConsumeFrom<TConsumeData, TPublishData>(string queue, VectorPart<TConsumeData, TPublishData> vectorPart)
+        {
+            return _consumeRouteConfigurator.ConsumeFrom(queue, vectorPart);
+        }
+
+        public IConsumeRouteConfigurator<IXConsumeRoute> ConsumeFrom<TConsumeData, TPublishData>(VectorPart<TConsumeData, TPublishData> vectorPart)
+        {
+            return _consumeRouteConfigurator.ConsumeFrom(vectorPart);
+        }
+
+        public IPublishRouteConfigurator<IXPublishRoute> PublishTo<TConsumeData, TPublishData>(string topic, string routingKey, string queue,
+            VectorPart<TConsumeData, TPublishData> vectorPart)
+        {
+            return _publishRouteConfigurator.PublishTo(topic, routingKey, queue, vectorPart);
+        }
+
+        public IPublishRouteConfigurator<IXPublishRoute> PublishTo<TConsumeData, TPublishData>(string topic, string routingKey, VectorPart<TConsumeData, TPublishData> vectorPart)
+        {
+            return _publishRouteConfigurator.PublishTo(topic, routingKey, vectorPart);
+        }
+
+        public IPublishRouteConfigurator<IXPublishRoute> PublishTo<TConsumeData, TPublishData>(string topic, VectorPart<TConsumeData, TPublishData> vectorPart)
+        {
+            return _publishRouteConfigurator.PublishTo(topic, vectorPart);
+        }
+
+        public IPublishRouteConfigurator<IXPublishRoute> PublishTo<TConsumeData, TPublishData>(VectorPart<TConsumeData, TPublishData> vectorPart)
+        {
+            return _publishRouteConfigurator.PublishTo(vectorPart);
+        }
     }
 }

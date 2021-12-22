@@ -29,7 +29,7 @@ namespace SharpGlide.Tests.Unit.Routes
             var dashboard = Dashboard.Create();
 
             dashboard
-                .TakeParts(a, b, c).FlowFromSelf();
+                .SelectParts(a, b, c).FlowFromSelf();
 
             // Assert
             dashboard.EnumerateRoutes().Should().NotBeEmpty();
@@ -40,7 +40,7 @@ namespace SharpGlide.Tests.Unit.Routes
             xConsumeRoute.Queue.Should().Be("Unnamed TestVectorPart->[selfQueue]");
             xConsumeRoute.RoutingKey.Should().Be("#");
 
-            xConsumeRoute.AssignedParts.Should().HaveCount(3);
+            xConsumeRoute.RouteAssignments.Should().HaveCount(3);
 
             routeLink.PublishRoute.Should().BeNull();
         }
@@ -52,19 +52,19 @@ namespace SharpGlide.Tests.Unit.Routes
             var a = new TestVectorPart();
             var b = new TestVectorPart();
             var c = new TestVectorPart();
-
+        
             a.Name = nameof(a);
             b.Name = nameof(b);
             c.Name = nameof(c);
-
+        
             // Act
             var dashboard = Dashboard.Create();
-
+        
             dashboard
-                .TakeParts(a).FlowFromSelf()
-                .TakeParts(a).FlowTo(b)
-                .TakeParts(a).FlowTo(c);
-
+                .SelectParts(a).FlowFromSelf()
+                .SelectParts(a).FlowTo(b)
+                .SelectParts(a).FlowTo(c);
+        
             // Assert
             dashboard.EnumerateRoutes().Should().NotBeEmpty();
             dashboard.EnumerateRoutes().Should().HaveCount(4);

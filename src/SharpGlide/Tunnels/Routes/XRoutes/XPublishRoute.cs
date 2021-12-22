@@ -8,10 +8,22 @@ namespace SharpGlide.Tunnels.Routes.XRoutes
     {
         public override string ToString()
         {
-            return $"{nameof(Topic)}: {Topic}, {nameof(RoutingKey)}: {RoutingKey}, {nameof(AssignedParts)}: {AssignedParts.Count}";
+            return $"{nameof(Topic)}: {Topic}, {nameof(RoutingKey)}: {RoutingKey}, {nameof(RouteAssignments)}: {RouteAssignments.Count}";
         }
 
-        public List<IBasePart> AssignedParts { get; set; } = new List<IBasePart>();
+        public readonly IDictionary<object, Type> RouteAssignments = new Dictionary<object, Type>();
+
+        public void Assign<TConsumeData, TPublishData>(
+            IPublishRouteAssignment<TConsumeData, TPublishData> routeAssignment)
+        {
+            if (RouteAssignments.ContainsKey(routeAssignment))
+            {
+                return;
+            }
+            
+            RouteAssignments.Add(routeAssignment, routeAssignment.GetType());
+        }
+        
         public string Topic { get; set; }
 
         public string RoutingKey { get; set; }

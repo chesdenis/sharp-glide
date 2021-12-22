@@ -30,7 +30,13 @@ namespace SharpGlide.Context
         {
             foreach (var tunnelKey in PublishTunnels.Keys)
             {
-                PublishTunnels[tunnelKey].Publish(data, publishRoute);
+                var publishTunnel = PublishTunnels[tunnelKey];
+                if (!publishTunnel.CanExecute)
+                {
+                    continue;
+                }
+                
+                publishTunnel.Publish(data, publishRoute);
                 _heartBeatContext.LastPublishedAt = DateTimeProvider.Now;
             }
         }

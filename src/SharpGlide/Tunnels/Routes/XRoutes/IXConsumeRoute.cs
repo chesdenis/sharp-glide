@@ -5,8 +5,8 @@ namespace SharpGlide.Tunnels.Routes.XRoutes
 {
     public interface IXConsumeRoute
     {
-        List<IBasePart> AssignedParts { get; set; }
         string RoutingKey { get; set; }
         string Queue { get; set; }
+        void AssignRoute<TConsumeData, TPublishData>(IConsumeRouteAssignment<TConsumeData, TPublishData> routeAssignment);
     }
 }

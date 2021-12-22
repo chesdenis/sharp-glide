@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SharpGlide.Parts.Abstractions;
+using System.Linq;
 
 namespace SharpGlide.Tunnels.Routes.XRoutes
 {
@@ -8,10 +8,18 @@ namespace SharpGlide.Tunnels.Routes.XRoutes
     {
         public override string ToString()
         {
-            return $"{nameof(RoutingKey)}: {RoutingKey}, {nameof(Queue)}: {Queue}, {nameof(AssignedParts)}: {AssignedParts.Count}";
+            return
+                $"{nameof(RoutingKey)}: {RoutingKey}, {nameof(Queue)}: {Queue}, {nameof(RouteAssignments)}: {RouteAssignments.Count}";
         }
 
-        public List<IBasePart> AssignedParts { get; set; } = new List<IBasePart>();
+        public readonly IDictionary<object, Type> RouteAssignments = new Dictionary<object, Type>();
+
+        public void AssignRoute<TConsumeData, TPublishData>(
+            IConsumeRouteAssignment<TConsumeData, TPublishData> routeAssignment)
+        {
+            RouteAssignments.Add(routeAssignment, routeAssignment.GetType());
+        }
+
         public string RoutingKey { get; set; }
         public string Queue { get; set; }
     }

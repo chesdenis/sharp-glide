@@ -8,6 +8,8 @@ namespace SharpGlide.Tunnels.Abstractions
     public abstract class PublishTunnel<T> : IPublishTunnel<T>
     {
         public IList<IPublishWrapper<T>> OnPublishWrappers { get; } = new List<IPublishWrapper<T>>();
+      
+        public bool CanExecute { get; set; }
 
         public IDictionary<string, IPublishRoute> Routes { get; set; } = new Dictionary<string, IPublishRoute>();
 

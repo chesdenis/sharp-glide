@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SharpGlide.Parts.Abstractions;
+using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.Routes.XRoutes;
 
 namespace SharpGlide.Orchestration
@@ -16,10 +17,9 @@ namespace SharpGlide.Orchestration
             : base(routeLinks, defaultQueue, defaultRoutingKey, defaultTopic)
         {
         }
-
-
-        public IConsumeRouteConfigurator<TRoute> ConsumeFrom(string topic, string queue, string routingKey,
-            IBasePart basePart)
+        
+        public IConsumeRouteConfigurator<TRoute> ConsumeFrom<TConsumeData, TPublishData>(string topic, string queue, string routingKey,
+            VectorPart<TConsumeData, TPublishData> vectorPart)
         {
             var routeLink = new RouteLink
             {
@@ -33,20 +33,20 @@ namespace SharpGlide.Orchestration
                             topic, StringComparison.OrdinalIgnoreCase))?.PublishRoute
             };
 
-            Store(routeLink, basePart);
+            Store(routeLink, vectorPart);
 
             return this;
         }
 
-        public IConsumeRouteConfigurator<TRoute> ConsumeFrom(string queue, string routingKey, IBasePart appliedPart)
-            => ConsumeFrom(DefaultTopic, queue, routingKey, appliedPart);
+        public IConsumeRouteConfigurator<TRoute> ConsumeFrom<TConsumeData, TPublishData>(string queue, string routingKey, VectorPart<TConsumeData, TPublishData> vectorPart)
+            => ConsumeFrom(DefaultTopic, queue, routingKey, vectorPart);
 
-        public IConsumeRouteConfigurator<TRoute> ConsumeFrom(string queue, IBasePart appliedPart) =>
-            ConsumeFrom(queue, DefaultRoutingKey, appliedPart);
+        public IConsumeRouteConfigurator<TRoute> ConsumeFrom<TConsumeData, TPublishData>(string queue, VectorPart<TConsumeData, TPublishData> vectorPart) =>
+            ConsumeFrom(queue, DefaultRoutingKey, vectorPart);
 
-        public IConsumeRouteConfigurator<TRoute> ConsumeFrom(IBasePart appliedPart) => ConsumeFrom(DefaultQueue, DefaultRoutingKey, appliedPart);
+        public IConsumeRouteConfigurator<TRoute> ConsumeFrom<TConsumeData, TPublishData>(VectorPart<TConsumeData, TPublishData> vectorPart) => ConsumeFrom(DefaultQueue, DefaultRoutingKey, vectorPart);
 
-        private void Store(RouteLink routeLink, IBasePart basePart)
+        private void Store<TConsumeData, TPublishData>(RouteLink routeLink, VectorPart<TConsumeData, TPublishData> vectorPart)
         {
             var existedRoute = RouteLinks.FirstOrDefault(f =>
                 string.Equals(
@@ -56,13 +56,15 @@ namespace SharpGlide.Orchestration
                     f.ConsumeRoute?.RoutingKey,
                     routeLink.ConsumeRoute?.RoutingKey, StringComparison.OrdinalIgnoreCase));
 
+            var consumeRouteAssignment = new ConsumeRouteAssignment<TConsumeData, TPublishData>(vectorPart);
+            
             if (existedRoute != null)
             {
-                existedRoute.ConsumeRoute.AssignedParts.Add(basePart);
+                existedRoute.ConsumeRoute.AssignRoute(consumeRouteAssignment);
             }
             else
             {
-                routeLink.ConsumeRoute.AssignedParts.Add(basePart);
+                routeLink.ConsumeRoute.AssignRoute(consumeRouteAssignment);
                 RouteLinks.Add(routeLink);
             }
         }

@@ -1,49 +1,53 @@
 ﻿using System;
+using System.Collections.Generic;
 using SharpGlide.Parts.Abstractions;
 
 namespace SharpGlide.Orchestration
 {
     public static class DashboardExtensions
     {
-        public static IDashboard TakeParts(this IDashboard dashboard, params IBasePart[] parts)
+        public static (IEnumerable<VectorPart<TConsumeData, TPublishData>>, IDashboard) SelectParts<TConsumeData, TPublishData>(this IDashboard dashboard, 
+            params VectorPart<TConsumeData, TPublishData>[] parts)
         {
-            dashboard.Selection.Clear();
-
-            foreach (var part in parts)
-            {
-                dashboard.Selection.Add(part);
-            }
-
-            return dashboard;
+            return (parts, dashboard);
         }
 
-        public static IDashboard FlowFromSelf(this IDashboard dashboard)
+        public static IDashboard FlowFromSelf<TConsumeData, TPublishData>(this (IEnumerable<VectorPart<TConsumeData, TPublishData>> selectedParts, IDashboard dashboard) selection)
         {
-            foreach (var part in dashboard.EnumerateSelection())
+            foreach (var vectorPart in selection.selectedParts)
             {
-                var prefix = part.GetPrefix();
+                var prefix = vectorPart.GetPrefix();
 
-                dashboard.ConsumeFrom(
+                selection.dashboard.ConsumeFrom(
                     $"{prefix}->[selfTopic]",
                     $"{prefix}->[selfQueue]",
-                    $"#", part);
+                    $"#", vectorPart);
             }
 
-            return dashboard;
+            return selection.dashboard;
         }
 
-        public static IDashboard FlowTo(this IDashboard dashboard, params IBasePart[] targetParts)
+
+        public static IDashboard FlowTo<TConsumeData, TPublishData>(this (IEnumerable<VectorPart<TConsumeData, TPublishData>> selectedParts, IDashboard dashboard) selection,
+            params VectorPart<TConsumeData, TPublishData>[] targetParts)
         {
-            foreach (var source in dashboard.EnumerateSelection())
-            foreach (var target in targetParts)
-                ConfigureFlowTo(dashboard, source, target);
+            foreach (var source in selection.selectedParts)
+            {
+                foreach (var target in targetParts)
+                {
+                    ConfigureFlowTo(selection.dashboard, source, target);
+                }
+            }
 
-            return dashboard;
+            return selection.dashboard;
         }
 
-        private static void ConfigureFlowTo(IDashboard dashboard,
-            IBasePart source,
-            IBasePart target,
+        private static void ConfigureFlowTo<
+            TSConsumeData, TSPublishData,
+            TTConsumeData, TTPublishData
+        >(IDashboard dashboard,
+            VectorPart<TSConsumeData, TSPublishData> source,
+            VectorPart<TTConsumeData, TTPublishData> target,
             string sourceTopic = "",
             string sourceRoutingKey = "",
             string sourceQueue = "",
