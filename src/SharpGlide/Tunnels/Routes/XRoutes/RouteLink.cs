@@ -1,8 +1,15 @@
-﻿namespace SharpGlide.Tunnels.Routes.XRoutes
+﻿using System;
+
+namespace SharpGlide.Tunnels.Routes.XRoutes
 {
-    public struct RouteLink
+    public class RouteLink
     {
-        public XConsumeRoute? ConsumeRoute { get; set; }
-        public XPublishRoute? PublishRoute { get; set; }
+        public override string ToString()
+        {
+            return $"\n\n{nameof(ConsumeRoute)}: {ConsumeRoute},\n{nameof(PublishRoute)}: {PublishRoute}";
+        }
+
+        public XConsumeRoute ConsumeRoute { get; set; }
+        public XPublishRoute PublishRoute { get; set; }
     }
 }

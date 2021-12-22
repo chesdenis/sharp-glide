@@ -1,43 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using SharpGlide.Parts.Abstractions;
 
 namespace SharpGlide.Tunnels.Routes.XRoutes
 {
-    public interface IXConsumeRoute
+    public class XConsumeRoute : IXConsumeRoute
     {
-    }
-
-    public struct XConsumeRoute : IXConsumeRoute
-    {
-        public bool Equals(XConsumeRoute other)
+        public override string ToString()
         {
-            return 
-                   string.Equals(RoutingKey, other.RoutingKey, StringComparison.OrdinalIgnoreCase) &&
-                   string.Equals(Queue, other.Queue, StringComparison.OrdinalIgnoreCase);
+            return $"{nameof(RoutingKey)}: {RoutingKey}, {nameof(Queue)}: {Queue}, {nameof(AssignedParts)}: {AssignedParts.Count}";
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is XConsumeRoute other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = new HashCode();
-            hashCode.Add(RoutingKey, StringComparer.OrdinalIgnoreCase);
-            hashCode.Add(Queue, StringComparer.OrdinalIgnoreCase);
-            return hashCode.ToHashCode();
-        }
-
-        public static bool operator ==(XConsumeRoute left, XConsumeRoute right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(XConsumeRoute left, XConsumeRoute right)
-        {
-            return !left.Equals(right);
-        }
-        
+        public List<IBasePart> AssignedParts { get; set; } = new List<IBasePart>();
         public string RoutingKey { get; set; }
         public string Queue { get; set; }
     }
