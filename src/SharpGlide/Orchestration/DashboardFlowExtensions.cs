@@ -4,48 +4,42 @@ using SharpGlide.Parts.Abstractions;
 
 namespace SharpGlide.Orchestration
 {
-    public static class DashboardExtensions
+    public static class DashboardFlowExtensions
     {
-        public static (IEnumerable<VectorPart<TConsumeData, TPublishData>>, IDashboard) SelectParts<TConsumeData, TPublishData>(this IDashboard dashboard, 
-            params VectorPart<TConsumeData, TPublishData>[] parts)
+        public static IDashboard FlowFromSelf<TConsumeData, TPublishData>(
+            this IDashboardPartsSelection<TConsumeData, TPublishData> partSelection)
         {
-            return (parts, dashboard);
-        }
-
-        public static IDashboard FlowFromSelf<TConsumeData, TPublishData>(this (IEnumerable<VectorPart<TConsumeData, TPublishData>> selectedParts, IDashboard dashboard) selection)
-        {
-            foreach (var vectorPart in selection.selectedParts)
+            foreach (var vectorPart in partSelection.Selection)
             {
                 var prefix = vectorPart.GetPrefix();
 
-                selection.dashboard.ConsumeFrom(
+                partSelection.Dashboard.ConsumeFrom(
                     $"{prefix}->[selfTopic]",
                     $"{prefix}->[selfQueue]",
                     $"#", vectorPart);
             }
 
-            return selection.dashboard;
+            return partSelection.Dashboard;
         }
 
 
-        public static IDashboard FlowTo<TConsumeData, TPublishData>(this (IEnumerable<VectorPart<TConsumeData, TPublishData>> selectedParts, IDashboard dashboard) selection,
+        public static IDashboard FlowTo<TConsumeData, TPublishData>(
+            this IDashboardPartsSelection<TConsumeData, TPublishData> partSelection,
             params VectorPart<TConsumeData, TPublishData>[] targetParts)
         {
-            foreach (var source in selection.selectedParts)
+            foreach (var source in partSelection.Selection)
             {
                 foreach (var target in targetParts)
                 {
-                    ConfigureFlowTo(selection.dashboard, source, target);
+                    ConfigureFlowTo(partSelection.Dashboard, source, target);
                 }
             }
 
-            return selection.dashboard;
+            return partSelection.Dashboard;
         }
 
-        private static void ConfigureFlowTo<
-            TSConsumeData, TSPublishData,
-            TTConsumeData, TTPublishData
-        >(IDashboard dashboard,
+        private static void ConfigureFlowTo<TSConsumeData, TSPublishData, TTConsumeData, TTPublishData>(
+            IDashboard dashboard,
             VectorPart<TSConsumeData, TSPublishData> source,
             VectorPart<TTConsumeData, TTPublishData> target,
             string sourceTopic = "",
@@ -97,26 +91,6 @@ namespace SharpGlide.Orchestration
 
         public static IDashboard FlowFrom(this IDashboard dashboard,
             Func<IDashboard, IDashboardSelection> connectedParts, string queue, string routingKey)
-        {
-            return dashboard;
-        }
-
-        public static IDashboard Scale(this IDashboard dashboard, int scaleAmount)
-        {
-            return dashboard;
-        }
-
-        public static IDashboard Start(this IDashboard dashboard)
-        {
-            return dashboard;
-        }
-
-        public static IDashboard Stop(this IDashboard dashboard)
-        {
-            return dashboard;
-        }
-
-        public static IDashboard Restart(this IDashboard dashboard)
         {
             return dashboard;
         }

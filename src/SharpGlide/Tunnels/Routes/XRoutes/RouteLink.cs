@@ -6,7 +6,7 @@ namespace SharpGlide.Tunnels.Routes.XRoutes
     {
         public override string ToString()
         {
-            return $"\n\n{nameof(ConsumeRoute)}: {ConsumeRoute},\n{nameof(PublishRoute)}: {PublishRoute}";
+            return $"\n\n{nameof(ConsumeRoute)}: {ConsumeRoute};{nameof(PublishRoute)}: {PublishRoute}";
         }
 
         public XConsumeRoute ConsumeRoute { get; set; }

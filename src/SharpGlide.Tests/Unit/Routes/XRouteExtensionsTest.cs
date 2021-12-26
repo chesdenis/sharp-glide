@@ -52,19 +52,19 @@ namespace SharpGlide.Tests.Unit.Routes
             var a = new TestVectorPart();
             var b = new TestVectorPart();
             var c = new TestVectorPart();
-        
+
             a.Name = nameof(a);
             b.Name = nameof(b);
             c.Name = nameof(c);
-        
+
             // Act
             var dashboard = Dashboard.Create();
-        
+
             dashboard
                 .SelectParts(a).FlowFromSelf()
                 .SelectParts(a).FlowTo(b)
                 .SelectParts(a).FlowTo(c);
-        
+
             // Assert
             dashboard.EnumerateRoutes().Should().NotBeEmpty();
             dashboard.EnumerateRoutes().Should().HaveCount(4);
@@ -73,6 +73,9 @@ namespace SharpGlide.Tests.Unit.Routes
             {
                 _testOutputHelper.WriteLine(rt.ToString());
             }
+
+            dashboard.SelectRouteAssignments(a).PublishAssignments.Should().HaveCount(3);
+            dashboard.SelectRouteAssignments(a).ConsumeAssignments.Should().HaveCount(1);
         }
         //
         // [Fact]

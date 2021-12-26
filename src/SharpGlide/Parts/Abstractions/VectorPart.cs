@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -56,19 +57,15 @@ namespace SharpGlide.Parts.Abstractions
             VectorPartContext.PublishContext.Publish(data, 
                 PublishRoute.Default.CreateChild<PublishRoute>(routingKey));
 
-        public void TakeAndConsume(TConsumeData data) => 
-            VectorPartContext.ConsumeContext.TakeAndConsume(ConsumeRoute.Default, data);
+        public void TakeAndConsume(TConsumeData data) => throw new NotImplementedException();
 
-        public void TakeAndConsumeRange(IEnumerable<TConsumeData> data) => 
-            VectorPartContext.ConsumeContext.TakeAndConsume(ConsumeRoute.Default, data.ToArray());
+        public void TakeAndConsumeRange(IEnumerable<TConsumeData> data) => throw new NotImplementedException();
 
         public void SetupConsumeAsQueueFromTopic<TConsumeTunnel>(
-            TConsumeTunnel tunnel, 
-            IConsumeRoute consumeRoute) 
+            TConsumeTunnel tunnel,
+            IConsumeRoute consumeRoute)
             where TConsumeTunnel : IConsumeTunnel<TConsumeData>
-        {
-            VectorPartContext.ConsumeContext.SetupBindingToTopic(tunnel, consumeRoute);
-        }
+            => throw new NotImplementedException();
 
         public void SetupPublishAsTopicToQueue<TPublishTunnel>(
             TPublishTunnel tunnel, 
@@ -76,39 +73,6 @@ namespace SharpGlide.Parts.Abstractions
             where TPublishTunnel : IPublishTunnel<TPublishData>
         {
             VectorPartContext.PublishContext.SetupBindingToTopic(tunnel, publishRoute);
-        }
-
-        public IEnumerable<TWrapper> GetConsumeWrapper<T, TWrapper>() where TWrapper: IConsumeWrapper<T>
-        {
-            foreach (var tunnelKey in 
-                VectorPartContext.ConsumeContext.ConsumeTunnels.Keys)
-            {
-                var tunnel = VectorPartContext.ConsumeContext.ConsumeTunnels[tunnelKey];
-                
-                foreach (var wrapper in tunnel.OnConsumeWrappers)
-                {
-                    if (wrapper is TWrapper consumeWrapper)
-                    {
-                        yield return consumeWrapper;
-                    }
-                }
-            }
-        }
-        public IEnumerable<TWrapper> GetPublishWrapper<T, TWrapper>() where TWrapper: IPublishWrapper<T>
-        {
-            foreach (var tunnelKey in 
-                VectorPartContext.PublishContext.PublishTunnels.Keys)
-            {
-                var tunnel = VectorPartContext.PublishContext.PublishTunnels[tunnelKey];
-                
-                foreach (var wrapper in tunnel.OnPublishWrappers)
-                {
-                    if (wrapper is TWrapper getPublishWrapper)
-                    {
-                        yield return getPublishWrapper;
-                    }
-                }
-            }
         }
     }
 }

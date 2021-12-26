@@ -1,27 +1,14 @@
+using System;
 using System.Collections.Generic;
-using SharpGlide.Tunnels.Abstractions;
-using SharpGlide.Tunnels.Routes;
+using System.Linq.Expressions;
 
 namespace SharpGlide.Context.Abstractions
 {
     public interface IConsumeContext<TConsumeData>
     {
-        IDictionary<string, IConsumeTunnel<TConsumeData>> ConsumeTunnels { get; }
-
-        void SetupBindingToTopic(IConsumeTunnel<TConsumeData> tunnel, IConsumeRoute consumeRoute);
-        
+        BlockExpression ConsumeDataTunnelExpression { get; set; }
+        Func<IEnumerable<TConsumeData>> ConsumeDataTunnelFunc { get; set; }
+        void Rebuild();
         IEnumerable<TConsumeData> Consume();
-
-
-        void TakeAndConsume<TConsumeRoute>(
-            TConsumeRoute consumeRoute, 
-            params TConsumeData[] data) 
-            where TConsumeRoute : IConsumeRoute;
-
-        void TakeAndConsume<TConsumeRoute>(
-            string tunnelKey, 
-            TConsumeRoute consumeRoute, 
-            params TConsumeData[] data)
-            where TConsumeRoute : IConsumeRoute;
     }
 }

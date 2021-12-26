@@ -34,13 +34,13 @@ namespace SharpGlide.Tests.Behaviour.Parts
             // Assert
             partA.WasPublished("10").Should().BeTrue();
 
-            var wrapper = partA
-                .GetConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>().First();
-            
-            wrapper.Calculate();
-
-            var speedMetric = wrapper.PerformanceReports;
-            speedMetric.Count.Should().BePositive();
+            // var wrapper = partA
+            //     .GetConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>().First();
+            //
+            // wrapper.Calculate();
+            //
+            // var speedMetric = wrapper.PerformanceReports;
+            // speedMetric.Count.Should().BePositive();
         }
 
         [Fact]
@@ -72,20 +72,20 @@ namespace SharpGlide.Tests.Behaviour.Parts
             partA.WasPublished("10").Should().BeTrue();
             partB.WasConsumed("10").Should().BeTrue();
 
-            var partAFlowInWrapper = partA
-                .GetConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>().First();
-
-            var partAFlowOutWrapper =
-                partA.GetPublishWrapper<string, MeasurePublishPerformanceWrapper<string>>().First();
-            
-            partAFlowInWrapper.Calculate();
-            partAFlowOutWrapper.Calculate();
-
-            var partAFlowInMetric = partAFlowInWrapper.PerformanceReports;
-            partAFlowInMetric.Count.Should().BePositive();
-
-            var partAFlowOutMetric = partAFlowOutWrapper.PerformanceReports;
-            partAFlowOutMetric.Count.Should().BePositive();
+            // var partAFlowInWrapper = partA
+            //     .GetConsumeWrapper<int, MeasureConsumePerformanceWrapper<int>>().First();
+            //
+            // var partAFlowOutWrapper =
+            //     partA.GetPublishWrapper<string, MeasurePublishPerformanceWrapper<string>>().First();
+            //
+            // partAFlowInWrapper.Calculate();
+            // partAFlowOutWrapper.Calculate();
+            //
+            // var partAFlowInMetric = partAFlowInWrapper.PerformanceReports;
+            // partAFlowInMetric.Count.Should().BePositive();
+            //
+            // var partAFlowOutMetric = partAFlowOutWrapper.PerformanceReports;
+            // partAFlowOutMetric.Count.Should().BePositive();
         }
 
         public class TestVectorA : TestVectorPartAssertableDirect<int, string>
