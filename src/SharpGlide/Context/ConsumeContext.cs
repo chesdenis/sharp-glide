@@ -1,26 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using SharpGlide.Context.Abstractions;
-using SharpGlide.Tunnels.Abstractions;
-using SharpGlide.Tunnels.Routes;
 
 namespace SharpGlide.Context
 {
     public class ConsumeContext<TConsumeData> : IConsumeContext<TConsumeData>
     {
-        public BlockExpression ConsumeDataTunnelExpression { get; set; }
+        public Func<IEnumerable<TConsumeData>> ConsumeDataPointer { get; set; }
 
-        public Func<IEnumerable<TConsumeData>> ConsumeDataTunnelFunc { get; set; }
-
-        public void Rebuild()
+        public void BuildConsumeLogic(Expression<Func<IEnumerable<TConsumeData>>> logic)
         {
-            ConsumeDataTunnelFunc =
-                Expression.Lambda<Func<IEnumerable<TConsumeData>>>(ConsumeDataTunnelExpression).Compile();
+            ConsumeDataPointer = logic
+                .Compile();
         }
-        
-        // TODO: make it async
-        public IEnumerable<TConsumeData> Consume() => ConsumeDataTunnelFunc();
+
+        public IEnumerable<TConsumeData> Consume() => ConsumeDataPointer();
     }
 }

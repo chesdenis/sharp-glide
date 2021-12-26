@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Context;
 using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.Routes;
-using SharpGlide.TunnelWrappers.Abstractions;
 
 namespace SharpGlide.Parts.Abstractions
 {
@@ -47,15 +45,11 @@ namespace SharpGlide.Parts.Abstractions
                     );
         }
 
-        public void Publish(TPublishData data, IPublishRoute publishRoute)=>
-            VectorPartContext.PublishContext.Publish(data, publishRoute);
+        public void Publish(TPublishData data, IPublishRoute publishRoute) => throw new NotImplementedException();
         
-        public void Publish(TPublishData data) =>
-            VectorPartContext.PublishContext.Publish(data, PublishRoute.Default);
+        public void Publish(TPublishData data) => throw new NotImplementedException();
 
-        public void Publish(TPublishData data, string routingKey) =>
-            VectorPartContext.PublishContext.Publish(data, 
-                PublishRoute.Default.CreateChild<PublishRoute>(routingKey));
+        public void Publish(TPublishData data, string routingKey)  => throw new NotImplementedException();
 
         public void TakeAndConsume(TConsumeData data) => throw new NotImplementedException();
 

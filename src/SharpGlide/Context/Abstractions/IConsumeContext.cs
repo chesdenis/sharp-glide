@@ -6,9 +6,8 @@ namespace SharpGlide.Context.Abstractions
 {
     public interface IConsumeContext<TConsumeData>
     {
-        BlockExpression ConsumeDataTunnelExpression { get; set; }
-        Func<IEnumerable<TConsumeData>> ConsumeDataTunnelFunc { get; set; }
-        void Rebuild();
+        Func<IEnumerable<TConsumeData>> ConsumeDataPointer { get; set; }
+        void BuildConsumeLogic(Expression<Func<IEnumerable<TConsumeData>>> logic);
         IEnumerable<TConsumeData> Consume();
     }
 }
