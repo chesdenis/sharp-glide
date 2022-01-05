@@ -44,14 +44,14 @@ namespace SharpGlide.Parts.Abstractions
             Context.SwitchContext.StopBehaviour = new TBehaviour();
         }
 
-        public void ConfigureHeartBeatTunnel<TTunnel, TContext>(
-            Action<TContext, IPublishTunnel<HeartBeat>, BasePart> configureReportEvent, TContext context)
-            where TTunnel : IPublishTunnel<HeartBeat>, new()
-            where TContext : class
-        {
-            Context.HeartBeatContext.HeartBeatTunnel = new TTunnel();
-            configureReportEvent(context, Context.HeartBeatContext.HeartBeatTunnel, this);
-        }
+        // public void ConfigureHeartBeatTunnel<TTunnel, TContext>(
+        //     Action<TContext, IPublishTunnel<HeartBeat>, BasePart> configureReportEvent, TContext context)
+        //     where TTunnel : IPublishTunnel<HeartBeat>, new()
+        //     where TContext : class
+        // {
+        //     Context.HeartBeatContext.HeartBeatTunnel = new TTunnel();
+        //     configureReportEvent(context, Context.HeartBeatContext.HeartBeatTunnel, this);
+        // }
 
         public async Task StartAsync()
         {

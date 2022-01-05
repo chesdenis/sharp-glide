@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using SharpGlide.Tunnels.Abstractions;
-using SharpGlide.Tunnels.Routes;
+using SharpGlide.Tunnels.Routes.XRoutes;
 
 namespace SharpGlide.Context.Abstractions
 {
@@ -8,8 +10,10 @@ namespace SharpGlide.Context.Abstractions
     { 
         IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels { get; }
 
-        void SetupBindingToTopic(IPublishTunnel<TPublishData> tunnel, IPublishRoute publishRoute);
+        void SetPublishFlow(
+            Expression<Action<IEnumerable<TPublishData>,
+                IXPublishRoute>> flowExpr);
         
-        void Publish(TPublishData data, IPublishRoute publishRoute);
+        void Publish(IEnumerable<TPublishData> data, IXPublishRoute publishRoute);
     }
 }

@@ -45,28 +45,28 @@ namespace SharpGlide.Parts.Abstractions
                     );
         }
 
-        public void Publish(TPublishData data, IPublishRoute publishRoute) => throw new NotImplementedException();
-        
-        public void Publish(TPublishData data) => throw new NotImplementedException();
-
-        public void Publish(TPublishData data, string routingKey)  => throw new NotImplementedException();
-
-        public void TakeAndConsume(TConsumeData data) => throw new NotImplementedException();
-
-        public void TakeAndConsumeRange(IEnumerable<TConsumeData> data) => throw new NotImplementedException();
-
-        public void SetupConsumeAsQueueFromTopic<TConsumeTunnel>(
-            TConsumeTunnel tunnel,
-            IConsumeRoute consumeRoute)
-            where TConsumeTunnel : IConsumeTunnel<TConsumeData>
-            => throw new NotImplementedException();
-
-        public void SetupPublishAsTopicToQueue<TPublishTunnel>(
-            TPublishTunnel tunnel, 
-            IPublishRoute publishRoute) 
-            where TPublishTunnel : IPublishTunnel<TPublishData>
-        {
-            VectorPartContext.PublishContext.SetupBindingToTopic(tunnel, publishRoute);
-        }
+        // public void Publish(TPublishData data, IPublishRoute publishRoute) => throw new NotImplementedException();
+        //
+        // public void Publish(TPublishData data) => throw new NotImplementedException();
+        //
+        // public void Publish(TPublishData data, string routingKey)  => throw new NotImplementedException();
+        //
+        // public void TakeAndConsume(TConsumeData data) => throw new NotImplementedException();
+        //
+        // public void TakeAndConsumeRange(IEnumerable<TConsumeData> data) => throw new NotImplementedException();
+        //
+        // public void SetupConsumeAsQueueFromTopic<TConsumeTunnel>(
+        //     TConsumeTunnel tunnel,
+        //     IConsumeRoute consumeRoute)
+        //     where TConsumeTunnel : IConsumeTunnel<TConsumeData>
+        //     => throw new NotImplementedException();
+        //
+        // public void SetupPublishAsTopicToQueue<TPublishTunnel>(
+        //     TPublishTunnel tunnel, 
+        //     IPublishRoute publishRoute) 
+        //     where TPublishTunnel : IPublishTunnel<TPublishData>
+        // {
+        //     VectorPartContext.PublishContext.SetupBindingToTopic(tunnel, publishRoute);
+        // }
     }
 }

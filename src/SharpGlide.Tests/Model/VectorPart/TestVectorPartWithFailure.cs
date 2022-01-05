@@ -17,10 +17,6 @@ namespace SharpGlide.Tests.Model.VectorPart
                 
         }
 
-        public TestVectorPartWithFailure() : base()
-        {
-        }
-
         public override async Task ProcessAsync(Input data, CancellationToken cancellationToken)
         {
             await Task.Delay(100, cancellationToken);

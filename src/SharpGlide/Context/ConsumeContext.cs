@@ -9,9 +9,9 @@ namespace SharpGlide.Context
     {
         public Func<IEnumerable<TConsumeData>> ConsumeDataPointer { get; set; }
 
-        public void BuildConsumeLogic(Expression<Func<IEnumerable<TConsumeData>>> logic)
+        public void SetConsumeFlow(Expression<Func<IEnumerable<TConsumeData>>> flowExpr)
         {
-            ConsumeDataPointer = logic
+            ConsumeDataPointer = flowExpr
                 .Compile();
         }
 

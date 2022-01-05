@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using SharpGlide.Context.Abstractions;
 using SharpGlide.Providers;
 using SharpGlide.Tunnels.Abstractions;
@@ -10,35 +11,25 @@ namespace SharpGlide.Context
     public class PublishContext<TPublishData> : IPublishContext<TPublishData>
     {
         private readonly IVectorHeartBeatContext _heartBeatContext;
-
+        
         public IDictionary<string, IPublishTunnel<TPublishData>> PublishTunnels { get; } =
             new Dictionary<string, IPublishTunnel<TPublishData>>();
+        
+        public Action<IEnumerable<TPublishData>> PublishDataPointer { get; set; }
 
         public PublishContext(IVectorHeartBeatContext heartBeatContext)
         {
             _heartBeatContext = heartBeatContext;
         }
 
-        public void SetupBindingToTopic(IPublishTunnel<TPublishData> tunnel, IPublishRoute publishRoute)
+        public void SetPublishFlow(Expression<Action<IEnumerable<TPublishData>>> flowExpr)
         {
-            tunnel.SetupInfrastructure(publishRoute);
-
-            PublishTunnels.Add(Guid.NewGuid().ToString("B"), tunnel);
+            PublishDataPointer = flowExpr.Compile();
         }
- 
-        public void Publish(TPublishData data, IPublishRoute publishRoute)
+
+        public void Publish(IEnumerable<TPublishData> data, IPublishRoute publishRoute)
         {
-            foreach (var tunnelKey in PublishTunnels.Keys)
-            {
-                var publishTunnel = PublishTunnels[tunnelKey];
-                if (!publishTunnel.CanExecute)
-                {
-                    continue;
-                }
-                
-                publishTunnel.Publish(data, publishRoute);
-                _heartBeatContext.LastPublishedAt = DateTimeProvider.Now;
-            }
+            throw new NotImplementedException();
         }
     }
 }
