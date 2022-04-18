@@ -32,6 +32,13 @@ namespace SharpGlide.Routing
             return !Equals(left, right);
         }
 
+        public static Route Default => new Route
+        {
+            RoutingKey = "#",
+            Queue = ".",
+            Topic = "."
+        };
+
         public string RoutingKey { get; set; }
         public string Queue { get; set; }
         public string Topic { get; set; }

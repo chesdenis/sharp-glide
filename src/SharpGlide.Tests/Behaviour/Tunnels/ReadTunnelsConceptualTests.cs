@@ -21,7 +21,7 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
             var consumeFunc = sut.ReadExpr.Compile();
 
             // Act
-            sut._stack.Push(123);
+            sut.Stack.Push(123);
             var data = consumeFunc();
 
             // Assert
@@ -36,9 +36,9 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
             var consumeRangeFunc = sut.ReadRangeExpr.Compile();
 
             // Act
-            sut._stack.Push(1);
-            sut._stack.Push(2);
-            sut._stack.Push(3);
+            sut.Stack.Push(1);
+            sut.Stack.Push(2);
+            sut.Stack.Push(3);
             var data = consumeRangeFunc().ToList();
 
             // Assert
@@ -55,9 +55,9 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
             var consumeRangeFunc = sut.ReadRangeExpr.Compile();
 
             // Act
-            sut._stack.Push(1);
-            sut._stack.Push(2);
-            sut._stack.Push(3);
+            sut.Stack.Push(1);
+            sut.Stack.Push(2);
+            sut.Stack.Push(3);
             var data = consumeRangeFunc().Take(2).ToList();
 
             // Assert
@@ -75,9 +75,9 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
             var collectedData = new List<decimal>();
 
             // Act
-            sut._stack.Push(1);
-            sut._stack.Push(2);
-            sut._stack.Push(3);
+            sut.Stack.Push(1);
+            sut.Stack.Push(2);
+            sut.Stack.Push(3);
             consumeRangeFunc((data) =>
             {
                 collectedData.Add(data);
@@ -99,9 +99,9 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
             var collectedData = new List<decimal>();
 
             // Act
-            sut._stack.Push(1);
-            sut._stack.Push(2);
-            sut._stack.Push(3);
+            sut.Stack.Push(1);
+            sut.Stack.Push(2);
+            sut.Stack.Push(3);
             consumeRangeFunc((data) =>
             {
                 collectedData.AddRange(data);
@@ -116,7 +116,7 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
 
         private class ReadTunnelExample : IReadDirectlyTunnel<decimal>, IReadViaCallbackTunnel<decimal>
         {
-            public readonly ConcurrentStack<decimal> _stack = new();
+            public readonly ConcurrentStack<decimal> Stack = new();
 
             public Expression<Func<decimal>> ReadExpr => () => ConsumeLogic();
 
@@ -124,7 +124,7 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
             {
                 decimal data;
 
-                var success = _stack.TryPop(out data);
+                var success = Stack.TryPop(out data);
 
                 if (!success) throw new NoDataException();
 
@@ -138,9 +138,9 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
 
             private void ConsumeWithCallbackLogic(Action<decimal> consumeCallback)
             {
-                while (!_stack.IsEmpty)
+                while (!Stack.IsEmpty)
                 {
-                    var success = _stack.TryPop(out var data);
+                    var success = Stack.TryPop(out var data);
 
                     if (success)
                     {
@@ -155,9 +155,9 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
 
             private void ConsumeRangeWithCallbackLogic(Action<IEnumerable<decimal>> consumeCallback)
             {
-                while (!_stack.IsEmpty)
+                while (!Stack.IsEmpty)
                 {
-                    var success = _stack.TryPop(out var data);
+                    var success = Stack.TryPop(out var data);
 
                     if (success)
                     {
@@ -168,9 +168,9 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
 
             private IEnumerable<decimal> ConsumeRangeLogic()
             {
-                while (!_stack.IsEmpty)
+                while (!Stack.IsEmpty)
                 {
-                    var success = _stack.TryPop(out var data);
+                    var success = Stack.TryPop(out var data);
 
                     if (success)
                     {
