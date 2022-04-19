@@ -2,7 +2,7 @@
 
 namespace SharpGlide.Tunnels.Readers
 {
-    public interface IReadTunnel<T> : ITunnel
+    public interface IReader<T> : ITunnel
     {
        
     }

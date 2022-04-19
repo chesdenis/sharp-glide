@@ -4,7 +4,7 @@ using SharpGlide.Tunnels.Readers;
 
 namespace SharpGlide.Tunnels.Abstractions
 {
-    public interface IReadersCollection<T> : IList<IReadTunnel<T>>
+    public interface IReadersCollection<T> : IList<IReader<T>>
     {
     }
 }

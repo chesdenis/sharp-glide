@@ -4,7 +4,7 @@ using SharpGlide.Tunnels.Writers;
 
 namespace SharpGlide.Tunnels.Abstractions
 {
-    public interface IWritersCollection<T> : IList<IWriteDirectlyTunnel<T>>
+    public interface IWritersCollection<T> : IList<IDirectWriter<T>>
     {
     }
 }

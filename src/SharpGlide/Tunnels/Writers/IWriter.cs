@@ -2,7 +2,7 @@
 
 namespace SharpGlide.Tunnels.Writers
 {
-    public interface IWriteTunnel<T> : ITunnel
+    public interface IWriter<T> : ITunnel
     {
         
     }

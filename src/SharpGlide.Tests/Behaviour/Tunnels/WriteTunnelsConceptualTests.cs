@@ -17,7 +17,7 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
         public async Task ShouldWriteDirectly()
         {
             // Arrange
-            var sut = new WriteTunnelExample();
+            var sut = new DirectWriterExample();
             var publishLogic = sut.WriteExpr.Compile();
 
             // Act
@@ -32,7 +32,7 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
         public async Task ShouldWriteRangeDirectly()
         {
             // Arrange
-            var sut = new WriteTunnelExample();
+            var sut = new DirectWriterExample();
             var publishRangeLogic = sut.WriteRangeExpr.Compile();
 
             // Act
@@ -45,7 +45,7 @@ namespace SharpGlide.Tests.Behaviour.Tunnels
             sut.Stack.ToList()[2].Should().Be(10);
         }
         
-        private class WriteTunnelExample : IWriteDirectlyTunnel<decimal>
+        private class DirectWriterExample : IDirectWriter<decimal>
         {
             public readonly ConcurrentStack<decimal> Stack = new();
 

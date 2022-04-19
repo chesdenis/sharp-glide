@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SharpGlide.Tunnels.Readers
 {
-    public interface IReadDirectlyAsyncTunnel<T> : IReadTunnel<T>
+    public interface IDirectReaderAsync<T> : IReader<T>
     {
         Expression<Func<Task<T>>> ReadAsyncExpr { get; }
 

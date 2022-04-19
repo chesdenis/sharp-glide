@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide", "SharpGlide\Sh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.Tests", "SharpGlide.Tests\SharpGlide.Tests.csproj", "{1B6B1936-B583-4753-B6EA-F11DCFB674AB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{23D07C17-15AA-41AA-B811-06C6E020A56B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.ReadExamples", "..\examples\SharpGlide.ReadExamples\SharpGlide.ReadExamples.csproj", "{E4886687-B5B7-463C-B8E4-B8F17027DAC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,12 @@ Global
 		{1B6B1936-B583-4753-B6EA-F11DCFB674AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B6B1936-B583-4753-B6EA-F11DCFB674AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B6B1936-B583-4753-B6EA-F11DCFB674AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4886687-B5B7-463C-B8E4-B8F17027DAC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4886687-B5B7-463C-B8E4-B8F17027DAC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4886687-B5B7-463C-B8E4-B8F17027DAC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4886687-B5B7-463C-B8E4-B8F17027DAC3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E4886687-B5B7-463C-B8E4-B8F17027DAC3} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
 	EndGlobalSection
 EndGlobal

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace SharpGlide.Tunnels.Readers
 {
-    public interface IReadDirectlyTunnel<T> : IReadTunnel<T>
+    public interface IDirectReader<T> : IReader<T>
     {
         Expression<Func<T>> ReadExpr { get; }
         

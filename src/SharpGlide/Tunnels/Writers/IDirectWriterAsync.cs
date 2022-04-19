@@ -6,7 +6,7 @@ using SharpGlide.Routing;
 
 namespace SharpGlide.Tunnels.Writers
 {
-    public interface IWriteDirectlyAsyncTunnel<T> : IWriteTunnel<T>
+    public interface IDirectWriterAsync<T> : IWriter<T>
     {
         Expression<Task<Action<T, IRoute>>> WriteAsyncExpr { get; }
         
