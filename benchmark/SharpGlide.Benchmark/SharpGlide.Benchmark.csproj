@@ -10,4 +10,8 @@
       <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\SharpGlide\SharpGlide.csproj" />
+    </ItemGroup>
+
 </Project>

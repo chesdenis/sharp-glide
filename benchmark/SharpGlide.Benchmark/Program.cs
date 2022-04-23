@@ -8,7 +8,10 @@ namespace SharpGlide.Benchmark
     {
         static void Main(string[] args)
         {
-            var summary = BenchmarkRunner.Run<Md5VsSha256>();
+            BenchmarkRunner.Run<ReaderBenchmarkTests>();
+            
+            // //new ReaderBenchmarkTests().ReaderDirectBenchmark();
+            // new ReaderBenchmarkTests().ReaderViaCallbackBenchmark();
         }
     }
 }

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace SharpGlide.Tunnels.Readers
 {
     public interface IDirectReaderAsync<T> : IReader<T>
     {
-        Expression<Func<Task<T>>> ReadAsyncExpr { get; }
+        Task<T> Read();
 
-        Expression<Func<Task<IEnumerable<T>>>> ReadRangeAsyncExpr { get; }
+        Task<IEnumerable<T>> ReadRange();
     }
 }
