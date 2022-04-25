@@ -39,6 +39,11 @@ namespace SharpGlide.Routing
             Topic = "."
         };
 
+        public override string ToString()
+        {
+            return $"RoutingKey: {RoutingKey}, Queue: {Queue}, Topic: {Topic}";
+        }
+
         public string RoutingKey { get; set; }
         public string Queue { get; set; }
         public string Topic { get; set; }
