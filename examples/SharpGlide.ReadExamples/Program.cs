@@ -6,7 +6,8 @@ namespace SharpGlide.ReadExamples
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Examples of SharpGlide's Flow:");
+            EnumerateArrayExample.Run();
         }
     }
 }

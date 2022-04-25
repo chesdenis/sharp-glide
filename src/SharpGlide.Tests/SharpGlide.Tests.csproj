@@ -25,4 +25,8 @@
       <ProjectReference Include="..\SharpGlide\SharpGlide.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Behaviour\FlowSchema\Concept\Examples" />
+    </ItemGroup>
+
 </Project>
