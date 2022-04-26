@@ -2,25 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SharpGlide.Tunnels.Readers.Model;
 
 namespace SharpGlide.Tunnels.Readers.Proxy
 {
     public class DirectWalkerProxy<T> : IDirectWalkerProxy<T>
     {
-        private readonly Func<CancellationToken, Task<Action<T>>> _walkFunc;
-        private readonly Func<CancellationToken, Task<Action<IEnumerable<T>>>> _walkPagedFunc;
-
-        public DirectWalkerProxy(Func<CancellationToken, Task<Action<T>>> walkFunc,
-            Func<CancellationToken, Task<Action<IEnumerable<T>>>> walkPagedFunc)
+        private readonly Func<CancellationToken, Action<T>, Task> _walkFunc;
+        
+        private readonly Func<CancellationToken, PageInfo, Action<IEnumerable<T>>, Task> _walkPagedFunc;
+        
+        public DirectWalkerProxy(
+            Func<CancellationToken, Action<T>, Task> walkFunc, 
+            Func<CancellationToken, PageInfo, Action<IEnumerable<T>>, Task> walkPagedFunc)
         {
             _walkFunc = walkFunc;
             _walkPagedFunc = walkPagedFunc;
         }
 
-        public async Task<Action<T>> WalkAsync(CancellationToken cancellationToken) =>
-            await _walkFunc(cancellationToken);
+        public async Task WalkAsync(CancellationToken cancellationToken, Action<T> callback) =>
+            await _walkFunc(cancellationToken, callback);
 
-        public async Task<Action<IEnumerable<T>>> WalkPagedAsync(CancellationToken cancellationToken) =>
-            await _walkPagedFunc(cancellationToken);
+        public async Task WalkPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, Action<IEnumerable<T>> callback) =>
+            await _walkPagedFunc(cancellationToken, pageInfo, callback);
     }
 }

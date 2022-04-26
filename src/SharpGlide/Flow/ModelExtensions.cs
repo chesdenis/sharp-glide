@@ -39,5 +39,14 @@ namespace SharpGlide.Flow
                 tunnel.WriteRangeExpr.Compile(),
                 tunnel.WriteAndReturnRangeExpr.Compile());
         }
+
+        public static IDirectWalkerProxy<TData> GetDirectWalkerProxy<TData>(this Model model,
+            IDirectWalker<TData> tunnel)
+        {
+            return new DirectWalkerProxy<TData>(
+                tunnel.WalkExpr.Compile(),
+                tunnel.WalkPagedExpr.Compile()
+                );
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Tunnels.Readers.Interfaces;
+using SharpGlide.Tunnels.Readers.Model;
 
 namespace SharpGlide.Tunnels.Readers.Abstractions
 {
@@ -12,13 +13,13 @@ namespace SharpGlide.Tunnels.Readers.Abstractions
         public bool CanExecute { get; set; }
 
 
-        public Expression<Func<CancellationToken, Task<Action<T>>>> WalkExpr => 
-            (cancellationToken) => WalkImpl(cancellationToken);
-        protected abstract Task<Action<T>> WalkImpl(CancellationToken cancellationToken);
+        public Expression<Func<CancellationToken,Action<T>, Task>> WalkExpr => 
+            (cancellationToken, callBack) => WalkImpl(cancellationToken, callBack);
+        protected abstract Task WalkImpl(CancellationToken cancellationToken, Action<T> callBack);
 
-        public Expression<Func<CancellationToken, Task<Action<IEnumerable<T>>>>> WalkPagedExpr =>
-            (cancellationToken) => WalkPagedImpl(cancellationToken);
+        public Expression<Func<CancellationToken, PageInfo, Action<IEnumerable<T>>, Task>> WalkPagedExpr =>
+            (cancellationToken, pageInfo, callback) => WalkPagedImpl(cancellationToken, pageInfo, callback);
 
-        protected abstract Task<Action<IEnumerable<T>>> WalkPagedImpl(CancellationToken cancellationToken);
+        protected abstract Task WalkPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo, Action<IEnumerable<T>> callback);
     }
 }
