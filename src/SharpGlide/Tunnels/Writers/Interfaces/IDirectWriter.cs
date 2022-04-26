@@ -1,18 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Routing;
-using SharpGlide.Tunnels.Abstractions;
 
-namespace SharpGlide.Tunnels.Writers
+namespace SharpGlide.Tunnels.Writers.Interfaces
 {
-    public interface IWriter<T> : ITunnel
-    {
-    }
-
-    public interface IOnDemandWriterV2<T> : IWriter<T>
+    public interface IDirectWriter<T> : IWriter<T>
     {
         Expression<Func<T, IRoute, CancellationToken, Task>> WriteSingleExpr { get; }
         Expression<Func<T, IRoute, CancellationToken, Task<T>>> WriteAndReturnSingleExpr { get; }

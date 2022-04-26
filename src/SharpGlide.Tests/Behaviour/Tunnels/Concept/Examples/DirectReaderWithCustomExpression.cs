@@ -6,37 +6,37 @@ using SharpGlide.Tunnels.Readers;
 
 namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
 {
-    public class DirectReaderWithCustomExpression : IDirectReader<decimal>
-    {
-        public bool CanExecute { get; set; } = true;
-        public Expression<Func<decimal>> ReadExpr { get; }
-        public Expression<Func<Task<decimal>>> ReadAsyncExpr { get; }
-
-        public DirectReaderWithCustomExpression(IDirectReader<decimal> innerLogic)
-        {
-            ReadExpr = Expression.Lambda<Func<decimal>>(GetLogic());
-        }
-
-        private Expression GetLogic()
-        {
-            var blockExpr = Expression.Block(
-                Expression.Call(
-                    null,
-                    typeof(Console).GetMethod("Write", new Type[] { typeof(String) }),
-                    Expression.Constant("Hello ")
-                ),
-                Expression.Call(
-                    null,
-                    typeof(Console).GetMethod("WriteLine", new Type[] { typeof(String) }),
-                    Expression.Constant("World!")
-                ),
-                Expression.Constant(10m)
-            );
-
-            return blockExpr;
-        }
-
-        public Expression<Func<IEnumerable<decimal>>> ReadRangeExpr { get; }
+    // public class DirectReaderWithCustomExpression : IDirectReader<decimal>
+    // {
+    //     public bool CanExecute { get; set; } = true;
+    //     public Expression<Func<decimal>> ReadExpr { get; }
+    //     public Expression<Func<Task<decimal>>> ReadAsyncExpr { get; }
+    //
+    //     public DirectReaderWithCustomExpression(IDirectReader<decimal> innerLogic)
+    //     {
+    //         ReadExpr = Expression.Lambda<Func<decimal>>(GetLogic());
+    //     }
+    //
+    //     private Expression GetLogic()
+    //     {
+    //         var blockExpr = Expression.Block(
+    //             Expression.Call(
+    //                 null,
+    //                 typeof(Console).GetMethod("Write", new Type[] { typeof(String) }),
+    //                 Expression.Constant("Hello ")
+    //             ),
+    //             Expression.Call(
+    //                 null,
+    //                 typeof(Console).GetMethod("WriteLine", new Type[] { typeof(String) }),
+    //                 Expression.Constant("World!")
+    //             ),
+    //             Expression.Constant(10m)
+    //         );
+    //
+    //         return blockExpr;
+    //     }
+    //
+    //     public Expression<Func<IEnumerable<decimal>>> ReadRangeExpr { get; }
         
         //     // Add the following directive to the file:
 // // using System.Linq.Expressions;
@@ -69,5 +69,5 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
 //     int factorial = Expression.Lambda<Func<int, int>>(block, value).Compile()(5);
 //
 //     Console.WriteLine(factorial);
-    }
+    // }
 }

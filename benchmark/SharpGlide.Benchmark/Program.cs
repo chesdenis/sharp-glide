@@ -8,7 +8,7 @@ namespace SharpGlide.Benchmark
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<ReaderBenchmarkTests>();
+            //BenchmarkRunner.Run<ReaderBenchmarkTests>();
             
             // //new ReaderBenchmarkTests().ReaderDirectBenchmark();
             // new ReaderBenchmarkTests().ReaderViaCallbackBenchmark();

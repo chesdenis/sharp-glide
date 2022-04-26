@@ -1,4 +1,4 @@
-﻿namespace SharpGlide.Tunnels.Readers
+﻿namespace SharpGlide.Tunnels.Readers.Model
 {
     public struct PageInfo
     {

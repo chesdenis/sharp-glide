@@ -19,4 +19,8 @@
         <PackageReleaseNotes>+ Fixed max thread reporting</PackageReleaseNotes>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Tunnels\Writers\Model" />
+    </ItemGroup>
+
 </Project>

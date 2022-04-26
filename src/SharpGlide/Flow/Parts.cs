@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SharpGlide.Parts;
 
-namespace SharpGlide.FlowSchema
+namespace SharpGlide.Flow
 {
     public class Parts : Dictionary<string, IBasePart>
     {

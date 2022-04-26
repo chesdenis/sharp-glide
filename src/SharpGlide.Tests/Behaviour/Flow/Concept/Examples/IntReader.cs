@@ -1,51 +1,57 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using SharpGlide.Tunnels.Readers;
+using SharpGlide.Tunnels.Readers.Abstractions;
+using SharpGlide.Tunnels.Readers.Model;
 
 namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
 {
-    public class IntReader : IOnDemandReaderV2<int>
+    public class IntReader : DirectReader<int>
     {
         private readonly Func<List<int>> _storagePointer;
-        public bool CanExecute { get; set; }
-        public Expression<Func<CancellationToken, Task<int>>> ReadSingleExpr => (token) => ReadSingleImpl(token);
-
-        public Expression<Func<CancellationToken, Task<IEnumerable<int>>>> ReadAllExpr =>
-            (token) => ReadAllImpl(token);
-
-        public Expression<Func<CancellationToken, Func<IEnumerable<int>, IEnumerable<int>>, Task<IEnumerable<int>>>>
-            ReadRangeExpr =>
-            (token, filterPointer) => ReadRangeImpl(token, filterPointer);
-
+        
         public IntReader(Func<List<int>> storagePointer)
         {
             _storagePointer = storagePointer;
         }
-
-        private async Task<int> ReadSingleImpl(CancellationToken cancellationToken)
+    
+        protected override async Task<int> ReadSingleImpl(CancellationToken cancellationToken)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-
+    
             return _storagePointer().First();
         }
-
-        private async Task<IEnumerable<int>> ReadAllImpl(CancellationToken cancellationToken)
+         
+        protected override async Task<IEnumerable<int>> ReadPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
+            
+            var itemsToSkip = pageInfo.PageIndex * pageInfo.PageSize;
+            var itemsToTake = pageInfo.PageSize;
+            
+            if (itemsToSkip >= _storagePointer().Count)
+            {
+                return await Task.FromResult(_storagePointer());
+            }
 
-            return _storagePointer().ToList();
+            return await Task.FromResult(_storagePointer().Skip(itemsToSkip).Take(itemsToTake));
         }
 
-        private async Task<IEnumerable<int>> ReadRangeImpl(CancellationToken cancellationToken,
-            Func<IEnumerable<int>, IEnumerable<int>> filterPointer)
+        protected override async Task<IEnumerable<int>> ReadSpecificImpl(CancellationToken cancellationToken, 
+            Func<IEnumerable<int>, IEnumerable<int>> filter)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-
-            return filterPointer(_storagePointer());
+    
+            return filter(_storagePointer());
+        }
+    
+        protected override async Task<IEnumerable<int>> ReadAllImpl(CancellationToken cancellationToken)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
+    
+            return _storagePointer().ToList();
         }
     }
 }

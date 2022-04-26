@@ -1,4 +1,4 @@
-﻿namespace SharpGlide.FlowSchema
+﻿namespace SharpGlide.Flow
 {
     public class Model
     {

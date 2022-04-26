@@ -1,44 +1,34 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts;
 using SharpGlide.Routing;
+using SharpGlide.Tunnels.Readers.Proxy;
+using SharpGlide.Tunnels.Writers.Proxy;
 
 namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
 {
-    public class ReadTunnel<T>
-    {
-        private readonly Func<CancellationToken, Task<T>> _readIntPointer;
-
-        public ReadTunnel(Func<CancellationToken, Task<T>> readIntPointer)
-        {
-            _readIntPointer = readIntPointer;
-        }
-
-        public async Task<T> ReadAsync(CancellationToken token) => await _readIntPointer(token);
-    }
-
     public class IntToStringPart : IBasePart
     {
-        private readonly ReadTunnel<int> _readIntTunnel;
-        private readonly Func<string, IRoute, CancellationToken, Task> _writeStringPointer;
+        private readonly IDirectReaderProxy<int> _directIntReader;
+        private readonly IDirectWriterProxy<string> _directStringWriter;
+
         public string Name { get; set; }
 
         public IntToStringPart(
-            ReadTunnel<int> readIntTunnel, 
-            Func<string, IRoute, CancellationToken, Task> writeStringPointer)
+            IDirectReaderProxy<int> directIntReader,
+            IDirectWriterProxy<string> directStringWriter)
         {
-            _readIntTunnel = readIntTunnel;
-            _writeStringPointer = writeStringPointer;
+            _directIntReader = directIntReader;
+            _directStringWriter = directStringWriter;
         }
 
         public async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            var input = await _readIntTunnel.ReadAsync(cancellationToken);
+            var input = await this._directIntReader.ReadAsync(cancellationToken);
 
             input *= 2;
 
-            await _writeStringPointer(input.ToString(), Route.Default, cancellationToken);
+            await _directStringWriter.WriteSingle(input.ToString(), Route.Default, cancellationToken);
         }
     }
 }
