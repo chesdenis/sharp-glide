@@ -10,6 +10,7 @@ namespace SharpGlide.Tunnels.Readers.Interfaces
     public interface IWalkerByRequest<T, TRequest> : IReader<T>
     {
         Expression<Func<CancellationToken, TRequest, Action<T>, Task>> WalkExpr { get; }
+        Expression<Func<CancellationToken, TRequest, Action<IEnumerable<T>>, Task>> WalkRangeExpr { get; }
         
         Expression<Func<CancellationToken, PageInfo, TRequest, Action<IEnumerable<T>>, Task>> WalkPagedExpr { get; }
     }

@@ -17,6 +17,11 @@ namespace SharpGlide.Tunnels.Readers.Abstractions
 
         protected abstract Task WalkExprImpl(CancellationToken cancellationToken, TRequest request, Action<T> callback);
 
+        public Expression<Func<CancellationToken, TRequest, Action<IEnumerable<T>>, Task>> WalkRangeExpr =>
+            (cancellationToken, request, callback) => WalkRangeExprImpl(cancellationToken, request, callback);
+
+        protected abstract Task WalkRangeExprImpl(CancellationToken cancellationToken, TRequest request, Action<IEnumerable<T>> callback);
+        
         public Expression<Func<CancellationToken, PageInfo, TRequest, Action<IEnumerable<T>>, Task>> WalkPagedExpr
             => (cancellationToken, pageInfo, request, callback) => WalkPagedImpl(cancellationToken, pageInfo, request, callback);
 

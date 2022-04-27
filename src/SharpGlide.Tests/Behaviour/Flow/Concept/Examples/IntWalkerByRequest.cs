@@ -27,6 +27,13 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
             }
         }
 
+        protected override async Task WalkRangeExprImpl(CancellationToken cancellationToken, int request, Action<IEnumerable<int>> callback)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
+
+            callback(_storagePointer().Where(w => w > request));
+        }
+
         protected override async Task WalkPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo, int request,
             Action<IEnumerable<int>> callback)
         {

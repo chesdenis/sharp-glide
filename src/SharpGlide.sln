@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmark", "Benchmark", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.Benchmark", "..\benchmark\SharpGlide.Benchmark\SharpGlide.Benchmark.csproj", "{45C7D73A-3DFA-4539-8AF0-8688E4C95EAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.FilesToCloudUploader", "..\examples\SharpGlide.FilesToCloudUploader\SharpGlide.FilesToCloudUploader.csproj", "{6003CF2F-4086-4789-90BB-09680D408C24}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,9 +36,14 @@ Global
 		{45C7D73A-3DFA-4539-8AF0-8688E4C95EAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45C7D73A-3DFA-4539-8AF0-8688E4C95EAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45C7D73A-3DFA-4539-8AF0-8688E4C95EAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6003CF2F-4086-4789-90BB-09680D408C24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6003CF2F-4086-4789-90BB-09680D408C24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6003CF2F-4086-4789-90BB-09680D408C24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6003CF2F-4086-4789-90BB-09680D408C24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E4886687-B5B7-463C-B8E4-B8F17027DAC3} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
 		{45C7D73A-3DFA-4539-8AF0-8688E4C95EAA} = {36384C41-E609-4491-B4C8-59F59C7347DB}
+		{6003CF2F-4086-4789-90BB-09680D408C24} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
 	EndGlobalSection
 EndGlobal
