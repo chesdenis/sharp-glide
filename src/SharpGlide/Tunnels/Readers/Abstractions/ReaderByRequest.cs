@@ -20,11 +20,10 @@ namespace SharpGlide.Tunnels.Readers.Abstractions
             => ReadAllImpl(cancellationToken, request);
         protected abstract Task<IEnumerable<T>> ReadAllImpl(CancellationToken cancellationToken, TRequest request);
         
-        public virtual Expression<Func<CancellationToken, TRequest, Func<Task<IEnumerable<T>>, PageInfo>, PageInfo>> ReadPagedExpr=>
-            (cancellationToken, request, onPageRead) => 
-                ReadPagedImpl(cancellationToken, request, onPageRead);
-        protected abstract PageInfo ReadPagedImpl(CancellationToken cancellationToken, TRequest request,
-            Func<Task<IEnumerable<T>>, PageInfo> onPageRead);
+        public virtual Expression<Func<CancellationToken, PageInfo, TRequest, Task<IEnumerable<T>>>> ReadPagedExpr=>
+            (cancellationToken, pageInfo, request) => 
+                ReadPagedImpl(cancellationToken, pageInfo, request);
+        protected abstract Task<IEnumerable<T>> ReadPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo, TRequest request);
 
         public virtual
             Expression<Func<CancellationToken, TRequest, Func<IEnumerable<T>, IEnumerable<T>>, Task<IEnumerable<T>>>>

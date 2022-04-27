@@ -13,7 +13,7 @@ namespace SharpGlide.Tunnels.Readers.Interfaces
 
         Expression<Func<CancellationToken, TRequest, Task<IEnumerable<T>>>> ReadAllExpr { get; }
 
-        Expression<Func<CancellationToken, TRequest, Func<Task<IEnumerable<T>>, PageInfo>, PageInfo>> ReadPagedExpr
+        Expression<Func<CancellationToken, PageInfo, TRequest, Task<IEnumerable<T>>>> ReadPagedExpr
         {
             get;
         }

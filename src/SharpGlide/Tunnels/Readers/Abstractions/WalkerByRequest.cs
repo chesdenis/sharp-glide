@@ -12,14 +12,15 @@ namespace SharpGlide.Tunnels.Readers.Abstractions
     {
         public bool CanExecute { get; set; }
 
-        public Expression<Func<CancellationToken, TRequest, Task<Action<T>>>> WalkExpr =>
-            (cancellationToken, request) => WalkExprImpl(cancellationToken, request);
+        public Expression<Func<CancellationToken, TRequest, Action<T>, Task>> WalkExpr =>
+            (cancellationToken, request, callback) => WalkExprImpl(cancellationToken, request, callback);
 
-        protected abstract Task<Action<T>> WalkExprImpl(CancellationToken cancellationToken, TRequest request);
+        protected abstract Task WalkExprImpl(CancellationToken cancellationToken, TRequest request, Action<T> callback);
 
-        public Expression<Func<CancellationToken, TRequest, Task<Action<IEnumerable<T>, PageInfo>>>> WalkPagedExpr
-            => (cancellationToken, request) => WalkPagedImpl(cancellationToken, request);
+        public Expression<Func<CancellationToken, PageInfo, TRequest, Action<IEnumerable<T>>, Task>> WalkPagedExpr
+            => (cancellationToken, pageInfo, request, callback) => WalkPagedImpl(cancellationToken, pageInfo, request, callback);
 
-        protected abstract Task<Action<IEnumerable<T>, PageInfo>> WalkPagedImpl(CancellationToken cancellationToken, TRequest request);
+        protected abstract Task WalkPagedImpl(CancellationToken cancellationToken, 
+            PageInfo pageInfo, TRequest request, Action<IEnumerable<T>> callback);
     }
 }

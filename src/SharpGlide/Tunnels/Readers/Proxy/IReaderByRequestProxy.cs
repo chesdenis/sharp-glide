@@ -11,8 +11,8 @@ namespace SharpGlide.Tunnels.Readers.Proxy
         Task<T> ReadAsync(CancellationToken cancellationToken, TRequest request);
         Task<IEnumerable<T>> ReadAllAsync(CancellationToken cancellationToken, TRequest request);
 
-        PageInfo ReadPaged(CancellationToken cancellationToken,
-            Func<Task<IEnumerable<T>>, PageInfo> pageInfo, TRequest request);
+        Task<IEnumerable<T>> ReadPaged(CancellationToken cancellationToken, PageInfo pageInfo,
+            TRequest request);
 
         Task<IEnumerable<T>> ReadSpecific(
             CancellationToken cancellationToken,

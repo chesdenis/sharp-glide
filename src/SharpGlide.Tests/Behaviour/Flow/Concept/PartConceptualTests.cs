@@ -9,9 +9,9 @@ using Xunit;
 
 namespace SharpGlide.Tests.Behaviour.Flow.Concept
 {
-    public class IntToStringFlowTests
+    public class PartConceptualTests
     {
-        public static List<int> SourceDataA = Enumerable.Range(2, 10000).ToList();
+        private static List<int> SourceDataA = Enumerable.Range(2, 10000).ToList();
     
         [Fact]
         public async Task IntToStringFlowShouldCalculateStrings()
@@ -27,8 +27,8 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             flowModel.AddTunnel(model => stringWriter);
 
             var part = new IntToStringPart(
-                flowModel.GetDirectReaderProxy(intReader), 
-                flowModel.GetDirectWriterProxy(stringWriter));
+                flowModel.GetProxy(intReader), 
+                flowModel.GetProxy(stringWriter));
     
             flowModel.Parts.Add("int2string", part);
     
