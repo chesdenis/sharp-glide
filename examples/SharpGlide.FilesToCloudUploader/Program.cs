@@ -29,7 +29,7 @@ namespace SharpGlide.FilesToCloudUploader
                 appRegistry.For<IConfiguration>().Use(Configuration).Singleton();
                 
                 var appContainer = new Container(appRegistry);
-                await appContainer.GetInstance<CalculateTotalSizePart>().ProcessAsync(CancellationToken.None);
+                await appContainer.GetInstance<CalculateTotalDirectorySizePart>().ProcessAsync(CancellationToken.None);
             }
             catch (Exception ex)
             {

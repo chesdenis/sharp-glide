@@ -1,34 +1,34 @@
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts;
+using SharpGlide.Readers;
 using SharpGlide.Routing;
-using SharpGlide.Tunnels.Readers.Proxy;
-using SharpGlide.Tunnels.Writers.Proxy;
+using SharpGlide.Writers;
 
 namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
 {
     public class IntToStringPart : IBasePart
     {
-        private readonly IDirectReaderProxy<int> _directIntReader;
-        private readonly IDirectWriterProxy<string> _directStringWriter;
+        private readonly IReader<int> _readerIntReader;
+        private readonly IWriter<string> _stringWriter;
 
         public string Name { get; set; }
 
         public IntToStringPart(
-            IDirectReaderProxy<int> directIntReader,
-            IDirectWriterProxy<string> directStringWriter)
+            IReader<int> readerIntReader,
+            IWriter<string> stringWriter)
         {
-            _directIntReader = directIntReader;
-            _directStringWriter = directStringWriter;
+            _readerIntReader = readerIntReader;
+            _stringWriter = stringWriter;
         }
 
         public async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            var input = await this._directIntReader.ReadAsync(cancellationToken);
+            var input = await this._readerIntReader.ReadAsync(cancellationToken);
 
             input *= 2;
 
-            await _directStringWriter.WriteSingle(input.ToString(), Route.Default, cancellationToken);
+            await _stringWriter.WriteSingle(input.ToString(), Route.Default, cancellationToken);
         }
     }
 }

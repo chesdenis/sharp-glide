@@ -1,9 +1,4 @@
-namespace SharpGlide.FilesToCloudUploader.Tunnels
+namespace SharpGlide.FilesToCloudUploader.Model
 {
-    public class FileAttributes
-    {
-        public string FullName { get; set; }
-        public string Name { get; set; }
-        public long Size { get; set; }
-    }
+    
 }

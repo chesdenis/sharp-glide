@@ -13,18 +13,18 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
         public async Task ShouldBuildModelBasedOnConfiguration()
         {
             // Arrange
-            var sut = new ModelBuilder();
+            var sut = new FlowModelBuilder();
 
             // Act
-            var model = sut.Configure<SampleConfigurationProvider>(
+            var model = sut.Configure<SampleFlowModelProvider>(
                 new[]
                 {
                     nameof(IntToStringPart)
                 },
                 new[]
                 {
-                    nameof(IntReader),
-                    nameof(StringWriter)
+                    nameof(IntReadTunnel),
+                    nameof(WriteStringTunnel)
                 },
                 new[] { string.Empty });
 
@@ -32,7 +32,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             model.Parts.Count.Should().Be(1);
         }
 
-        public class SampleConfigurationProvider : IConfigurationEntryProvider
+        public class SampleFlowModelProvider : IFlowModelEntryProvider
         {
             public ConfigurationEntry Parse(string contents)
             {
@@ -44,17 +44,17 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
                             FullName = typeof(IntToStringPart).FullName,
                             AssemblyLocation = typeof(IntToStringPart).Assembly.Location
                         };
-                    case nameof(IntReader):
+                    case nameof(IntReadTunnel):
                         return new ConfigurationEntry()
                         {
-                            FullName = typeof(IntReader).FullName,
-                            AssemblyLocation = typeof(IntReader).Assembly.Location
+                            FullName = typeof(IntReadTunnel).FullName,
+                            AssemblyLocation = typeof(IntReadTunnel).Assembly.Location
                         };
-                    case nameof(StringWriter):
+                    case nameof(WriteStringTunnel):
                         return new ConfigurationEntry()
                         {
-                            FullName = typeof(StringWriter).FullName,
-                            AssemblyLocation = typeof(StringWriter).Assembly.Location
+                            FullName = typeof(WriteStringTunnel).FullName,
+                            AssemblyLocation = typeof(WriteStringTunnel).Assembly.Location
                         };
                     default:
                         throw new ArgumentOutOfRangeException(nameof(contents));

@@ -1,11 +1,12 @@
 using Lamar;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using SharpGlide.FilesToCloudUploader.Model;
 using SharpGlide.FilesToCloudUploader.Parts;
 using SharpGlide.FilesToCloudUploader.Tunnels;
 using SharpGlide.Flow;
-using SharpGlide.Tunnels.Readers.Interfaces;
-using SharpGlide.Tunnels.Readers.Proxy;
+using SharpGlide.Readers;
+using SharpGlide.Tunnels.Read.Interfaces;
 
 namespace SharpGlide.FilesToCloudUploader
 {
@@ -15,21 +16,21 @@ namespace SharpGlide.FilesToCloudUploader
         {
             this.For<ILoggerFactory>().Use(context => LoggerFactory.Create(x => x.AddSerilog())).Singleton();
 
-            this.For<ILogger<FolderContentsWalker>>().Use(context =>
+            this.For<ILogger<FolderContentsWalk>>().Use(context =>
                 context.GetInstance<ILoggerFactory>()
-                    .CreateLogger<FolderContentsWalker>());
+                    .CreateLogger<FolderContentsWalk>());
             
-            this.For<ILogger<CalculateTotalSizePart>>().Use(context =>
+            this.For<ILogger<CalculateTotalDirectorySizePart>>().Use(context =>
                 context.GetInstance<ILoggerFactory>()
-                    .CreateLogger<CalculateTotalSizePart>());
+                    .CreateLogger<CalculateTotalDirectorySizePart>());
             
-            this.For<FolderContentsWalker>().Use<FolderContentsWalker>();
+            this.For<FolderContentsWalk>().Use<FolderContentsWalk>();
 
-            this.For<Model>().Use<Model>().Singleton();
+            this.For<FlowModel>().Use<FlowModel>().Singleton();
 
-            this.For<IWalkerByRequestProxy<FileAttributes, DirectoryRequest>>()
-                .Use(context => context.GetInstance<Model>().GetProxy(
-                    context.GetInstance<IWalkerByRequest<FileAttributes, DirectoryRequest>>()));
+            this.For<IWalkerWithArg<FolderContentsWalk.FileMetadata, FolderContentsWalk.DirectoryMetadata>>()
+                .Use(context => context.GetInstance<FlowModel>().BuildWalker(
+                    context.GetInstance<IWalkWithArgTunnel<FolderContentsWalk.FileMetadata, FolderContentsWalk.DirectoryMetadata>>()));
         }
     }
 }

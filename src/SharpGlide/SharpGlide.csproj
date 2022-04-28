@@ -20,7 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Tunnels\Writers\Model" />
+      <Folder Include="Tunnels\Write\Model" />
     </ItemGroup>
 
 </Project>

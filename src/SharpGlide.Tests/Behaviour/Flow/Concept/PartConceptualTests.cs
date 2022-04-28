@@ -14,21 +14,21 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
         private static List<int> SourceDataA = Enumerable.Range(2, 10000).ToList();
     
         [Fact]
-        public async Task IntToStringFlowShouldCalculateStrings()
+        public async Task ShouldCalculateStrings()
         {
             // Arrange
-            var flowModel = new Model();
+            var flowModel = new FlowModel();
             var output = new List<string>();
             
-            var intReader = new IntReader(() => SourceDataA);
-            var stringWriter = new StringWriter(() => output);
+            var intReader = new IntReadTunnel(() => SourceDataA);
+            var stringWriter = new WriteStringTunnel(() => output);
 
             flowModel.AddTunnel(model => intReader);
             flowModel.AddTunnel(model => stringWriter);
 
             var part = new IntToStringPart(
-                flowModel.GetProxy(intReader), 
-                flowModel.GetProxy(stringWriter));
+                flowModel.BuildReader(intReader), 
+                flowModel.BuildWriter(stringWriter));
     
             flowModel.Parts.Add("int2string", part);
     
