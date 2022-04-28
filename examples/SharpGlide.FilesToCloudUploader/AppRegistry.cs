@@ -16,21 +16,21 @@ namespace SharpGlide.FilesToCloudUploader
         {
             this.For<ILoggerFactory>().Use(context => LoggerFactory.Create(x => x.AddSerilog())).Singleton();
 
-            this.For<ILogger<FolderContentsWalk>>().Use(context =>
+            this.For<ILogger<FolderContentsWalkTunnel>>().Use(context =>
                 context.GetInstance<ILoggerFactory>()
-                    .CreateLogger<FolderContentsWalk>());
+                    .CreateLogger<FolderContentsWalkTunnel>());
             
             this.For<ILogger<CalculateTotalDirectorySizePart>>().Use(context =>
                 context.GetInstance<ILoggerFactory>()
                     .CreateLogger<CalculateTotalDirectorySizePart>());
             
-            this.For<FolderContentsWalk>().Use<FolderContentsWalk>();
+            this.For<FolderContentsWalkTunnel>().Use<FolderContentsWalkTunnel>();
 
             this.For<FlowModel>().Use<FlowModel>().Singleton();
 
-            this.For<IWalkerWithArg<FolderContentsWalk.FileMetadata, FolderContentsWalk.DirectoryMetadata>>()
+            this.For<IWalkerWithArg<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata>>()
                 .Use(context => context.GetInstance<FlowModel>().BuildWalker(
-                    context.GetInstance<IWalkWithArgTunnel<FolderContentsWalk.FileMetadata, FolderContentsWalk.DirectoryMetadata>>()));
+                    context.GetInstance<IWalkWithArgTunnel<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata>>()));
         }
     }
 }

@@ -11,11 +11,11 @@ using SharpGlide.Tunnels.Read.Model;
  
 namespace SharpGlide.FilesToCloudUploader.Tunnels
 {
-    public class FolderContentsWalk : WalkWithArgTunnel<FolderContentsWalk.FileMetadata, FolderContentsWalk.DirectoryMetadata>
+    public class FolderContentsWalkTunnel : WalkWithArgTunnel<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata>
     {
-        private readonly ILogger<FolderContentsWalk> _logger;
+        private readonly ILogger<FolderContentsWalkTunnel> _logger;
 
-        public FolderContentsWalk(ILogger<FolderContentsWalk> logger)
+        public FolderContentsWalkTunnel(ILogger<FolderContentsWalkTunnel> logger)
         {
             _logger = logger;
         }

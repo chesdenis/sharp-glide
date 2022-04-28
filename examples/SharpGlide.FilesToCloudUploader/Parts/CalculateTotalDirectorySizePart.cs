@@ -14,14 +14,14 @@ namespace SharpGlide.FilesToCloudUploader.Parts
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<CalculateTotalDirectorySizePart> _logger;
-        private readonly IWalkerWithArg<FolderContentsWalk.FileMetadata, FolderContentsWalk.DirectoryMetadata> _walkProxy;
+        private readonly IWalkerWithArg<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata> _walkProxy;
         
         public string Name { get; set; }
 
         public CalculateTotalDirectorySizePart(
             IConfiguration configuration,
             ILogger<CalculateTotalDirectorySizePart> logger,
-            IWalkerWithArg<FolderContentsWalk.FileMetadata, FolderContentsWalk.DirectoryMetadata> walkProxy)
+            IWalkerWithArg<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata> walkProxy)
         {
             _configuration = configuration;
             _logger = logger;
@@ -30,8 +30,8 @@ namespace SharpGlide.FilesToCloudUploader.Parts
         
         public async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            var files = new List<FolderContentsWalk.FileMetadata>();
-            await _walkProxy.WalkAsync(cancellationToken, new FolderContentsWalk.DirectoryMetadata()
+            var files = new List<FolderContentsWalkTunnel.FileMetadata>();
+            await _walkProxy.WalkAsync(cancellationToken, new FolderContentsWalkTunnel.DirectoryMetadata()
             {
                 FullName = _configuration.GetValue<string>("ContextFolder")
             },fileAttr => { files.Add(fileAttr); });
