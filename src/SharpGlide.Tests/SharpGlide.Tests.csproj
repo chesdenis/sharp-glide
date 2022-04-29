@@ -27,7 +27,6 @@
 
     <ItemGroup>
       <Folder Include="Behaviour\Parts\Concept\Examples" />
-      <Folder Include="Behaviour\Tunnels\Concept\Examples" />
     </ItemGroup>
 
 </Project>

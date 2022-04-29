@@ -27,6 +27,12 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
             }
         }
 
+        protected override Task WalkAsyncImpl(CancellationToken cancellationToken, Func<CancellationToken, int, Task> callback)
+        {
+            throw new NotImplementedException();
+        }
+
+
         protected override async Task WalkPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo,
             Action<IEnumerable<int>> callback)
         {
@@ -37,6 +43,11 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
                 callback(_storagePointer().Skip(i).Take(pageInfo.PageSize));
                 pageInfo.PageIndex++;
             }
+        }
+
+        protected override Task WalkPagedAsyncImpl(CancellationToken cancellationToken, PageInfo pageInfo, Func<CancellationToken, IEnumerable<int>, Task> callback)
+        {
+            throw new NotImplementedException();
         }
     }
 }

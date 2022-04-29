@@ -81,7 +81,9 @@ namespace SharpGlide.Flow
         {
             return new Walker<TData>(
                 tunnel.WalkExpr.Compile(),
-                tunnel.WalkPagedExpr.Compile()
+                tunnel.WalkAsyncExpr.Compile(),
+                tunnel.WalkPagedExpr.Compile(),
+                tunnel.WalkPagedAsyncExpr.Compile()
             );
         }
 

@@ -12,14 +12,30 @@ namespace SharpGlide.Tunnels.Read.Abstractions
     {
         public bool CanExecute { get; set; }
 
+        public Expression<Func<CancellationToken, Action<T>, Task>> WalkExpr =>
+            (cancellationToken, callback) => WalkImpl(cancellationToken, callback);
 
-        public Expression<Func<CancellationToken,Action<T>, Task>> WalkExpr => 
-            (cancellationToken, callBack) => WalkImpl(cancellationToken, callBack);
-        protected abstract Task WalkImpl(CancellationToken cancellationToken, Action<T> callBack);
+
+        protected abstract Task WalkImpl(CancellationToken cancellationToken, Action<T> callback);
+
+        public Expression<Func<CancellationToken, Func<CancellationToken, T, Task>, Task>> WalkAsyncExpr =>
+            (cancellationToken, callback) => WalkAsyncImpl(cancellationToken, callback);
+
+        protected abstract Task WalkAsyncImpl(CancellationToken cancellationToken,
+            Func<CancellationToken, T, Task> callback);
+
 
         public Expression<Func<CancellationToken, PageInfo, Action<IEnumerable<T>>, Task>> WalkPagedExpr =>
             (cancellationToken, pageInfo, callback) => WalkPagedImpl(cancellationToken, pageInfo, callback);
 
-        protected abstract Task WalkPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo, Action<IEnumerable<T>> callback);
+        protected abstract Task WalkPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo,
+            Action<IEnumerable<T>> callback);
+
+        public Expression<Func<CancellationToken, PageInfo, Func<CancellationToken, IEnumerable<T>, Task>, Task>>
+            WalkPagedAsyncExpr
+            => (cancellationToken, pageInfo, callback) => WalkPagedAsyncImpl(cancellationToken, pageInfo, callback);
+
+        protected abstract Task WalkPagedAsyncImpl(CancellationToken cancellationToken, PageInfo pageInfo,
+            Func<CancellationToken, IEnumerable<T>, Task> callback);
     }
 }
