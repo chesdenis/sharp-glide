@@ -12,6 +12,7 @@ namespace SharpGlide.FilesToCloudUploader
     {
         public static IConfiguration Configuration => new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
+            .AddUserSecrets("a67fee40-ee22-4eaf-ad79-bbbe3598c7d9")
             .Build();
 
         static async Task Main(string[] args)
@@ -29,7 +30,7 @@ namespace SharpGlide.FilesToCloudUploader
                 appRegistry.For<IConfiguration>().Use(Configuration).Singleton();
                 
                 var appContainer = new Container(appRegistry);
-                await appContainer.GetInstance<CalculateTotalDirectorySizePart>().ProcessAsync(CancellationToken.None);
+                await appContainer.GetInstance<UploadFileToYandexPart>().ProcessAsync(CancellationToken.None);
             }
             catch (Exception ex)
             {
