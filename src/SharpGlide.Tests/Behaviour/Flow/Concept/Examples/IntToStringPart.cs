@@ -9,13 +9,13 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
 {
     public class IntToStringPart : IBasePart
     {
-        private readonly IReader<int> _readerIntReader;
+        private readonly ISingleReader<int> _readerIntReader;
         private readonly IWriter<string> _stringWriter;
 
         public string Name { get; set; }
 
         public IntToStringPart(
-            IReader<int> readerIntReader,
+            ISingleReader<int> readerIntReader,
             IWriter<string> stringWriter)
         {
             _readerIntReader = readerIntReader;

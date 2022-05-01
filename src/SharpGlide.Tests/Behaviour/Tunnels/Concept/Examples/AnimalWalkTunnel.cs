@@ -22,20 +22,18 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
             string WritablePropertyA { get; set; }
             string NonWritablePropertyB { get; set; }
         }
-
-        protected override Task WalkImpl(CancellationToken cancellationToken,
-            Action<IReadableAnimal> callback)
+ 
+        protected override Task SingleWalkImpl(CancellationToken cancellationToken, Action<IReadableAnimal> callback)
         {
             foreach (var animal in _storage)
             {
                 callback(animal);
             }
-
+            
             return Task.CompletedTask;
         }
 
-        protected override async Task WalkAsyncImpl(CancellationToken cancellationToken,
-            Func<CancellationToken, IReadableAnimal, Task> callback)
+        protected override async Task SingleAsyncWalkImpl(CancellationToken cancellationToken, Func<CancellationToken, IReadableAnimal, Task> callback)
         {
             foreach (var animal in _storage)
             {
@@ -43,17 +41,14 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
             }
         }
 
-
-        protected override Task WalkPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo,
-            Action<IEnumerable<IReadableAnimal>> callback)
+        protected override Task PagedWalkImpl(CancellationToken cancellationToken, PageInfo pageInfo, Action<IEnumerable<IReadableAnimal>> callback)
         {
             callback(_storage);
-
+            
             return Task.CompletedTask;
         }
 
-        protected override async Task WalkPagedAsyncImpl(CancellationToken cancellationToken, PageInfo pageInfo,
-            Func<CancellationToken, IEnumerable<IReadableAnimal>, Task> callback)
+        protected override async Task PagedAsyncWalkImpl(CancellationToken cancellationToken, PageInfo pageInfo, Func<CancellationToken, IEnumerable<IReadableAnimal>, Task> callback)
         {
             await callback(cancellationToken, _storage);
         }

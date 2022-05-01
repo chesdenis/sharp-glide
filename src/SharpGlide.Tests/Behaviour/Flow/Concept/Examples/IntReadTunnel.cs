@@ -16,43 +16,41 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
         {
             _storagePointer = storagePointer;
         }
-
-        protected override async Task<int> ReadSingleImpl(CancellationToken cancellationToken)
+ 
+        protected override async Task<int> SingleReadImpl(CancellationToken cancellationToken)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-
+            
             return _storagePointer().First();
         }
 
-        protected override async Task<IEnumerable<int>> ReadPagedImpl(CancellationToken cancellationToken,
-            PageInfo pageInfo)
+        protected override async Task<IEnumerable<int>> CollectionReadImpl(CancellationToken cancellationToken)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
+            
+            return _storagePointer().ToList();
+        }
 
+        protected override async Task<IEnumerable<int>> PagedReadImpl(CancellationToken cancellationToken, PageInfo pageInfo)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
+            
             var itemsToSkip = pageInfo.PageIndex * pageInfo.PageSize;
             var itemsToTake = pageInfo.PageSize;
-
+            
             if (itemsToSkip >= _storagePointer().Count)
             {
                 return await Task.FromResult(_storagePointer());
             }
-
+            
             return await Task.FromResult(_storagePointer().Skip(itemsToSkip).Take(itemsToTake));
         }
 
-        protected override async Task<IEnumerable<int>> ReadSpecificImpl(CancellationToken cancellationToken,
-            Func<IEnumerable<int>, IEnumerable<int>> filter)
+        protected override async Task<IEnumerable<int>> FilteredReadImpl(CancellationToken cancellationToken, Func<IEnumerable<int>, IEnumerable<int>> filter)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-
+            
             return filter(_storagePointer());
-        }
-
-        protected override async Task<IEnumerable<int>> ReadAllImpl(CancellationToken cancellationToken)
-        {
-            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-
-            return _storagePointer().ToList();
         }
     }
 }

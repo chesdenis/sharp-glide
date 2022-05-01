@@ -14,6 +14,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.Benchmark", "..\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.FilesToCloudUploader", "..\examples\SharpGlide.FilesToCloudUploader\SharpGlide.FilesToCloudUploader.csproj", "{6003CF2F-4086-4789-90BB-09680D408C24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.WebApps.YandexDiskUploader", "..\examples\SharpGlide.WebApps.YandexDiskUploader\SharpGlide.WebApps.YandexDiskUploader.csproj", "{06222337-F072-44B2-922B-1AC5B32BF31B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.Cloud.Yandex", "..\examples\SharpGlide.Cloud.Yandex\SharpGlide.Cloud.Yandex.csproj", "{CE0141F0-39A1-4DD8-ABB6-521F89D1FE78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.Http", "..\examples\SharpGlide.Http\SharpGlide.Http.csproj", "{C3EC5FBB-2367-4788-82E1-BFC4C5B19458}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,10 +46,25 @@ Global
 		{6003CF2F-4086-4789-90BB-09680D408C24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6003CF2F-4086-4789-90BB-09680D408C24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6003CF2F-4086-4789-90BB-09680D408C24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06222337-F072-44B2-922B-1AC5B32BF31B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06222337-F072-44B2-922B-1AC5B32BF31B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06222337-F072-44B2-922B-1AC5B32BF31B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06222337-F072-44B2-922B-1AC5B32BF31B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE0141F0-39A1-4DD8-ABB6-521F89D1FE78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE0141F0-39A1-4DD8-ABB6-521F89D1FE78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE0141F0-39A1-4DD8-ABB6-521F89D1FE78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE0141F0-39A1-4DD8-ABB6-521F89D1FE78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3EC5FBB-2367-4788-82E1-BFC4C5B19458}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3EC5FBB-2367-4788-82E1-BFC4C5B19458}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3EC5FBB-2367-4788-82E1-BFC4C5B19458}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3EC5FBB-2367-4788-82E1-BFC4C5B19458}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E4886687-B5B7-463C-B8E4-B8F17027DAC3} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
 		{45C7D73A-3DFA-4539-8AF0-8688E4C95EAA} = {36384C41-E609-4491-B4C8-59F59C7347DB}
 		{6003CF2F-4086-4789-90BB-09680D408C24} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
+		{06222337-F072-44B2-922B-1AC5B32BF31B} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
+		{CE0141F0-39A1-4DD8-ABB6-521F89D1FE78} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
+		{C3EC5FBB-2367-4788-82E1-BFC4C5B19458} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
 	EndGlobalSection
 EndGlobal

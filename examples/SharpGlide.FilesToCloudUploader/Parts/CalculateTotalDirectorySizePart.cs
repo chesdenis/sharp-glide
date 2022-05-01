@@ -14,14 +14,14 @@ namespace SharpGlide.FilesToCloudUploader.Parts
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<CalculateTotalDirectorySizePart> _logger;
-        private readonly IWalkerWithArg<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata> _walkProxy;
+        private readonly ISingleWalker<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata> _walkProxy;
         
         public string Name { get; set; }
 
         public CalculateTotalDirectorySizePart(
             IConfiguration configuration,
             ILogger<CalculateTotalDirectorySizePart> logger,
-            IWalkerWithArg<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata> walkProxy)
+            ISingleWalker<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata> walkProxy)
         {
             _configuration = configuration;
             _logger = logger;

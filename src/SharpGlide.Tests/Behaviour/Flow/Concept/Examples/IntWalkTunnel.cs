@@ -16,28 +16,26 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
         {
             _storagePointer = storagePointer;
         }
-
-        protected override async Task WalkImpl(CancellationToken cancellationToken, Action<int> callback)
+ 
+        protected override async Task SingleWalkImpl(CancellationToken cancellationToken, Action<int> callback)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-
+            
             foreach (var dataRow in _storagePointer())
             {
                 callback(dataRow);
             }
         }
 
-        protected override Task WalkAsyncImpl(CancellationToken cancellationToken, Func<CancellationToken, int, Task> callback)
+        protected override Task SingleAsyncWalkImpl(CancellationToken cancellationToken, Func<CancellationToken, int, Task> callback)
         {
             throw new NotImplementedException();
         }
 
-
-        protected override async Task WalkPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo,
-            Action<IEnumerable<int>> callback)
+        protected override async Task PagedWalkImpl(CancellationToken cancellationToken, PageInfo pageInfo, Action<IEnumerable<int>> callback)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-
+            
             for (var i = 0; i < _storagePointer().Count; i += pageInfo.PageSize)
             {
                 callback(_storagePointer().Skip(i).Take(pageInfo.PageSize));
@@ -45,7 +43,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
             }
         }
 
-        protected override Task WalkPagedAsyncImpl(CancellationToken cancellationToken, PageInfo pageInfo, Func<CancellationToken, IEnumerable<int>, Task> callback)
+        protected override Task PagedAsyncWalkImpl(CancellationToken cancellationToken, PageInfo pageInfo, Func<CancellationToken, IEnumerable<int>, Task> callback)
         {
             throw new NotImplementedException();
         }

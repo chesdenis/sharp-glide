@@ -9,13 +9,13 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
 {
     public class AnimalProcessingPart : IBasePart
     {
-        private readonly IWalker<AnimalWalkTunnel.IReadableAnimal> _animalWalker;
+        private readonly ISingleAsyncWalker<AnimalWalkTunnel.IReadableAnimal> _animalWalker;
         private readonly IWriter<AnimalWriteTunnel.IWritableAnimal> _animalWriter;
 
         public string Name { get; set; }
 
         public AnimalProcessingPart(
-            IWalker<AnimalWalkTunnel.IReadableAnimal> animalWalker,
+            ISingleAsyncWalker<AnimalWalkTunnel.IReadableAnimal> animalWalker,
             IWriter<AnimalWriteTunnel.IWritableAnimal> animalWriter)
         {
             _animalWalker = animalWalker;

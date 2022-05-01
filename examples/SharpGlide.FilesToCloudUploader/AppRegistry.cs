@@ -33,7 +33,7 @@ namespace SharpGlide.FilesToCloudUploader
 
             this.For<FlowModel>().Use<FlowModel>().Singleton();
 
-            this.For<IReaderWithArg<OAuthAuthorizeReadTunnel.OAuthResponse, OAuthAuthorizeReadTunnel.OAuthRequest>>()
+            this.For<Reader<OAuthAuthorizeReadTunnel.OAuthResponse, OAuthAuthorizeReadTunnel.OAuthRequest>>()
                 .Use(context =>
                 {
                     var flowModel = context.GetInstance<FlowModel>();
@@ -43,7 +43,7 @@ namespace SharpGlide.FilesToCloudUploader
                    return flowModel.BuildReader(tunnel);
                 });
 
-            this.For<IWalkerWithArg<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata>>()
+            this.For<Walker<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata>>()
                 .Use(context =>
                 {
                     var walkWithArgTunnel = context

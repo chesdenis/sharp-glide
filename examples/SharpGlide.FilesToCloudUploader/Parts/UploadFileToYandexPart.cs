@@ -11,13 +11,13 @@ namespace SharpGlide.FilesToCloudUploader.Parts
     public class UploadFileToYandexPart : IBasePart
     {
         private readonly IConfiguration _configuration;
-        private readonly IReaderWithArg<OAuthAuthorizeReadTunnel.OAuthResponse, OAuthAuthorizeReadTunnel.OAuthRequest> _oauthReader;
+        private readonly ISingleReader<OAuthAuthorizeReadTunnel.OAuthResponse, OAuthAuthorizeReadTunnel.OAuthRequest> _oauthReader;
         public string Name { get; set; }
 
         public UploadFileToYandexPart(
             IConfiguration configuration,
             ILogger<UploadFileToYandexPart> logger,
-            IReaderWithArg<OAuthAuthorizeReadTunnel.OAuthResponse, OAuthAuthorizeReadTunnel.OAuthRequest> oauthReader)
+            ISingleReader<OAuthAuthorizeReadTunnel.OAuthResponse, OAuthAuthorizeReadTunnel.OAuthRequest> oauthReader)
         {
             _configuration = configuration;
             _oauthReader = oauthReader;

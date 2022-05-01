@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SharpGlide.Flow;
+using SharpGlide.Readers;
 using SharpGlide.Routing;
 using SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples;
 using Xunit;
@@ -23,14 +24,13 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept
             var storage = new List<Animal>() { animal1, animal2, animal3 };
 
             var model = new FlowModel();
-
-            //var animalReadTunnel = new AnimalReadTunnel(storage);
+            
             var readableAnimals = storage.OfType<AnimalWalkTunnel.IReadableAnimal>().ToList();
             var animalReadTunnel = new AnimalWalkTunnel(readableAnimals);
             var writableAnimals = storage.OfType<AnimalWriteTunnel.IWritableAnimal>().ToList();
             var animalWriteTunnel = new AnimalWriteTunnel(writableAnimals);
 
-            var walker = model.BuildWalker(animalReadTunnel);
+            var walker = model.BuildWalker(animalReadTunnel) as ISingleWalker<AnimalWalkTunnel.IReadableAnimal>;
             var writer = model.BuildWriter(animalWriteTunnel);
 
             // Act

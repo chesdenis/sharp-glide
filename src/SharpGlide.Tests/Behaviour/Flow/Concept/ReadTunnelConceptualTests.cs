@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SharpGlide.Flow;
+using SharpGlide.Readers;
 using SharpGlide.Tests.Behaviour.Flow.Concept.Examples;
 using Xunit;
 
@@ -22,8 +23,8 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             flowModel.AddTunnel((model) => intReader);
      
             // Act
-            var directReaderProxy = flowModel.BuildReader(intReader);
-            var readSingle = await directReaderProxy.ReadAsync(CancellationToken.None);
+            var reader = flowModel.BuildReader(intReader) as ISingleReader<int>;
+            var readSingle = await reader.ReadAsync(CancellationToken.None);
     
             // Assert
             readSingle.Should().Be(0);
@@ -38,8 +39,8 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             flowModel.AddTunnel((model) => intReader);
     
             // Act
-            var directReaderProxy = flowModel.BuildReader(intReader);
-            var readRange = await directReaderProxy.ReadSpecific(CancellationToken.None,
+            var reader = flowModel.BuildReader(intReader) as IFilteredReader<int>;
+            var readRange = await reader.ReadAsync(CancellationToken.None,
                 (ints => ints.Skip(10).Take(10)));
     
             // Assert
@@ -57,8 +58,8 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             flowModel.AddTunnel((model) => intReader);
     
             // Act
-            var directReaderProxy = flowModel.BuildReader(intReader);
-            var readAll = await directReaderProxy.ReadAllAsync(CancellationToken.None);
+            var reader = flowModel.BuildReader(intReader) as ICollectionReader<int>;
+            var readAll = await reader.ReadAsync(CancellationToken.None);
     
             // Assert
             readAll.Count().Should().Be(10000);

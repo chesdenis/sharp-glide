@@ -8,42 +8,72 @@ using SharpGlide.Tunnels.Read.Model;
 
 namespace SharpGlide.Tunnels.Read.Abstractions
 {
-    public abstract class ReadTunnel<T> : IReadTunnel<T>
+    public abstract class ReadTunnel<T> :
+        ISingleReadTunnel<T>,
+        ICollectionReadTunnel<T>,
+        IPagedReadTunnel<T>,
+        IFilteredReadTunnel<T>
+    {
+        Expression<Func<CancellationToken, Task<T>>> ISingleReadTunnel<T>.ReadExpr =>
+            (cancellationToken)
+                => SingleReadImpl(cancellationToken);
+
+        Expression<Func<CancellationToken, Task<IEnumerable<T>>>> ICollectionReadTunnel<T>.ReadExpr =>
+            (cancellationToken)
+                => CollectionReadImpl(cancellationToken);
+
+        Expression<Func<CancellationToken, PageInfo, Task<IEnumerable<T>>>> IPagedReadTunnel<T>.ReadExpr =>
+            ((cancellationToken, pageInfo) => PagedReadImpl(cancellationToken, pageInfo));
+
+        Expression<Func<CancellationToken, Func<IEnumerable<T>, IEnumerable<T>>, Task<IEnumerable<T>>>>
+            IFilteredReadTunnel<T>.ReadExpr =>
+            (cancellationToken, filter) => FilteredReadImpl(cancellationToken, filter);
+
+        protected abstract Task<T> SingleReadImpl(CancellationToken cancellationToken);
+        protected abstract Task<IEnumerable<T>> CollectionReadImpl(CancellationToken cancellationToken);
+        protected abstract Task<IEnumerable<T>> PagedReadImpl(CancellationToken cancellationToken, PageInfo pageInfo);
+
+        protected abstract Task<IEnumerable<T>> FilteredReadImpl(CancellationToken cancellationToken,
+            Func<IEnumerable<T>, IEnumerable<T>> filter);
+
+        public bool CanExecute { get; set; }
+    }
+
+    public abstract class ReadTunnel<T, TArg> :
+        ISingleReadTunnel<T, TArg>,
+        ICollectionReadTunnel<T, TArg>,
+        IPagedReadTunnel<T, TArg>,
+        IFilteredReadTunnel<T, TArg>
     {
         public bool CanExecute { get; set; }
-        public virtual Expression<Func<CancellationToken, Task<T>>> ReadExpr => 
-            (cancellationToken) 
-                => ReadSingleImpl(cancellationToken);
-        protected abstract Task<T> ReadSingleImpl(CancellationToken cancellationToken);
 
-        public virtual Expression<Func<CancellationToken, Task<IEnumerable<T>>>> ReadAllExpr =>
-            (cancellationToken) 
-                => ReadAllImpl(cancellationToken);
-        protected abstract Task<IEnumerable<T>> ReadAllImpl(CancellationToken cancellationToken);
+        Expression<Func<CancellationToken, TArg, Task<T>>> ISingleReadTunnel<T, TArg>.ReadExpr
+            => (cancellationToken, arg)
+                => SingleReadImpl(cancellationToken, arg);
 
-        public Expression<Func<CancellationToken, PageInfo, Task<IEnumerable<T>>>> ReadPagedExpr =>
-            ((cancellationToken, pageInfo) => ReadPagedImpl(cancellationToken, pageInfo));
+        Expression<Func<CancellationToken, TArg, Task<IEnumerable<T>>>> ICollectionReadTunnel<T, TArg>.ReadExpr
+            => (cancellationToken, arg) => CollectionReadImpl(cancellationToken, arg);
 
-        protected abstract Task<IEnumerable<T>> ReadPagedImpl(CancellationToken cancellationToken, PageInfo pageInfo);
-        
-        public virtual Expression<Func<CancellationToken, Func<IEnumerable<T>, IEnumerable<T>>, Task<IEnumerable<T>>>>
-            ReadSpecificExpr => (cancellationToken, filter) => ReadSpecificImpl(cancellationToken, filter);
+        Expression<Func<CancellationToken, PageInfo, TArg, Task<IEnumerable<T>>>> IPagedReadTunnel<T, TArg>.ReadExpr
+            => (cancellationToken, pageInfo, arg) => PagedReadImpl(cancellationToken, pageInfo, arg);
 
-        protected abstract Task<IEnumerable<T>> ReadSpecificImpl(
-            CancellationToken cancellationToken,
+        Expression<Func<CancellationToken, TArg, Func<IEnumerable<T>, IEnumerable<T>>, Task<IEnumerable<T>>>>
+            IFilteredReadTunnel<T, TArg>.ReadExpr
+            => (cancellationToken, arg, filter) => FilteredReadImpl(cancellationToken, arg, filter);
+
+        protected abstract Task<T> SingleReadImpl(CancellationToken cancellationToken, TArg arg);
+        protected abstract Task<IEnumerable<T>> CollectionReadImpl(CancellationToken cancellationToken, TArg arg);
+
+        protected abstract Task<IEnumerable<T>> PagedReadImpl(CancellationToken cancellationToken, PageInfo pageInfo,
+            TArg arg);
+
+        protected abstract Task<IEnumerable<T>> FilteredReadImpl(CancellationToken cancellationToken,
+            TArg arg,
             Func<IEnumerable<T>, IEnumerable<T>> filter);
- 
-        //             // Add the following directive to the file:
-// // using System.Linq.Expressions;
-//
-// // Creating a parameter expression.
-//     ParameterExpression value = Expression.Parameter(typeof(int), "value");
-//
-// // Creating an expression to hold a local variable.
-//     ParameterExpression result = Expression.Parameter(typeof(int), "result");
-//
-// // Creating a label to jump to from a loop.
-//     LabelTarget label = Expression.Label(typeof(int));
+    }
+    
+    
+
 //
 // // Creating a method body.
 //     BlockExpression block = Expression.Block(
@@ -59,5 +89,4 @@ namespace SharpGlide.Tunnels.Read.Abstractions
 //             label
 //         )
 //     );
-    }
 }

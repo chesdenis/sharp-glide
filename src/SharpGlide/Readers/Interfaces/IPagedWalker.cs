@@ -1,0 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using SharpGlide.Tunnels.Read.Model;
+
+namespace SharpGlide.Readers
+{
+    public interface IPagedWalker<out T>
+    {
+        Task WalkAsync(CancellationToken cancellationToken, PageInfo pageInfo, Action<IEnumerable<T>> callback);
+    }
+    
+    public interface IPagedWalker<out T, in TArg>
+    {
+        Task WalkAsync(CancellationToken cancellationToken, PageInfo pageInfo, TArg request, Action<IEnumerable<T>> callback);
+    }
+}

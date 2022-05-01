@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SharpGlide.Flow;
+using SharpGlide.Readers;
 using SharpGlide.Tests.Behaviour.Flow.Concept.Examples;
 using SharpGlide.Tunnels.Read.Model;
 using Xunit;
@@ -25,7 +26,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             var output = new List<int>();
      
             // Act
-            var walkerProxy = flowModel.BuildWalker(walker);
+            var walkerProxy = flowModel.BuildWalker(walker) as ISingleWalker<int>;
             await walkerProxy.WalkAsync(CancellationToken.None, i => output.Add(i));
     
             // Assert
@@ -43,14 +44,14 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             var output = new List<List<int>>();
      
             // Act
-            var walkerProxy = flowModel.BuildWalker(walker);
+            var walkerProxy = flowModel.BuildWalker(walker) as IPagedWalker<int>;
             var pageInfo = new PageInfo
             {
                 PageIndex = 0,
                 PageSize = 10
             };
             
-            await walkerProxy.WalkPagedAsync(CancellationToken.None, pageInfo, 
+            await walkerProxy.WalkAsync(CancellationToken.None, pageInfo, 
                 pageData => output.Add(pageData.ToList()));
     
             // Assert

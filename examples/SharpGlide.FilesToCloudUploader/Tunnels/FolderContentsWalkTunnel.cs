@@ -11,7 +11,7 @@ using SharpGlide.Tunnels.Read.Model;
  
 namespace SharpGlide.FilesToCloudUploader.Tunnels
 {
-    public class FolderContentsWalkTunnel : WalkWithArgTunnel<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata>
+    public class FolderContentsWalkTunnel : WalkTunnel<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata>
     {
         private readonly ILogger<FolderContentsWalkTunnel> _logger;
 
@@ -19,31 +19,28 @@ namespace SharpGlide.FilesToCloudUploader.Tunnels
         {
             _logger = logger;
         }
-
-        protected override async Task WalkExprImpl(
-            CancellationToken cancellationToken,
-            DirectoryMetadata request,
-            Action<FileMetadata> callback)
+        
+        protected override async Task SingleWalkImpl(CancellationToken cancellationToken, DirectoryMetadata request, Action<FileMetadata> callback)
         {
             await WalkDirectory(request, callback, null);
         }
 
-        protected override async Task WalkRangeExprImpl(CancellationToken cancellationToken,
-            DirectoryMetadata request,
-            Action<IEnumerable<FileMetadata>> callbackRange)
-        {
-            await WalkDirectory(request, null, callbackRange);
-        }
-
-        protected override Task WalkPagedImpl(
-            CancellationToken cancellationToken,
-            PageInfo pageInfo,
-            DirectoryMetadata request,
-            Action<IEnumerable<FileMetadata>> callback)
+        protected override async Task SingleAsyncWalkImpl(CancellationToken cancellationToken, DirectoryMetadata request, Func<CancellationToken, FileMetadata, Task> callback)
         {
             throw new NotImplementedException();
         }
 
+        protected override async Task PagedWalkImpl(CancellationToken cancellationToken, PageInfo pageInfo, DirectoryMetadata request, Action<IEnumerable<FileMetadata>> callback)
+        {
+            await WalkDirectory(request,null, callback);
+        }
+
+        protected override async Task PagedAsyncWalkImpl(CancellationToken cancellationToken, PageInfo pageInfo, DirectoryMetadata request,
+            Func<CancellationToken, IEnumerable<FileMetadata>, Task> callback)
+        {
+            throw new NotImplementedException();
+        }
+        
         private async Task WalkDirectory(DirectoryMetadata request,
             Action<FileMetadata> callbackSingle,
             Action<FileMetadata[]> callbackRange)
@@ -116,5 +113,7 @@ namespace SharpGlide.FilesToCloudUploader.Tunnels
             public string Name { get; set; }
             public long Size { get; set; }
         }
+
+       
     }
 }
