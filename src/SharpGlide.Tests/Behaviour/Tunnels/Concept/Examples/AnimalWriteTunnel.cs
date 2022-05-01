@@ -7,11 +7,11 @@ using SharpGlide.Tunnels.Write.Abstractions;
 
 namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
 {
-    public class AnimalWriteTunnel : WriteTunnel<AnimalWriteTunnel.IWritableAnimal>
+    public class AnimalSingleWriteTunnel : SingleWriteTunnel<AnimalSingleWriteTunnel.IWritableAnimal>
     {
         private readonly List<IWritableAnimal> _storage;
         
-        public AnimalWriteTunnel(List<IWritableAnimal> storage)
+        public AnimalSingleWriteTunnel(List<IWritableAnimal> storage)
         {
             _storage = storage;
         }
@@ -22,31 +22,19 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
             string WritablePropertyA { get; set; }
         }
         
-        protected override Task WriteSingleImpl(IWritableAnimal data, IRoute route, CancellationToken cancellationToken)
+        protected override Task WriteImpl(IWritableAnimal data, IRoute route, CancellationToken cancellationToken)
         {
             _storage.Add(data);
 
             return Task.CompletedTask;
         }
 
-        protected override Task<IWritableAnimal> WriteAndReturnSingleImpl(IWritableAnimal data, IRoute route,
+        protected override Task<IWritableAnimal> WriteAndReturnImpl(IWritableAnimal data, IRoute route,
             CancellationToken cancellationToken)
         {
             _storage.Add(data);
 
             return Task.FromResult(data);
-        }
-
-        protected override Task WriteRangeImpl(IEnumerable<IWritableAnimal> dataRange, IRoute route,
-            CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override Task<IEnumerable<IWritableAnimal>> WriteAndReturnRangeImpl(IEnumerable<IWritableAnimal> dataRange,
-            IRoute route, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
     }
 }

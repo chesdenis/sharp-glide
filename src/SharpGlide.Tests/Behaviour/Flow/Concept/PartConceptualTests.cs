@@ -21,14 +21,14 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             var output = new List<string>();
             
             var intReader = new IntReadTunnel(() => SourceDataA);
-            var stringWriter = new WriteStringTunnel(() => output);
+            var stringWriter = new StringSingleWriteTunnel(() => output);
 
             flowModel.AddTunnel(model => intReader);
             flowModel.AddTunnel(model => stringWriter);
 
             var part = new IntToStringPart(
                 flowModel.BuildReader(intReader), 
-                flowModel.BuildWriter(stringWriter));
+                flowModel.BuildSingleWriter(stringWriter));
     
             flowModel.Parts.Add("int2string", part);
     

@@ -8,6 +8,9 @@ using SharpGlide.Readers;
 using SharpGlide.Readers.Interfaces;
 using SharpGlide.Routing;
 using SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples;
+using SharpGlide.Tunnels.Write.Interfaces;
+using SharpGlide.Writers;
+using SharpGlide.Writers.Interfaces;
 using Xunit;
 
 namespace SharpGlide.Tests.Behaviour.Tunnels.Concept
@@ -28,16 +31,16 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept
             
             var readableAnimals = storage.OfType<AnimalWalkTunnel.IReadableAnimal>().ToList();
             var animalReadTunnel = new AnimalWalkTunnel(readableAnimals);
-            var writableAnimals = storage.OfType<AnimalWriteTunnel.IWritableAnimal>().ToList();
-            var animalWriteTunnel = new AnimalWriteTunnel(writableAnimals);
+            var writableAnimals = storage.OfType<AnimalSingleWriteTunnel.IWritableAnimal>().ToList();
+            var animalWriteTunnel = new AnimalSingleWriteTunnel(writableAnimals);
 
             var walker = model.BuildWalker(animalReadTunnel) as ISingleWalker<AnimalWalkTunnel.IReadableAnimal>;
-            var writer = model.BuildWriter(animalWriteTunnel);
+            var writer = model.BuildSingleWriter(animalWriteTunnel) as ISingleWriter<AnimalSingleWriteTunnel.IWritableAnimal>;
 
             // Act
-            await writer.WriteSingle(animal1, Route.Default, CancellationToken.None);
-            await writer.WriteSingle(animal2, Route.Default, CancellationToken.None);
-            await writer.WriteSingle(animal3, Route.Default, CancellationToken.None);
+            await writer.Write(animal1, Route.Default, CancellationToken.None);
+            await writer.Write(animal2, Route.Default, CancellationToken.None);
+            await writer.Write(animal3, Route.Default, CancellationToken.None);
 
             var walkerData = new List<AnimalWalkTunnel.IReadableAnimal>();
             await walker.WalkAsync(CancellationToken.None,
@@ -63,11 +66,11 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept
             //var animalReadTunnel = new AnimalReadTunnel(storage);
             var readableAnimals = storage.OfType<AnimalWalkTunnel.IReadableAnimal>().ToList();
             var animalReadTunnel = new AnimalWalkTunnel(readableAnimals);
-            var writableAnimals = storage.OfType<AnimalWriteTunnel.IWritableAnimal>().ToList();
-            var animalWriteTunnel = new AnimalWriteTunnel(writableAnimals);
+            var writableAnimals = storage.OfType<AnimalSingleWriteTunnel.IWritableAnimal>().ToList();
+            var animalWriteTunnel = new AnimalSingleWriteTunnel(writableAnimals);
 
             var walker = model.BuildWalker(animalReadTunnel);
-            var writer = model.BuildWriter(animalWriteTunnel);
+            var writer = model.BuildSingleWriter(animalWriteTunnel);
 
             var part = new AnimalProcessingPart(walker, writer);
 
@@ -80,7 +83,7 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept
 
         public class Animal :
             AnimalWalkTunnel.IReadableAnimal,
-            AnimalWriteTunnel.IWritableAnimal
+            AnimalSingleWriteTunnel.IWritableAnimal
         {
             public string Name { get; set; }
             public string WritablePropertyA { get; set; }

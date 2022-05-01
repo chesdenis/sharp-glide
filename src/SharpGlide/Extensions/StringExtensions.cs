@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,6 +33,31 @@ namespace SharpGlide.Extensions
             }
 
             return input + "?" + string.Join("&", dictionary.Select(s => $"{s.Key}={s.Value}").ToArray());
+        }
+
+        public static Dictionary<string, string> GetUrlEncodedDict(this string input, char startsFromChar)
+        {
+            var retVal = new Dictionary<string, string>();
+
+            try
+            {
+                input = input.Substring(input.IndexOf(startsFromChar) + 1);
+
+                var rows = input.Split('&');
+
+                foreach (var row in rows)
+                {
+                    var fields = row.Split('=');
+
+                    retVal.Add(fields[0], fields[1]);
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+
+            return retVal;
         }
     }
 }

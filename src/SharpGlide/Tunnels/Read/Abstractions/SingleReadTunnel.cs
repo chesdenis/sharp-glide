@@ -9,8 +9,8 @@ namespace SharpGlide.Tunnels.Read.Abstractions
     public abstract class SingleReadTunnel<T> : ISingleReadTunnel<T>
     {
         public bool CanExecute { get; set; }
-        
-        Expression<Func<CancellationToken, Task<T>>> ISingleReadTunnel<T>.ReadExpr =>
+
+        public Expression<Func<CancellationToken, Task<T>>> ReadExpr =>
             (cancellationToken)
                 => SingleReadImpl(cancellationToken);
         
@@ -20,8 +20,8 @@ namespace SharpGlide.Tunnels.Read.Abstractions
     public abstract class SingleReadTunnel<T, TArg> : ISingleReadTunnel<T, TArg>
     {
         public bool CanExecute { get; set; }
-        
-        Expression<Func<CancellationToken,TArg, Task<T>>> ISingleReadTunnel<T, TArg>.ReadExpr =>
+
+        public Expression<Func<CancellationToken,TArg, Task<T>>> ReadExpr =>
             (cancellationToken, arg)
                 => SingleReadImpl(cancellationToken, arg);
         

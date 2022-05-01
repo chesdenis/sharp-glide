@@ -1,7 +1,48 @@
 ﻿@page "/"
+@using SharpGlide.Extensions
+@using SharpGlide.Cloud.Yandex.Readers.Profile
+@using System.Threading
+@using SharpGlide.Cloud.Yandex.SharedModel
 
-<h1>Hello, world!</h1>
+@inject IProfileReader ProfileReader
+@inject NavigationManager NavManager
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?"/>
+@if (!Authenticated)
+{
+    <h1>Hello, this is Yandex Disk File Uploader!</h1>
+    <h2>Click left button to sign-in...</h2>
+}
+else
+{
+    <h1>Hello, @FirstName @LastName (@DisplayName)</h1>
+}
+
+@code {
+    private IDictionary<string, string> UriHash => NavManager.Uri.GetUrlEncodedDict('#');
+    private bool Authenticated => UriHash.ContainsKey("access_token");
+
+    private string FirstName { get; set; }
+    private string LastName { get; set; }
+    private string RealName { get; set; }
+    private string DisplayName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Authenticated)
+        {
+            var profile = await ProfileReader.ReadAsync(CancellationToken.None, new AuthorizeTokens
+            {
+                AccessToken = UriHash["access_token"]
+            });
+
+            FirstName = profile.first_name;
+            LastName = profile.last_name;
+            RealName = profile.real_name;
+            DisplayName = profile.display_name;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+}

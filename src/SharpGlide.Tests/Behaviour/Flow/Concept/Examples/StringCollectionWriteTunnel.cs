@@ -8,38 +8,23 @@ using SharpGlide.Tunnels.Write.Abstractions;
 
 namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
 {
-    public class WriteStringTunnel : WriteTunnel<string>
+    public class StringCollectionWriteTunnel : CollectionWriteTunnel<string>
     {
         private readonly Func<List<string>> _storagePointer;
         
-        public WriteStringTunnel(Func<List<string>> storagePointer)
+        public StringCollectionWriteTunnel(Func<List<string>> storagePointer)
         {
             _storagePointer = storagePointer;
         }
-
-        protected override async Task WriteSingleImpl(string data, IRoute route, CancellationToken cancellationToken)
-        {
-            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-            _storagePointer().Add($"{data} -> {route}");
-        }
-
-        protected override async Task<string> WriteAndReturnSingleImpl(string data, IRoute route,
-            CancellationToken cancellationToken)
-        {
-            await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
-            _storagePointer().Add(data);
-
-            return await Task.FromResult($"{data} - handled!");
-        }
-
-        protected override async Task WriteRangeImpl(IEnumerable<string> dataRange, IRoute route,
+        
+        protected override async Task WriteImpl(IEnumerable<string> dataRange, IRoute route,
             CancellationToken cancellationToken)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
             _storagePointer().AddRange(dataRange.Select(s => $"{s} -> {route}"));
         }
 
-        protected override async Task<IEnumerable<string>> WriteAndReturnRangeImpl(IEnumerable<string> dataRange,
+        protected override async Task<IEnumerable<string>> WriteAndReturnImpl(IEnumerable<string> dataRange,
             IRoute route, CancellationToken cancellationToken)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);

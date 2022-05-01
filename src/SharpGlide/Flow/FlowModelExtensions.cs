@@ -3,11 +3,14 @@ using System.Linq;
 using SharpGlide.Parts;
 using SharpGlide.Readers;
 using SharpGlide.Readers.Abstractions;
+using SharpGlide.Readers.Interfaces;
 using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.Read.Abstractions;
 using SharpGlide.Tunnels.Read.Interfaces;
 using SharpGlide.Tunnels.Write.Abstractions;
+using SharpGlide.Tunnels.Write.Interfaces;
 using SharpGlide.Writers;
+using SharpGlide.Writers.Abstractions;
 
 namespace SharpGlide.Flow
 {
@@ -47,6 +50,22 @@ namespace SharpGlide.Flow
             return flowModel;
         }
 
+        public static ISingleReader<TData> BuildReader<TData>(this FlowModel flowModel,
+            ISingleReadTunnel<TData> tunnel)
+        {
+            return new SingleReader<TData>(
+                tunnel.ReadExpr.Compile()
+            );
+        }
+
+        public static ISingleReader<TData, TArg> BuildReader<TData, TArg>(this FlowModel flowModel,
+            ISingleReadTunnel<TData, TArg> tunnel)
+        {
+            return new SingleReader<TData, TArg>(
+                tunnel.ReadExpr.Compile()
+            );
+        }
+
         public static Reader<TData> BuildReader<TData>(this FlowModel flowModel,
             ReadTunnel<TData> tunnel)
         {
@@ -67,14 +86,20 @@ namespace SharpGlide.Flow
                 ((IFilteredReadTunnel<TData, TArg>)tunnel).ReadExpr.Compile());
         }
 
-        public static Writer<TData> BuildWriter<TData>(this FlowModel flowModel,
-            WriteTunnel<TData> tunnel)
+        public static SingleWriter<TData> BuildSingleWriter<TData>(this FlowModel flowModel,
+            SingleWriteTunnel<TData> tunnel)
         {
-            return new Writer<TData>(
-                tunnel.WriteSingleExpr.Compile(),
-                tunnel.WriteAndReturnSingleExpr.Compile(),
-                tunnel.WriteRangeExpr.Compile(),
-                tunnel.WriteAndReturnRangeExpr.Compile());
+            return new SingleWriter<TData>(
+                ((ISingleWriteTunnel<TData>)tunnel).Write.Compile(),
+                ((ISingleWriteTunnel<TData>)tunnel).WriteAndReturn.Compile());
+        }
+        
+        public static CollectionWriter<TData> BuildCollectionWriter<TData>(this FlowModel flowModel,
+            CollectionWriteTunnel<TData> tunnel)
+        {
+            return new CollectionWriter<TData>(
+                ((ICollectionWriteTunnel<TData>)tunnel).Write.Compile(),
+                ((ICollectionWriteTunnel<TData>)tunnel).WriteAndReturn.Compile());
         }
 
         public static Walker<TData> BuildWalker<TData>(this FlowModel flowModel,

@@ -1,20 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net.Http;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SharpGlide.WebApps.YandexDiskUploader.Data;
+using SharpGlide.Cloud.Yandex.Readers;
+using SharpGlide.Cloud.Yandex.Readers.Authorization;
+using SharpGlide.Cloud.Yandex.Readers.Profile;
+using SharpGlide.Cloud.Yandex.Tunnels.Authorization;
+using SharpGlide.Cloud.Yandex.Tunnels.Profile;
+using SharpGlide.Flow;
+using SharpGlide.Readers.Abstractions;
+using SharpGlide.Readers.Interfaces;
+using SharpGlide.Tunnels.Read.Interfaces;
+using SharpGlide.WebApps.YandexDiskUploader.Config;
 
 namespace SharpGlide.WebApps.YandexDiskUploader
 {
     public class Startup
     {
+        private static readonly HttpClient HttpClientInstance = new HttpClient();
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,7 +33,29 @@ namespace SharpGlide.WebApps.YandexDiskUploader
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+
+            services.AddSingleton(HttpClientInstance);
+            services.AddSingleton(Configuration);
+            services.AddSingleton<AppSetting>();
+
+            services.AddSingleton<FlowModel>();
+
+            services.AddTransient<AuthorizeTokenUriReadTunnel>();
+            services.AddTransient<IAuthorizeTokenUriReader>(
+                provider =>
+                {
+                    var tunnel = provider
+                        .GetService<AuthorizeTokenUriReadTunnel>();
+
+                    return new AuthorizeTokenUriReader(tunnel.ReadExpr.Compile());
+                });
+
+            services.AddTransient<ProfileReadTunnel>();
+            services.AddTransient<IProfileReader>(provider =>
+            {
+                var tunnel = provider.GetService<ProfileReadTunnel>();
+                return new ProfileReader(tunnel.ReadExpr.Compile());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

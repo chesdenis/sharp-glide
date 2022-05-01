@@ -1,5 +1,20 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">SharpGlide.WebApps.YandexDiskUploader</a>
+﻿@using SharpGlide.Cloud.Yandex.Tunnels.Authorization
+@using SharpGlide.Readers.Abstractions
+@using SharpGlide.Readers.Interfaces
+@using SharpGlide.Tunnels.Read.Abstractions
+@using System.Threading
+@using SharpGlide.Cloud.Yandex.Readers
+@using SharpGlide.Cloud.Yandex.Readers.Authorization
+@using SharpGlide.Cloud.Yandex.Readers.Profile
+@using SharpGlide.Extensions
+@using SharpGlide.WebApps.YandexDiskUploader.Config
+
+@inject IAuthorizeTokenUriReader AuthorizeTokenUriReader
+@inject NavigationManager NavManager
+@inject AppSetting ApplicationSetting
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="@NavManager.Uri">Yandex Disk Uploader</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -8,27 +23,38 @@
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink class="nav-link" href="@NavManager.Uri" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
+            @if (!Authenticated)
+            {
+                <NavLink class="nav-link" href="@YandexDiskSignInUri">
+                    <span class="oi oi-sign-in" aria-hidden="true"></span> Sign In
+                </NavLink>
+            }
         </li>
     </ul>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
+   
+    private IDictionary<string, string> UriHash => NavManager.Uri.GetUrlEncodedDict('#');
+    private bool Authenticated => UriHash.ContainsKey("access_token");
+
+    private string YandexDiskSignInUri { get; set; }
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.
+        YandexDiskSignInUri = await AuthorizeTokenUriReader.ReadAsync(CancellationToken.None, ApplicationSetting);
+        
+        await base.OnInitializedAsync();
+    }
 
     private void ToggleNavMenu()
     {

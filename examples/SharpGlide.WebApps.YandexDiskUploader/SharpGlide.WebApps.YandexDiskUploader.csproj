@@ -2,6 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <UserSecretsId>a67fee40-ee22-4eaf-ad79-bbbe3598c7d9</UserSecretsId>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SharpGlide.Cloud.Yandex\SharpGlide.Cloud.Yandex.csproj" />
+    </ItemGroup>
 
 </Project>

@@ -5,19 +5,20 @@ using SharpGlide.Readers;
 using SharpGlide.Readers.Interfaces;
 using SharpGlide.Routing;
 using SharpGlide.Writers;
+using SharpGlide.Writers.Interfaces;
 
 namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
 {
     public class AnimalProcessingPart : IBasePart
     {
         private readonly ISingleAsyncWalker<AnimalWalkTunnel.IReadableAnimal> _animalWalker;
-        private readonly IWriter<AnimalWriteTunnel.IWritableAnimal> _animalWriter;
+        private readonly ISingleWriter<AnimalSingleWriteTunnel.IWritableAnimal> _animalWriter;
 
         public string Name { get; set; }
 
         public AnimalProcessingPart(
             ISingleAsyncWalker<AnimalWalkTunnel.IReadableAnimal> animalWalker,
-            IWriter<AnimalWriteTunnel.IWritableAnimal> animalWriter)
+            ISingleWriter<AnimalSingleWriteTunnel.IWritableAnimal> animalWriter)
         {
             _animalWalker = animalWalker;
             _animalWriter = animalWriter;
@@ -31,9 +32,9 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
         private async Task OneReceive(CancellationToken cancellationToken,
             AnimalWalkTunnel.IReadableAnimal readableAnimal)
         {
-            var animal = (AnimalWriteTunnel.IWritableAnimal)readableAnimal;
+            var animal = (AnimalSingleWriteTunnel.IWritableAnimal)readableAnimal;
 
-            await this._animalWriter.WriteSingle(animal, Route.Default, cancellationToken);
+            await this._animalWriter.Write(animal, Route.Default, cancellationToken);
         }
     }
 }
