@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Tunnels.Read.Model;
 
-namespace SharpGlide.Readers
+namespace SharpGlide.Readers.Interfaces
 {
     public interface IPagedReader<T, in TArg>
     {

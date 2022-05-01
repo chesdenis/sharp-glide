@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SharpGlide.Readers
+namespace SharpGlide.Readers.Interfaces
 {
     public interface ISingleReader<T, in TArg>
     {

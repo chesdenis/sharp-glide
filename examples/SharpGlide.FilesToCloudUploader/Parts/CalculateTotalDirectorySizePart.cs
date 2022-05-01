@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SharpGlide.FilesToCloudUploader.Tunnels;
 using SharpGlide.Parts;
 using SharpGlide.Readers;
+using SharpGlide.Readers.Interfaces;
 
 namespace SharpGlide.FilesToCloudUploader.Parts
 {

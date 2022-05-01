@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SharpGlide.Readers.Interfaces;
 using SharpGlide.Tunnels.Read.Model;
 
-namespace SharpGlide.Readers
+namespace SharpGlide.Readers.Abstractions
 {
     public class Walker<T> :
         ISingleWalker<T>,

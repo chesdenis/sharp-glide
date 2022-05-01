@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SharpGlide.Readers
+namespace SharpGlide.Readers.Interfaces
 {
     public interface ISingleWalker<out T>
     {

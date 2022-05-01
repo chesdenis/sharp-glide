@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using SharpGlide.Parts;
 using SharpGlide.Readers;
+using SharpGlide.Readers.Abstractions;
 using SharpGlide.Tunnels.Abstractions;
 using SharpGlide.Tunnels.Read.Abstractions;
 using SharpGlide.Tunnels.Read.Interfaces;

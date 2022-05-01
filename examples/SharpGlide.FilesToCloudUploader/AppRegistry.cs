@@ -6,6 +6,7 @@ using SharpGlide.FilesToCloudUploader.Parts;
 using SharpGlide.FilesToCloudUploader.Tunnels;
 using SharpGlide.Flow;
 using SharpGlide.Readers;
+using SharpGlide.Readers.Abstractions;
 using SharpGlide.Tunnels.Read.Interfaces;
 
 namespace SharpGlide.FilesToCloudUploader

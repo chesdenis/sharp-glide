@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using SharpGlide.Flow;
 using SharpGlide.Readers;
+using SharpGlide.Readers.Interfaces;
 using SharpGlide.Routing;
 using SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples;
 using Xunit;

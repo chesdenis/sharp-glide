@@ -2,6 +2,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Parts;
 using SharpGlide.Readers;
+using SharpGlide.Readers.Interfaces;
 using SharpGlide.Routing;
 using SharpGlide.Writers;
 

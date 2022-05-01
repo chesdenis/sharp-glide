@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SharpGlide.Readers.Interfaces;
 using SharpGlide.Tunnels.Read.Model;
 
-namespace SharpGlide.Readers
+namespace SharpGlide.Readers.Abstractions
 {
     public class Reader<T> :
         ISingleReader<T>,
@@ -43,7 +44,7 @@ namespace SharpGlide.Readers
             Func<IEnumerable<T>, IEnumerable<T>> filter)
             => await _filteredReadFunc(cancellationToken, filter);
     }
-    
+
     public class Reader<T, TRequest> :
         ISingleReader<T, TRequest>,
         ICollectionReader<T, TRequest>,
