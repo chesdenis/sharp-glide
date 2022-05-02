@@ -4,7 +4,7 @@ using SharpGlide.Readers.Interfaces;
 
 namespace SharpGlide.Cloud.Yandex.Readers.Profile
 {
-    public interface IProfileReader : ISingleReader<ProfileResponse, AuthorizeTokens>
+    public interface IProfileReader : ISingleReader<ProfileResponse, IAuthorizeTokens>
     {
         
     }

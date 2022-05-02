@@ -6,7 +6,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.Authorization.Extensions
 {
     public static class AuthorizationExtensions
     {
-        public static void IncludeAccessToken(this HttpClient httpClient, AuthorizeTokens tokens)
+        public static void IncludeAccessToken(this HttpClient httpClient, IAuthorizeTokens tokens)
         {
             httpClient.DefaultRequestHeaders.Authorization ??= new AuthenticationHeaderValue("OAuth", tokens.AccessToken);
         }

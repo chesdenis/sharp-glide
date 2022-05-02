@@ -12,7 +12,7 @@ using SharpGlide.Tunnels.Read.Abstractions;
 
 namespace SharpGlide.Cloud.Yandex.Tunnels.Profile
 {
-    public class ProfileReadTunnel : SingleReadTunnel<ProfileResponse, AuthorizeTokens>, IProfileReadTunnel
+    public class ProfileReadTunnel : SingleReadTunnel<ProfileResponse, IAuthorizeTokens>, IProfileReadTunnel
     {
         private const string UserInformationEndpoint = "https://login.yandex.ru/info";
 
@@ -23,7 +23,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.Profile
             _httpClient = httpClient;
         }
 
-        protected override async Task<ProfileResponse> SingleReadImpl(CancellationToken cancellationToken, AuthorizeTokens arg)
+        protected override async Task<ProfileResponse> SingleReadImpl(CancellationToken cancellationToken, IAuthorizeTokens arg)
         {
             _httpClient.IncludeAccessToken(arg);
 

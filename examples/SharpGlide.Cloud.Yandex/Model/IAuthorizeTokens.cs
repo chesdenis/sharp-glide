@@ -1,6 +1,6 @@
 namespace SharpGlide.Cloud.Yandex.Model
 {
-    public class AuthorizeTokens
+    public interface IAuthorizeTokens
     {
         public string AccessToken { get; set; }
     }

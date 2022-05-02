@@ -13,10 +13,12 @@ using SharpGlide.Cloud.Yandex.Tunnels.Authorization;
 using SharpGlide.Cloud.Yandex.Tunnels.Profile;
 using SharpGlide.Flow;
 using SharpGlide.IO.Readers;
+using SharpGlide.IO.Tunnels;
 using SharpGlide.WebApps.YandexDiskUploader.Config;
 using SharpGlide.WebApps.YandexDiskUploader.Hubs;
 using SharpGlide.WebApps.YandexDiskUploader.Parts;
 using SharpGlide.WebApps.YandexDiskUploader.Service;
+using SharpGlide.WebApps.YandexDiskUploader.State;
 
 
 namespace SharpGlide.WebApps.YandexDiskUploader
@@ -24,12 +26,10 @@ namespace SharpGlide.WebApps.YandexDiskUploader
     public class Startup
     {
         private static readonly HttpClient HttpClientInstance = new HttpClient();
+       
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
-            // put startup folder from server side to set it by default in page
-            AppSetting.WorkingFolder = Environment.CurrentDirectory;
         }
 
         public IConfiguration Configuration { get; }
@@ -50,6 +50,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader
             services.AddSingleton(HttpClientInstance);
             services.AddSingleton(Configuration);
             services.AddSingleton<AppSetting>();
+            services.AddSingleton<IStateRoot, StateRoot>();
             
             services.AddSingleton<IBackgroundProcess, BackgroundProcess>();
             services.AddTransient<IUploadToCloudPart, UploadToCloudPart>();

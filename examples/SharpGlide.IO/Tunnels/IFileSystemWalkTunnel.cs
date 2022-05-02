@@ -1,7 +1,7 @@
 using SharpGlide.IO.Model;
 using SharpGlide.Tunnels.Read.Interfaces;
 
-namespace SharpGlide.IO.Readers
+namespace SharpGlide.IO.Tunnels
 {
     public interface IFileSystemWalkTunnel :
         ISingleWalkTunnel<FsEntryInfo, FsEntryInfo>,

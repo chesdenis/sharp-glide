@@ -6,5 +6,6 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Service
     {
         Task StartAsync();
         Task StopAsync();
+        bool Started { get; set; }
     }
 }

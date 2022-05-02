@@ -7,9 +7,9 @@ using SharpGlide.Readers.Abstractions;
 
 namespace SharpGlide.Cloud.Yandex.Readers.Profile
 {
-    public class ProfileReader : SingleReader<ProfileResponse, AuthorizeTokens>, IProfileReader
+    public class ProfileReader : SingleReader<ProfileResponse, IAuthorizeTokens>, IProfileReader
     {
-        public ProfileReader(Func<CancellationToken, AuthorizeTokens, Task<ProfileResponse>> singleReadFunc) : base(singleReadFunc)
+        public ProfileReader(Func<CancellationToken, IAuthorizeTokens, Task<ProfileResponse>> singleReadFunc) : base(singleReadFunc)
         {
         }
     }

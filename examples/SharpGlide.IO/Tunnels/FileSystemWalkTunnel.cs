@@ -5,10 +5,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.IO.Model;
+using SharpGlide.IO.Readers;
 using SharpGlide.Tunnels.Read.Abstractions;
 using SharpGlide.Tunnels.Read.Model;
 
-namespace SharpGlide.IO.Readers
+namespace SharpGlide.IO.Tunnels
 {
     public class FileSystemWalkTunnel : WalkTunnel<FsEntryInfo, FsEntryInfo>, IFileSystemWalkTunnel
     {

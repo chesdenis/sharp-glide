@@ -1,0 +1,26 @@
+@page "/authorize"
+@using SharpGlide.Extensions
+@using SharpGlide.WebApps.YandexDiskUploader.State
+
+<h3>Authorization... You will be redirected soon...</h3>
+
+@inject NavigationManager NavManager;
+@inject IStateRoot StateRoot;
+
+@code {
+    private IDictionary<string, string> UriHash => NavManager.Uri.GetUrlEncodedDict('#');
+    private bool Authenticated => UriHash.ContainsKey("access_token");
+    
+    protected override void OnInitialized()
+    {
+        if (Authenticated)
+        {
+            StateRoot.SecuritySection.AccessToken = UriHash["access_token"];
+            NavManager.NavigateTo("/", true);
+        }
+        
+        base.OnInitialized();
+    }
+
+  
+}

@@ -4,7 +4,7 @@ using SharpGlide.Tunnels.Read.Interfaces;
 
 namespace SharpGlide.Cloud.Yandex.Tunnels.Profile
 {
-    public interface IProfileReadTunnel : ISingleReadTunnel<ProfileResponse, AuthorizeTokens>
+    public interface IProfileReadTunnel : ISingleReadTunnel<ProfileResponse, IAuthorizeTokens>
     {
         
     }

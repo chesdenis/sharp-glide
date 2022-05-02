@@ -11,14 +11,16 @@
 @using SharpGlide.WebApps.YandexDiskUploader.Hubs
 @using SharpGlide.WebApps.YandexDiskUploader.Parts
 @using SharpGlide.WebApps.YandexDiskUploader.Service
+@using SharpGlide.WebApps.YandexDiskUploader.State
 
 @inject IProfileReader ProfileReader
 @inject NavigationManager NavManager
 @inject IBackgroundProcess BackgroundProcess
+@inject IStateRoot StateRoot
 
 @implements IAsyncDisposable
 
-@if (!Authenticated)
+@if (!StateRoot.Authenticated)
 {
     <h1>Hello, this is Yandex Disk File Uploader!</h1>
     <h2>Click left button to sign-in...</h2>
@@ -29,8 +31,9 @@ else
     <div class="container ">
         <div class="row">
             <div class="col">
-                <p>Current directory is <b>@Path.GetFileName(@WorkingDirectoryPath)</b> (@WorkingDirectoryPath)</p>
-                <p>Modify folder path here: <input @bind="WorkingDirectoryPath" width="800px"/></p>
+                <p>Current directory is <b>@Path.GetFileName(StateRoot.WorkingFolder)</b> (@(StateRoot.WorkingFolder)</p>
+                <p>Modify folder path here: </p>
+                <textarea rows="14" cols="10" wrap="soft" @bind="@(StateRoot.WorkingFolder)" width="800px"></textarea>
                 <p>For upload please use buttons below:</p>
             </div>
         </div>
@@ -42,8 +45,16 @@ else
         <div class="row ">
             <div class="col">
                 <span>
-                    <button type="button" class="btn btn-primary" @onclick="Start">Start</button>
-                    <button type="button" class="btn btn-danger" @onclick="Stop">Stop</button>
+                    @if(BackgroundProcess.Started)
+                    {
+                        <button type="button" class="btn btn-primary">Started</button>
+                        <button type="button" class="btn btn-outline-danger" @onclick="Stop">Stop</button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-outline-primary" @onclick="Start">Start</button>
+                        <button type="button" class="btn btn-danger">Stopped</button>
+                    }
                 </span>
             </div>
         </div>
@@ -82,15 +93,10 @@ else
 @code {
     private HubConnection? hubConnection;
 
-    private IDictionary<string, string> UriHash => NavManager.Uri.GetUrlEncodedDict('#');
-    private bool Authenticated => UriHash.ContainsKey("access_token");
-
     private string FirstName { get; set; }
     private string LastName { get; set; }
     private string RealName { get; set; }
     private string DisplayName { get; set; }
-
-    private string WorkingDirectoryPath { get; set; } = "";
 
     private string ProgressBarText = string.Empty;
     private readonly UploadToCloudPart.ContentSizeStatistic LocalStat = new();
@@ -99,12 +105,10 @@ else
     {
         await ConfigureHubs();
 
-        if (Authenticated)
+        if (StateRoot.Authenticated)
         {
             await FillProfileData();
         }
-
-        await SetWorkingDirectoryIfEmpty();
 
         await base.OnInitializedAsync();
     }
@@ -145,27 +149,12 @@ else
 
     private async Task FillProfileData()
     {
-        var authorizeTokens = new AuthorizeTokens
-        {
-            AccessToken = UriHash["access_token"]
-        };
-
-        var profile = await ProfileReader.ReadSingleAsync(CancellationToken.None, authorizeTokens);
+        var profile = await ProfileReader.ReadSingleAsync(CancellationToken.None, StateRoot.SecuritySection);
 
         FirstName = profile.first_name;
         LastName = profile.last_name;
         RealName = profile.real_name;
         DisplayName = profile.display_name;
-    }
-
-    private Task SetWorkingDirectoryIfEmpty()
-    {
-        if (string.IsNullOrWhiteSpace(WorkingDirectoryPath))
-        {
-            WorkingDirectoryPath = AppSetting.WorkingFolder;
-        }
-
-        return Task.CompletedTask;
     }
 
     private async Task Start()

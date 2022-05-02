@@ -11,7 +11,7 @@ using SharpGlide.Tunnels.Write.Abstractions;
 namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
 {
     public class DiskSingleFileUploadTunnel : SingleWriteTunnel<IDiskFileUploadTunnel.IFileInformation,
-        AuthorizeTokens>
+        IAuthorizeTokens>
     {
         private readonly HttpClient _httpClient;
 
@@ -21,7 +21,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
         }
 
         protected override async Task WriteSingleImpl(
-            AuthorizeTokens arg,
+            IAuthorizeTokens arg,
             IDiskFileUploadTunnel.IFileInformation data,
             IRoute route,
             CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
         }
 
         protected override async Task<IDiskFileUploadTunnel.IFileInformation> WriteAndReturnSingleImpl(
-            AuthorizeTokens arg,
+            IAuthorizeTokens arg,
             IDiskFileUploadTunnel.IFileInformation data,
             IRoute route,
             CancellationToken cancellationToken)

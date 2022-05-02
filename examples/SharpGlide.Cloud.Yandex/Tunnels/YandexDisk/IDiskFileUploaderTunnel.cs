@@ -4,8 +4,8 @@ using SharpGlide.Tunnels.Write.Interfaces;
 namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
 {
     public interface IDiskFileUploadTunnel : 
-        ISingleWriteTunnel<IDiskFileUploadTunnel.IFileInformation, AuthorizeTokens>,
-        ICollectionWriteTunnel<IDiskFileUploadTunnel.IFileInformation, AuthorizeTokens>
+        ISingleWriteTunnel<IDiskFileUploadTunnel.IFileInformation, IAuthorizeTokens>,
+        ICollectionWriteTunnel<IDiskFileUploadTunnel.IFileInformation, IAuthorizeTokens>
     {
         public interface IFileInformation
         {

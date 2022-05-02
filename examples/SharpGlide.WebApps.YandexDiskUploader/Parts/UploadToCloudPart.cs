@@ -10,11 +10,15 @@ using SharpGlide.IO.Readers;
 using SharpGlide.Tunnels.Read.Model;
 using SharpGlide.WebApps.YandexDiskUploader.Config;
 using SharpGlide.WebApps.YandexDiskUploader.Hubs;
+using SharpGlide.WebApps.YandexDiskUploader.Model;
+using SharpGlide.WebApps.YandexDiskUploader.State;
+using FsEntryInfo = SharpGlide.IO.Model.FsEntryInfo;
 
 namespace SharpGlide.WebApps.YandexDiskUploader.Parts
 {
     public class UploadToCloudPart : IUploadToCloudPart
     {
+        private readonly IStateRoot _stateRoot;
         private readonly IHubContext<RealtimeUpdatesHub> _realtimeUpdatesHub;
         private readonly IFileSystemWalker _fileSystemWalker;
         public string Name { get; set; }
@@ -28,8 +32,12 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
 
         private readonly ContentSizeStatistic _sizeStatistic = new ContentSizeStatistic();
 
-        public UploadToCloudPart(IHubContext<RealtimeUpdatesHub> realtimeUpdatesHub, IFileSystemWalker fileSystemWalker)
+        public UploadToCloudPart(
+            IStateRoot stateRoot,
+            IHubContext<RealtimeUpdatesHub> realtimeUpdatesHub, 
+            IFileSystemWalker fileSystemWalker)
         {
+            _stateRoot = stateRoot;
             _realtimeUpdatesHub = realtimeUpdatesHub;
             _fileSystemWalker = fileSystemWalker;
         }
@@ -41,10 +49,10 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
             _sizeStatistic.TotalSize = 0;
             
             await _fileSystemWalker.WalkAsyncPagedAsync(cancellationToken, PageInfo.Default, 
-                new FsEntryInfo
+                new FsEntryInfo()
                 {
-                    FullName = AppSetting.WorkingFolder,
-                    Name = Path.GetFileName(AppSetting.WorkingFolder),
+                    FullName = _stateRoot.WorkingFolder,
+                    Name = Path.GetFileName(_stateRoot.WorkingFolder),
                     Size = 0
                 }, OnFileVisit);
         }
