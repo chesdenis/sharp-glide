@@ -8,8 +8,4 @@
       <ProjectReference Include="..\..\src\SharpGlide\SharpGlide.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Tunnels" />
-    </ItemGroup>
-
 </Project>

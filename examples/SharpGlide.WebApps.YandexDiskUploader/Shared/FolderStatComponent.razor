@@ -1,11 +1,12 @@
+@using SharpGlide.IO.Extensions
 <div class="card" style="width: 18rem;">
     <div class="card-header">
         @Header
     </div>
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">@FilesCount</li>
-        <li class="list-group-item">@FolderCount</li>
-        <li class="list-group-item">@TotalSize</li>
+        <li class="list-group-item">Files: @FilesCount</li>
+        <li class="list-group-item">Folders: @FoldersCount</li>
+        <li class="list-group-item">Total Size: @TotalSize.ToReadable()</li>
     </ul>
 </div>
 
@@ -15,11 +16,11 @@
     public string Header { get; set; }
 
     [Parameter]
-    public string FilesCount { get; set; }
+    public long FilesCount { get; set; }
 
     [Parameter]
-    public string FolderCount { get; set; }
+    public long FoldersCount { get; set; }
 
     [Parameter]
-    public string TotalSize { get; set; }
+    public long TotalSize { get; set; }
 }

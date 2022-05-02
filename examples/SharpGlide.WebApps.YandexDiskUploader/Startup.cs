@@ -12,6 +12,7 @@ using SharpGlide.Cloud.Yandex.Readers.Profile;
 using SharpGlide.Cloud.Yandex.Tunnels.Authorization;
 using SharpGlide.Cloud.Yandex.Tunnels.Profile;
 using SharpGlide.Flow;
+using SharpGlide.IO.Readers;
 using SharpGlide.WebApps.YandexDiskUploader.Config;
 using SharpGlide.WebApps.YandexDiskUploader.Hubs;
 using SharpGlide.WebApps.YandexDiskUploader.Parts;
@@ -54,6 +55,19 @@ namespace SharpGlide.WebApps.YandexDiskUploader
             services.AddTransient<IUploadToCloudPart, UploadToCloudPart>();
             
             services.AddSingleton<FlowModel>();
+
+            services.AddTransient<FileSystemWalkTunnel>();
+            services.AddTransient<IFileSystemWalker>(provider =>
+            {
+                var tunnel = provider.GetService<FileSystemWalkTunnel>();
+
+                return new FileSystemWalker(
+                    tunnel.WalkSingleExpr.Compile(), 
+                    tunnel.WalkSingleAsyncExpr.Compile(),
+                    tunnel.WalkPagedExpr.Compile(),
+                    tunnel.WalkPagedAsyncExpr.Compile()
+                );
+            });
             
             services.AddTransient<AuthorizeTokenUriReadTunnel>();
             services.AddTransient<IAuthorizeTokenUriReader>(
@@ -71,6 +85,8 @@ namespace SharpGlide.WebApps.YandexDiskUploader
                 var tunnel = provider.GetService<ProfileReadTunnel>();
                 return new ProfileReader(tunnel.ReadSingleExpr.Compile());
             });
+
+            services.AddSingleton<UploadToCloudPart>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
