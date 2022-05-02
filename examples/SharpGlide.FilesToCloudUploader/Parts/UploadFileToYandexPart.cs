@@ -25,7 +25,7 @@ namespace SharpGlide.FilesToCloudUploader.Parts
         }
         public async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            await _oauthReader.ReadAsync(cancellationToken, new OAuthAuthorizeReadTunnel.OAuthRequest
+            await _oauthReader.ReadSingleAsync(cancellationToken, new OAuthAuthorizeReadTunnel.OAuthRequest
             {
                 ClientId = _configuration["SpYadDiskUploader:OAuth:ClientId"],
                 SecretId = _configuration["SpYadDiskUploader:OAuth:SecretId"]

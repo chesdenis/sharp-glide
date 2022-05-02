@@ -2,11 +2,18 @@
 @using SharpGlide.Extensions
 @using SharpGlide.Cloud.Yandex.Readers.Profile
 @using System.Threading
-@using SharpGlide.Cloud.Yandex.SharedModel
+@using SharpGlide.Cloud.Yandex.Model
+@using SharpGlide.WebApps.YandexDiskUploader.Config
+@using System.IO
+@using Microsoft.AspNetCore.SignalR.Client
+@using SharpGlide.WebApps.YandexDiskUploader.Hubs
+@using SharpGlide.WebApps.YandexDiskUploader.Service
 
 @inject IProfileReader ProfileReader
 @inject NavigationManager NavManager
+@inject IBackgroundProcess BackgroundProcess
 
+@implements IAsyncDisposable
 
 @if (!Authenticated)
 {
@@ -16,9 +23,57 @@
 else
 {
     <h1>Hello, @FirstName @LastName (@DisplayName)</h1>
+    <div class="container ">
+        <div class="row">
+            <div class="col">
+                <p>Current directory is <b>@Path.GetFileName(@WorkingDirectoryPath)</b> (@WorkingDirectoryPath)</p>
+                <p>Modify folder path here: <input @bind="WorkingDirectoryPath" width="800px"/></p>
+                <p>For upload please use buttons below:</p>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col">
+                Notification engine is @(IsConnected ? "Connected" : "Disconnected")
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col">
+                <span>
+                    <button type="button" class="btn btn-primary" @onclick="Start">Start</button>
+                    <button type="button" class="btn btn-danger" @onclick="Stop">Stop</button>
+                </span>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col ">
+                <br/>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar"
+                         style="width: 25%;"
+                         aria-valuenow="25"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        25%
+                    </div>
+                </div>
+                <br/>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col w-50">
+                <FolderStatComponent Header="T1" FilesCount="1" FolderCount="1" TotalSize="2"></FolderStatComponent>
+            </div>
+            <div class="col w-50">
+                <FolderStatComponent Header="T1" FilesCount="1" FolderCount="1" TotalSize="2"></FolderStatComponent>
+            </div>
+        </div>
+    </div>
 }
 
+
 @code {
+    private HubConnection? hubConnection;
+
     private IDictionary<string, string> UriHash => NavManager.Uri.GetUrlEncodedDict('#');
     private bool Authenticated => UriHash.ContainsKey("access_token");
 
@@ -27,22 +82,88 @@ else
     private string RealName { get; set; }
     private string DisplayName { get; set; }
 
+    private string WorkingDirectoryPath { get; set; } = "";
+
     protected override async Task OnInitializedAsync()
     {
+        await ConfigureHubs();
+
         if (Authenticated)
         {
-            var profile = await ProfileReader.ReadAsync(CancellationToken.None, new AuthorizeTokens
-            {
-                AccessToken = UriHash["access_token"]
-            });
-
-            FirstName = profile.first_name;
-            LastName = profile.last_name;
-            RealName = profile.real_name;
-            DisplayName = profile.display_name;
+            await FillProfileData();
         }
 
+        await SetWorkingDirectoryIfEmpty();
+
         await base.OnInitializedAsync();
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    private async Task ConfigureHubs()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavManager.ToAbsoluteUri(RealtimeUpdatesHub.HubEndpoint))
+            .Build();
+
+        hubConnection.On<string>(RealtimeUpdatesHub.ReceiveLocalFileSystemStatInfo, LocalFileSystemStatInfo_Receive);
+        hubConnection.On<string>(RealtimeUpdatesHub.ReceiveCloudFileSystemStatInfo, CloudFileSystemStatInfo_Receive);
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task LocalFileSystemStatInfo_Receive(string obj)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task CloudFileSystemStatInfo_Receive(string obj)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task FillProfileData()
+    {
+        var authorizeTokens = new AuthorizeTokens
+        {
+            AccessToken = UriHash["access_token"]
+        };
+
+        var profile = await ProfileReader.ReadSingleAsync(CancellationToken.None, authorizeTokens);
+
+        FirstName = profile.first_name;
+        LastName = profile.last_name;
+        RealName = profile.real_name;
+        DisplayName = profile.display_name;
+    }
+
+    private Task SetWorkingDirectoryIfEmpty()
+    {
+        if (string.IsNullOrWhiteSpace(WorkingDirectoryPath))
+        {
+            WorkingDirectoryPath = AppSetting.WorkingFolder;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private async Task Start()
+    {
+        await BackgroundProcess.StartAsync();
+    }
+
+    private async Task Stop()
+    {
+        await BackgroundProcess.StopAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
     }
 
 }

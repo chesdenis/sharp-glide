@@ -26,11 +26,11 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
 
         public async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            var input = await this._readerIntReader.ReadAsync(cancellationToken);
+            var input = await this._readerIntReader.ReadSingleAsync(cancellationToken);
 
             input *= 2;
 
-            await _stringWriter.Write(input.ToString(), Route.Default, cancellationToken);
+            await _stringWriter.WriteSingle(input.ToString(), Route.Default, cancellationToken);
         }
     }
 }

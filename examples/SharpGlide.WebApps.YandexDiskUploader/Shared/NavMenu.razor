@@ -51,7 +51,7 @@
     protected override async Task OnInitializedAsync()
     {
         this.
-        YandexDiskSignInUri = await AuthorizeTokenUriReader.ReadAsync(CancellationToken.None, ApplicationSetting);
+        YandexDiskSignInUri = await AuthorizeTokenUriReader.ReadSingleAsync(CancellationToken.None, ApplicationSetting);
         
         await base.OnInitializedAsync();
     }

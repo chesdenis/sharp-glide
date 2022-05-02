@@ -12,15 +12,15 @@ namespace SharpGlide.Tunnels.Write.Abstractions
     {
         public bool CanExecute { get; set; }
 
-        public Expression<Func<IEnumerable<T>, IRoute, CancellationToken, Task>> Write
-            => (data, route, cancellationToken) => WriteImpl(data, route, cancellationToken);
+        public Expression<Func<IEnumerable<T>, IRoute, CancellationToken, Task>> WriteCollectionExpr
+            => (data, route, cancellationToken) => WriteCollectionImpl(data, route, cancellationToken);
 
-        protected abstract Task WriteImpl(IEnumerable<T> data, IRoute route, CancellationToken cancellationToken);
+        protected abstract Task WriteCollectionImpl(IEnumerable<T> data, IRoute route, CancellationToken cancellationToken);
 
-        public Expression<Func<IEnumerable<T>, IRoute, CancellationToken, Task<IEnumerable<T>>>> WriteAndReturn
-            => (data, route, cancellationToken) => WriteAndReturnImpl(data, route, cancellationToken);
+        public Expression<Func<IEnumerable<T>, IRoute, CancellationToken, Task<IEnumerable<T>>>> WriteAndReturnCollectionExpr
+            => (data, route, cancellationToken) => WriteAndReturnCollectionImpl(data, route, cancellationToken);
 
-        protected abstract Task<IEnumerable<T>> WriteAndReturnImpl(IEnumerable<T> data, IRoute route,
+        protected abstract Task<IEnumerable<T>> WriteAndReturnCollectionImpl(IEnumerable<T> data, IRoute route,
             CancellationToken cancellationToken);
     }
     
@@ -28,15 +28,15 @@ namespace SharpGlide.Tunnels.Write.Abstractions
     {
         public bool CanExecute { get; set; }
 
-        public Expression<Func<TArg, IEnumerable<T>, IRoute, CancellationToken, Task>> Write
-            => (arg, data, route, cancellationToken) => WriteImpl(arg, data, route, cancellationToken);
+        public Expression<Func<TArg, IEnumerable<T>, IRoute, CancellationToken, Task>> WriteCollectionExpr
+            => (arg, data, route, cancellationToken) => WriteCollectionImpl(arg, data, route, cancellationToken);
 
-        protected abstract Task WriteImpl(TArg arg, IEnumerable<T> data, IRoute route, CancellationToken cancellationToken);
+        protected abstract Task WriteCollectionImpl(TArg arg, IEnumerable<T> data, IRoute route, CancellationToken cancellationToken);
 
-        public Expression<Func<TArg, IEnumerable<T>, IRoute, CancellationToken, Task<IEnumerable<T>>>> WriteAndReturn
-            => (arg, data, route, cancellationToken) => WriteAndReturnImpl(arg, data, route, cancellationToken);
+        public Expression<Func<TArg, IEnumerable<T>, IRoute, CancellationToken, Task<IEnumerable<T>>>> WriteAndReturnCollectionExpr
+            => (arg, data, route, cancellationToken) => WriteAndReturnCollectionImpl(arg, data, route, cancellationToken);
 
-        protected abstract Task<IEnumerable<T>> WriteAndReturnImpl(TArg arg, IEnumerable<T> data, IRoute route,
+        protected abstract Task<IEnumerable<T>> WriteAndReturnCollectionImpl(TArg arg, IEnumerable<T> data, IRoute route,
             CancellationToken cancellationToken);
     }
 }

@@ -30,17 +30,17 @@ namespace SharpGlide.Readers.Abstractions
             _pagedReadFunc = pagedReadFunc;
             _filteredReadFunc = filteredReadFunc;
         }
-       
-        async Task<T> ISingleReader<T>.ReadAsync(CancellationToken cancellationToken)
+
+        public async Task<T> ReadSingleAsync(CancellationToken cancellationToken)
             => await _singleReadFunc(cancellationToken);
 
-        async Task<IEnumerable<T>> ICollectionReader<T>.ReadAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<T>> ReadCollectionAsync(CancellationToken cancellationToken)
             => await _collectionReadFunc(cancellationToken);
 
-        async  Task<IEnumerable<T>> IPagedReader<T>.ReadAsync(CancellationToken cancellationToken, PageInfo pageInfo)
+        public async  Task<IEnumerable<T>> ReadPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo)
             => await _pagedReadFunc(cancellationToken, pageInfo);
 
-        async Task<IEnumerable<T>> IFilteredReader<T>.ReadAsync(CancellationToken cancellationToken,
+        public async Task<IEnumerable<T>> ReadFilteredAsync(CancellationToken cancellationToken,
             Func<IEnumerable<T>, IEnumerable<T>> filter)
             => await _filteredReadFunc(cancellationToken, filter);
     }
@@ -69,12 +69,12 @@ namespace SharpGlide.Readers.Abstractions
         }
 
 
-        async Task<T> ISingleReader<T, TRequest>.ReadAsync(CancellationToken cancellationToken, TRequest request) => await _singleReadFunc(cancellationToken, request);
+        public async Task<T> ReadSingleAsync(CancellationToken cancellationToken, TRequest request) => await _singleReadFunc(cancellationToken, request);
 
-        async Task<IEnumerable<T>> ICollectionReader<T, TRequest>.ReadAsync(CancellationToken cancellationToken, TRequest request) => await _collectionReadFunc(cancellationToken, request);
+        public async Task<IEnumerable<T>> ReadCollectionAsync(CancellationToken cancellationToken, TRequest request) => await _collectionReadFunc(cancellationToken, request);
 
-        async Task<IEnumerable<T>>  IPagedReader<T, TRequest>.ReadAsync(CancellationToken cancellationToken, PageInfo pageInfo, TRequest request) => await _pagedReadFunc(cancellationToken, pageInfo, request);
+        public async Task<IEnumerable<T>> ReadPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, TRequest request) => await _pagedReadFunc(cancellationToken, pageInfo, request);
 
-        async Task<IEnumerable<T>> IFilteredReader<T, TRequest>.ReadAsync(CancellationToken cancellationToken, TRequest request, Func<IEnumerable<T>, IEnumerable<T>> filter) => await _filteredReadFunc(cancellationToken, request, filter);
+        public async Task<IEnumerable<T>> ReadFilteredAsync(CancellationToken cancellationToken, TRequest request, Func<IEnumerable<T>, IEnumerable<T>> filter) => await _filteredReadFunc(cancellationToken, request, filter);
     }
 }

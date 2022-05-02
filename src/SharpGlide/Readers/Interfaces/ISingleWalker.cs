@@ -6,11 +6,11 @@ namespace SharpGlide.Readers.Interfaces
 {
     public interface ISingleWalker<out T>
     {
-        Task WalkAsync(CancellationToken cancellationToken, Action<T> callback);
+        Task WalkSingleAsync(CancellationToken cancellationToken, Action<T> callback);
     }
 
     public interface ISingleWalker<out T, in TArg>
     {
-        Task WalkAsync(CancellationToken cancellationToken, TArg request, Action<T> callback);
+        Task WalkSingleAsync(CancellationToken cancellationToken, TArg request, Action<T> callback);
     }
 }

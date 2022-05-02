@@ -28,7 +28,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             var writer = flowModel.BuildSingleWriter(stringWriter) as ISingleWriter<string>;
 
             // Assert
-            await writer.Write("test1", Route.Default, CancellationToken.None);
+            await writer.WriteSingle("test1", Route.Default, CancellationToken.None);
     
             output.First().Should().StartWith("test1");
         }
@@ -47,7 +47,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             var writer = flowModel.BuildSingleWriter(stringWriter)  as ISingleWriter<string>;;
     
             // Assert
-            var retVal = await writer.WriteAndReturn("test1", Route.Default, CancellationToken.None);
+            var retVal = await writer.WriteAndReturnSingle("test1", Route.Default, CancellationToken.None);
     
             output.First().Should().StartWith("test1");
             retVal.Should().Contain("handled");
@@ -67,7 +67,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             var writer = flowModel.BuildCollectionWriter(stringWriter)  as ICollectionWriter<string>;
     
             // Assert
-            await writer.Write(new List<string>() { "a", "b", "c" }, Route.Default, CancellationToken.None);
+            await writer.WriteCollection(new List<string>() { "a", "b", "c" }, Route.Default, CancellationToken.None);
     
             output.Count.Should().Be(3);
         }
@@ -86,7 +86,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             var directWriterProxy = flowModel.BuildCollectionWriter(stringWriter)  as ICollectionWriter<string>;;;
     
             // Assert
-            var result = await directWriterProxy.WriteAndReturn(new List<string>() { "a", "b", "c" }, Route.Default,
+            var result = await directWriterProxy.WriteAndReturnCollection(new List<string>() { "a", "b", "c" }, Route.Default,
                 CancellationToken.None);
     
             result.Count().Should().Be(3);

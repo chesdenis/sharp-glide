@@ -14,19 +14,18 @@ namespace SharpGlide.Tunnels.Read.Abstractions
         IPagedReadTunnel<T>,
         IFilteredReadTunnel<T>
     {
-        Expression<Func<CancellationToken, Task<T>>> ISingleReadTunnel<T>.ReadExpr =>
+        public Expression<Func<CancellationToken, Task<T>>> ReadSingleExpr =>
             (cancellationToken)
                 => SingleReadImpl(cancellationToken);
 
-        Expression<Func<CancellationToken, Task<IEnumerable<T>>>> ICollectionReadTunnel<T>.ReadExpr =>
+        public Expression<Func<CancellationToken, Task<IEnumerable<T>>>> ReadCollectionExpr =>
             (cancellationToken)
                 => CollectionReadImpl(cancellationToken);
 
-        Expression<Func<CancellationToken, PageInfo, Task<IEnumerable<T>>>> IPagedReadTunnel<T>.ReadExpr =>
+        public Expression<Func<CancellationToken, PageInfo, Task<IEnumerable<T>>>> ReadPagedExpr =>
             ((cancellationToken, pageInfo) => PagedReadImpl(cancellationToken, pageInfo));
 
-        Expression<Func<CancellationToken, Func<IEnumerable<T>, IEnumerable<T>>, Task<IEnumerable<T>>>>
-            IFilteredReadTunnel<T>.ReadExpr =>
+        public Expression<Func<CancellationToken, Func<IEnumerable<T>, IEnumerable<T>>, Task<IEnumerable<T>>>> ReadFilteredExpr =>
             (cancellationToken, filter) => FilteredReadImpl(cancellationToken, filter);
 
         protected abstract Task<T> SingleReadImpl(CancellationToken cancellationToken);
@@ -47,18 +46,17 @@ namespace SharpGlide.Tunnels.Read.Abstractions
     {
         public bool CanExecute { get; set; }
 
-        Expression<Func<CancellationToken, TArg, Task<T>>> ISingleReadTunnel<T, TArg>.ReadExpr
+        public Expression<Func<CancellationToken, TArg, Task<T>>> ReadSingleExpr
             => (cancellationToken, arg)
                 => SingleReadImpl(cancellationToken, arg);
 
-        Expression<Func<CancellationToken, TArg, Task<IEnumerable<T>>>> ICollectionReadTunnel<T, TArg>.ReadExpr
+        public Expression<Func<CancellationToken, TArg, Task<IEnumerable<T>>>> ReadCollectionExpr
             => (cancellationToken, arg) => CollectionReadImpl(cancellationToken, arg);
 
-        Expression<Func<CancellationToken, PageInfo, TArg, Task<IEnumerable<T>>>> IPagedReadTunnel<T, TArg>.ReadExpr
+        public Expression<Func<CancellationToken, PageInfo, TArg, Task<IEnumerable<T>>>> ReadPagedExpr
             => (cancellationToken, pageInfo, arg) => PagedReadImpl(cancellationToken, pageInfo, arg);
 
-        Expression<Func<CancellationToken, TArg, Func<IEnumerable<T>, IEnumerable<T>>, Task<IEnumerable<T>>>>
-            IFilteredReadTunnel<T, TArg>.ReadExpr
+        public Expression<Func<CancellationToken, TArg, Func<IEnumerable<T>, IEnumerable<T>>, Task<IEnumerable<T>>>> ReadFilteredExpr
             => (cancellationToken, arg, filter) => FilteredReadImpl(cancellationToken, arg, filter);
 
         protected abstract Task<T> SingleReadImpl(CancellationToken cancellationToken, TArg arg);

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using SharpGlide.Cloud.Yandex.SharedModel;
+using SharpGlide.Cloud.Yandex.Model;
 using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions;
 using SharpGlide.Routing;
 using SharpGlide.Tunnels.Write.Abstractions;
@@ -20,7 +20,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
             _httpClient = httpClient;
         }
         
-        protected override async Task WriteImpl(AuthorizeTokens arg, IEnumerable<IDiskFileUploadTunnel.IFileInformation> data, IRoute route, CancellationToken cancellationToken)
+        protected override async Task WriteCollectionImpl(AuthorizeTokens arg, IEnumerable<IDiskFileUploadTunnel.IFileInformation> data, IRoute route, CancellationToken cancellationToken)
         {
             await DiskUploadTunnelExtensions.PopulateUploadUri(
                 _httpClient, arg, 
@@ -28,7 +28,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
                 cancellationToken);
         }
 
-        protected override async Task<IEnumerable<IDiskFileUploadTunnel.IFileInformation>> WriteAndReturnImpl(AuthorizeTokens arg, IEnumerable<IDiskFileUploadTunnel.IFileInformation> data, IRoute route, CancellationToken cancellationToken)
+        protected override async Task<IEnumerable<IDiskFileUploadTunnel.IFileInformation>> WriteAndReturnCollectionImpl(AuthorizeTokens arg, IEnumerable<IDiskFileUploadTunnel.IFileInformation> data, IRoute route, CancellationToken cancellationToken)
         {
             await DiskUploadTunnelExtensions.PopulateUploadUri(
                 _httpClient, arg, 

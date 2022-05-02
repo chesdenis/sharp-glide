@@ -1,6 +1,6 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
-using SharpGlide.Cloud.Yandex.SharedModel;
+using SharpGlide.Cloud.Yandex.Model;
 
 namespace SharpGlide.Cloud.Yandex.Tunnels.Authorization.Extensions
 {

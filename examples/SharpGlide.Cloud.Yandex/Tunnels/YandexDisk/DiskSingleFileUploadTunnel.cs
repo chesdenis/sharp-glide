@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using SharpGlide.Cloud.Yandex.SharedModel;
+using SharpGlide.Cloud.Yandex.Model;
 using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions;
 using SharpGlide.Routing;
 using SharpGlide.Tunnels.Write.Abstractions;
@@ -20,7 +20,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
             _httpClient = httpClient;
         }
 
-        protected override async Task WriteImpl(
+        protected override async Task WriteSingleImpl(
             AuthorizeTokens arg,
             IDiskFileUploadTunnel.IFileInformation data,
             IRoute route,
@@ -32,7 +32,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
                 cancellationToken);
         }
 
-        protected override async Task<IDiskFileUploadTunnel.IFileInformation> WriteAndReturnImpl(
+        protected override async Task<IDiskFileUploadTunnel.IFileInformation> WriteAndReturnSingleImpl(
             AuthorizeTokens arg,
             IDiskFileUploadTunnel.IFileInformation data,
             IRoute route,

@@ -1,4 +1,4 @@
-namespace SharpGlide.Cloud.Yandex.SharedModel
+namespace SharpGlide.Cloud.Yandex.Model
 {
     public class AuthorizeTokens
     {

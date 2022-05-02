@@ -6,11 +6,11 @@ namespace SharpGlide.Readers.Interfaces
 {
     public interface ICollectionReader<T, in TArg>
     {
-        Task<IEnumerable<T>> ReadAsync(CancellationToken cancellationToken, TArg request);
+        Task<IEnumerable<T>> ReadCollectionAsync(CancellationToken cancellationToken, TArg request);
     }
 
     public interface ICollectionReader<T>
     {
-        Task<IEnumerable<T>> ReadAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<T>> ReadCollectionAsync(CancellationToken cancellationToken);
     }
 }

@@ -1,0 +1,25 @@
+<div class="card" style="width: 18rem;">
+    <div class="card-header">
+        @Header
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">@FilesCount</li>
+        <li class="list-group-item">@FolderCount</li>
+        <li class="list-group-item">@TotalSize</li>
+    </ul>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Header { get; set; }
+
+    [Parameter]
+    public string FilesCount { get; set; }
+
+    [Parameter]
+    public string FolderCount { get; set; }
+
+    [Parameter]
+    public string TotalSize { get; set; }
+}

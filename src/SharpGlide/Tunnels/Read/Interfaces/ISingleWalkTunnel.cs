@@ -8,11 +8,11 @@ namespace SharpGlide.Tunnels.Read.Interfaces
 {
     public interface ISingleWalkTunnel<T> : ITunnel
     {
-        Expression<Func<CancellationToken, Action<T>, Task>> WalkExpr { get; }
+        Expression<Func<CancellationToken, Action<T>, Task>> WalkSingleExpr { get; }
     }
     
     public interface ISingleWalkTunnel<T, TArg> : ITunnel
     {
-        Expression<Func<CancellationToken, TArg, Action<T>, Task>> WalkExpr { get; }
+        Expression<Func<CancellationToken, TArg, Action<T>, Task>> WalkSingleExpr { get; }
     }
 }

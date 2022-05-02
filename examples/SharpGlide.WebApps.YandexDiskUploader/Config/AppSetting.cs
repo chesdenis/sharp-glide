@@ -15,5 +15,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Config
         public string ClientId => _configuration.GetValue<string>("SpYadDiskUploader:OAuth:ClientId");
         public string SecretId => _configuration.GetValue<string>("SpYadDiskUploader:OAuth:SecretId");
         public string RedirectUri => _configuration.GetValue<string>("SpYadDiskUploader:OAuth:RedirectUri");
+
+        public static string WorkingFolder { get; set; }
     }
 }

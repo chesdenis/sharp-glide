@@ -10,7 +10,7 @@ namespace SharpGlide.Tunnels.Read.Abstractions
     {
         public bool CanExecute { get; set; }
 
-        public Expression<Func<CancellationToken, Task<T>>> ReadExpr =>
+        public Expression<Func<CancellationToken, Task<T>>> ReadSingleExpr =>
             (cancellationToken)
                 => SingleReadImpl(cancellationToken);
         
@@ -21,7 +21,7 @@ namespace SharpGlide.Tunnels.Read.Abstractions
     {
         public bool CanExecute { get; set; }
 
-        public Expression<Func<CancellationToken,TArg, Task<T>>> ReadExpr =>
+        public Expression<Func<CancellationToken,TArg, Task<T>>> ReadSingleExpr =>
             (cancellationToken, arg)
                 => SingleReadImpl(cancellationToken, arg);
         

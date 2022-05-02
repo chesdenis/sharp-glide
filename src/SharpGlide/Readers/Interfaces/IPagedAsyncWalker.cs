@@ -8,13 +8,13 @@ namespace SharpGlide.Readers.Interfaces
 {
     public interface IPagedAsyncWalker<out T>
     {
-        Task WalkAsync(CancellationToken cancellationToken, PageInfo pageInfo,
+        Task WalkAsyncPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo,
             Func<CancellationToken, IEnumerable<T>, Task> callbackAsync);
     }
     
     public interface IPagedAsyncWalker<out T, in TArg>
     {
-        Task WalkAsync(CancellationToken cancellationToken, PageInfo pageInfo, TArg request,
+        Task WalkAsyncPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, TArg request,
             Func<CancellationToken, IEnumerable<T>, Task> callbackAsync);
     }
 }

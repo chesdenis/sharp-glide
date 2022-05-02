@@ -19,10 +19,10 @@ namespace SharpGlide.Writers.Abstractions
             _singleWriteFunc = singleWriteFunc;
             _singleWriteAndReturnFunc = singleWriteAndReturnFunc;
         }
-        
-        async Task ISingleWriter<T>.Write(T data, IRoute route, CancellationToken cancellationToken) => await _singleWriteFunc(data, route, cancellationToken);
 
-        async Task<T> ISingleWriter<T>.WriteAndReturn(T data, IRoute route, CancellationToken cancellationToken) => await _singleWriteAndReturnFunc(data, route, cancellationToken);
+        public async Task WriteSingle(T data, IRoute route, CancellationToken cancellationToken) => await _singleWriteFunc(data, route, cancellationToken);
+
+        public async Task<T> WriteAndReturnSingle(T data, IRoute route, CancellationToken cancellationToken) => await _singleWriteAndReturnFunc(data, route, cancellationToken);
     }  
     
     public class SingleWriter<T, TArg> : ISingleWriter<T,TArg>
@@ -38,9 +38,9 @@ namespace SharpGlide.Writers.Abstractions
             _singleWriteFunc = singleWriteFunc;
             _singleWriteAndReturnFunc = singleWriteAndReturnFunc;
         }
-        
-        async Task ISingleWriter<T,TArg>.Write(TArg arg, T data, IRoute route, CancellationToken cancellationToken) => await _singleWriteFunc(arg, data, route, cancellationToken);
 
-        async Task<T> ISingleWriter<T,TArg>.WriteAndReturn(TArg arg, T data, IRoute route, CancellationToken cancellationToken) => await _singleWriteAndReturnFunc(arg, data, route, cancellationToken);
+        public async Task WriteSingle(TArg arg, T data, IRoute route, CancellationToken cancellationToken) => await _singleWriteFunc(arg, data, route, cancellationToken);
+
+        public async Task<T> WriteAndReturnSingle(TArg arg, T data, IRoute route, CancellationToken cancellationToken) => await _singleWriteAndReturnFunc(arg, data, route, cancellationToken);
     }
 }

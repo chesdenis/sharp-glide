@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using SharpGlide.Cloud.Yandex.SharedModel;
+using SharpGlide.Cloud.Yandex.Model;
 using SharpGlide.Cloud.Yandex.Tunnels.Authorization.Extensions;
 using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Model;
 using SharpGlide.Extensions;

@@ -17,19 +17,18 @@ namespace SharpGlide.FilesToCloudUploader
         {
             this.For<ILoggerFactory>().Use(context => LoggerFactory.Create(x => x.AddSerilog())).Singleton();
 
-            this.For<ILogger<FolderContentsWalkTunnel>>().Use(context =>
-                context.GetInstance<ILoggerFactory>().CreateLogger<FolderContentsWalkTunnel>());
+            
             
             this.For<ILogger<OAuthAuthorizeReadTunnel>>().Use(context =>
                 context.GetInstance<ILoggerFactory>().CreateLogger<OAuthAuthorizeReadTunnel>());
-            
-            this.For<ILogger<CalculateTotalDirectorySizePart>>().Use(context =>
-                context.GetInstance<ILoggerFactory>().CreateLogger<CalculateTotalDirectorySizePart>());
+            //
+            // this.For<ILogger<CalculateTotalDirectorySizePart>>().Use(context =>
+            //     context.GetInstance<ILoggerFactory>().CreateLogger<CalculateTotalDirectorySizePart>());
             
             this.For<ILogger<UploadFileToYandexPart>>().Use(context =>
                 context.GetInstance<ILoggerFactory>().CreateLogger<UploadFileToYandexPart>());
             
-            this.For<FolderContentsWalkTunnel>().Use<FolderContentsWalkTunnel>();
+         
             this.For<OAuthAuthorizeReadTunnel>().Use<OAuthAuthorizeReadTunnel>();
 
             this.For<FlowModel>().Use<FlowModel>().Singleton();
@@ -44,15 +43,15 @@ namespace SharpGlide.FilesToCloudUploader
                    return flowModel.BuildReader(tunnel);
                 });
 
-            this.For<Walker<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata>>()
-                .Use(context =>
-                {
-                    var walkWithArgTunnel = context
-                        .GetInstance<FolderContentsWalkTunnel>();
-                    
-                    return context.GetInstance<FlowModel>().BuildWalker(
-                        walkWithArgTunnel);
-                });
+            // this.For<Walker<FolderContentsWalkTunnel.FileMetadata, FolderContentsWalkTunnel.DirectoryMetadata>>()
+            //     .Use(context =>
+            //     {
+            //         var walkWithArgTunnel = context
+            //             .GetInstance<FolderContentsWalkTunnel>();
+            //         
+            //         return context.GetInstance<FlowModel>().BuildWalker(
+            //             walkWithArgTunnel);
+            //     });
         }
     }
 }

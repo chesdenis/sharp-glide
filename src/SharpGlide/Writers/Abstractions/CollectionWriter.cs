@@ -20,11 +20,11 @@ namespace SharpGlide.Writers.Abstractions
             _collectionWriteFunc = collectionWriteFunc;
             _collectionWriteAndReturnFunc = collectionWriteAndReturnFunc;
         }
-        
-        async Task ICollectionWriter<T,TArg>.Write(TArg arg, IEnumerable<T> dataRange, IRoute route, CancellationToken cancellationToken)
+
+        public async Task WriteCollection(TArg arg, IEnumerable<T> dataRange, IRoute route, CancellationToken cancellationToken)
             => await _collectionWriteFunc(arg, dataRange, route, cancellationToken);
 
-        async Task<IEnumerable<T>> ICollectionWriter<T,TArg>.WriteAndReturn(TArg arg, IEnumerable<T> dataRange, IRoute route, CancellationToken cancellationToken) 
+        public async Task<IEnumerable<T>> WriteAndReturnCollection(TArg arg, IEnumerable<T> dataRange, IRoute route, CancellationToken cancellationToken) 
             => await _collectionWriteAndReturnFunc(arg, dataRange, route, cancellationToken);
     }
     
@@ -41,9 +41,9 @@ namespace SharpGlide.Writers.Abstractions
             _collectionWriteFunc = collectionWriteFunc;
             _collectionWriteAndReturnFunc = collectionWriteAndReturnFunc;
         }
-        
-        async Task ICollectionWriter<T>.Write(IEnumerable<T> dataRange, IRoute route, CancellationToken cancellationToken) => await _collectionWriteFunc(dataRange, route, cancellationToken);
 
-        async Task<IEnumerable<T>> ICollectionWriter<T>.WriteAndReturn(IEnumerable<T> dataRange, IRoute route, CancellationToken cancellationToken) => await _collectionWriteAndReturnFunc(dataRange, route, cancellationToken);
+        public async Task WriteCollection(IEnumerable<T> dataRange, IRoute route, CancellationToken cancellationToken) => await _collectionWriteFunc(dataRange, route, cancellationToken);
+
+        public async Task<IEnumerable<T>> WriteAndReturnCollection(IEnumerable<T> dataRange, IRoute route, CancellationToken cancellationToken) => await _collectionWriteAndReturnFunc(dataRange, route, cancellationToken);
     }
 }

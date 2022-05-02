@@ -13,8 +13,8 @@ namespace SharpGlide.Readers.Abstractions
         {
             _singleReadFunc = singleReadFunc;
         }
-        
-        async Task<T> ISingleReader<T, TRequest>.ReadAsync(CancellationToken cancellationToken, TRequest request) => await _singleReadFunc(cancellationToken, request);
+
+        public async Task<T> ReadSingleAsync(CancellationToken cancellationToken, TRequest request) => await _singleReadFunc(cancellationToken, request);
 
     }
 
@@ -27,7 +27,7 @@ namespace SharpGlide.Readers.Abstractions
             _singleReadFunc = singleReadFunc;
         }
 
-        async Task<T> ISingleReader<T>.ReadAsync(CancellationToken cancellationToken)
+        public async Task<T> ReadSingleAsync(CancellationToken cancellationToken)
             => await _singleReadFunc(cancellationToken);
     }
 }

@@ -1,4 +1,4 @@
-using SharpGlide.Cloud.Yandex.SharedModel;
+using SharpGlide.Cloud.Yandex.Model;
 using SharpGlide.Tunnels.Write.Interfaces;
 
 namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk

@@ -54,7 +54,7 @@ namespace SharpGlide.Flow
             ISingleReadTunnel<TData> tunnel)
         {
             return new SingleReader<TData>(
-                tunnel.ReadExpr.Compile()
+                tunnel.ReadSingleExpr.Compile()
             );
         }
 
@@ -62,7 +62,7 @@ namespace SharpGlide.Flow
             ISingleReadTunnel<TData, TArg> tunnel)
         {
             return new SingleReader<TData, TArg>(
-                tunnel.ReadExpr.Compile()
+                tunnel.ReadSingleExpr.Compile()
             );
         }
 
@@ -70,46 +70,46 @@ namespace SharpGlide.Flow
             ReadTunnel<TData> tunnel)
         {
             return new Reader<TData>(
-                ((ISingleReadTunnel<TData>)tunnel).ReadExpr.Compile(),
-                ((ICollectionReadTunnel<TData>)tunnel).ReadExpr.Compile(),
-                ((IPagedReadTunnel<TData>)tunnel).ReadExpr.Compile(),
-                ((IFilteredReadTunnel<TData>)tunnel).ReadExpr.Compile());
+                ((ISingleReadTunnel<TData>)tunnel).ReadSingleExpr.Compile(),
+                ((ICollectionReadTunnel<TData>)tunnel).ReadCollectionExpr.Compile(),
+                ((IPagedReadTunnel<TData>)tunnel).ReadPagedExpr.Compile(),
+                ((IFilteredReadTunnel<TData>)tunnel).ReadFilteredExpr.Compile());
         }
 
         public static Reader<TData, TArg> BuildReader<TData, TArg>(this FlowModel flowModel,
             ReadTunnel<TData, TArg> tunnel)
         {
             return new Reader<TData, TArg>(
-                ((ISingleReadTunnel<TData, TArg>)tunnel).ReadExpr.Compile(),
-                ((ICollectionReadTunnel<TData, TArg>)tunnel).ReadExpr.Compile(),
-                ((IPagedReadTunnel<TData, TArg>)tunnel).ReadExpr.Compile(),
-                ((IFilteredReadTunnel<TData, TArg>)tunnel).ReadExpr.Compile());
+                ((ISingleReadTunnel<TData, TArg>)tunnel).ReadSingleExpr.Compile(),
+                ((ICollectionReadTunnel<TData, TArg>)tunnel).ReadCollectionExpr.Compile(),
+                ((IPagedReadTunnel<TData, TArg>)tunnel).ReadPagedExpr.Compile(),
+                ((IFilteredReadTunnel<TData, TArg>)tunnel).ReadFilteredExpr.Compile());
         }
 
         public static SingleWriter<TData> BuildSingleWriter<TData>(this FlowModel flowModel,
             SingleWriteTunnel<TData> tunnel)
         {
             return new SingleWriter<TData>(
-                ((ISingleWriteTunnel<TData>)tunnel).Write.Compile(),
-                ((ISingleWriteTunnel<TData>)tunnel).WriteAndReturn.Compile());
+                ((ISingleWriteTunnel<TData>)tunnel).WriteSingleExpr.Compile(),
+                ((ISingleWriteTunnel<TData>)tunnel).WriteAndReturnExpr.Compile());
         }
         
         public static CollectionWriter<TData> BuildCollectionWriter<TData>(this FlowModel flowModel,
             CollectionWriteTunnel<TData> tunnel)
         {
             return new CollectionWriter<TData>(
-                ((ICollectionWriteTunnel<TData>)tunnel).Write.Compile(),
-                ((ICollectionWriteTunnel<TData>)tunnel).WriteAndReturn.Compile());
+                ((ICollectionWriteTunnel<TData>)tunnel).WriteCollectionExpr.Compile(),
+                ((ICollectionWriteTunnel<TData>)tunnel).WriteAndReturnCollectionExpr.Compile());
         }
 
         public static Walker<TData> BuildWalker<TData>(this FlowModel flowModel,
             WalkTunnel<TData> tunnel)
         {
             return new Walker<TData>(
-                ((ISingleWalkTunnel<TData>)tunnel).WalkExpr.Compile(),
-                ((ISingleAsyncWalkTunnel<TData>)tunnel).WalkExpr.Compile(),
-                ((IPagedWalkTunnel<TData>)tunnel).WalkExpr.Compile(),
-                ((IPagedAsyncWalkTunnel<TData>)tunnel).WalkExpr.Compile()
+                ((ISingleWalkTunnel<TData>)tunnel).WalkSingleExpr.Compile(),
+                ((ISingleAsyncWalkTunnel<TData>)tunnel).WalkSingleAsyncExpr.Compile(),
+                ((IPagedWalkTunnel<TData>)tunnel).WalkPagedExpr.Compile(),
+                ((IPagedAsyncWalkTunnel<TData>)tunnel).WalkPagedAsyncExpr.Compile()
             );
         }
 
@@ -117,10 +117,10 @@ namespace SharpGlide.Flow
             WalkTunnel<TData, TArg> tunnel)
         {
             return new Walker<TData, TArg>(
-                ((ISingleWalkTunnel<TData, TArg>)tunnel).WalkExpr.Compile(),
-                ((ISingleAsyncWalkTunnel<TData, TArg>)tunnel).WalkExpr.Compile(),
-                ((IPagedWalkTunnel<TData, TArg>)tunnel).WalkExpr.Compile(),
-                ((IPagedAsyncWalkTunnel<TData, TArg>)tunnel).WalkExpr.Compile()
+                ((ISingleWalkTunnel<TData, TArg>)tunnel).WalkSingleExpr.Compile(),
+                ((ISingleAsyncWalkTunnel<TData, TArg>)tunnel).WalkSingleAsyncExpr.Compile(),
+                ((IPagedWalkTunnel<TData, TArg>)tunnel).WalkPagedExpr.Compile(),
+                ((IPagedAsyncWalkTunnel<TData, TArg>)tunnel).WalkPagedAsyncExpr.Compile()
             );
         }
     }

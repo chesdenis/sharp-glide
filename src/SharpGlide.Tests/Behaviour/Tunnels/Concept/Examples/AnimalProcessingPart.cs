@@ -26,7 +26,7 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
 
         public async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            await _animalWalker.WalkAsync(cancellationToken, OneReceive);
+            await _animalWalker.WalkAsyncSingleAsync(cancellationToken, OneReceive);
         }
 
         private async Task OneReceive(CancellationToken cancellationToken,
@@ -34,7 +34,7 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept.Examples
         {
             var animal = (AnimalSingleWriteTunnel.IWritableAnimal)readableAnimal;
 
-            await this._animalWriter.Write(animal, Route.Default, cancellationToken);
+            await this._animalWriter.WriteSingle(animal, Route.Default, cancellationToken);
         }
     }
 }

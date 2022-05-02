@@ -6,13 +6,13 @@ namespace SharpGlide.Writers.Interfaces
 {
     public interface ISingleWriter<T, in TArg>
     {
-        Task Write(TArg arg,T data, IRoute route, CancellationToken cancellationToken);
-        Task<T> WriteAndReturn(TArg arg, T data, IRoute route, CancellationToken cancellationToken);
+        Task WriteSingle(TArg arg,T data, IRoute route, CancellationToken cancellationToken);
+        Task<T> WriteAndReturnSingle(TArg arg, T data, IRoute route, CancellationToken cancellationToken);
     }
 
     public interface ISingleWriter<T>
     {
-        Task Write(T data, IRoute route, CancellationToken cancellationToken);
-        Task<T> WriteAndReturn(T data, IRoute route, CancellationToken cancellationToken);
+        Task WriteSingle(T data, IRoute route, CancellationToken cancellationToken);
+        Task<T> WriteAndReturnSingle(T data, IRoute route, CancellationToken cancellationToken);
     }
 }

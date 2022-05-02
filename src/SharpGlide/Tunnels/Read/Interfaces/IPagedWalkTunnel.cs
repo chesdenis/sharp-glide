@@ -10,11 +10,11 @@ namespace SharpGlide.Tunnels.Read.Interfaces
 {
     public interface IPagedWalkTunnel<T> : ITunnel
     {
-        Expression<Func<CancellationToken, PageInfo, Action<IEnumerable<T>>, Task>> WalkExpr { get; }
+        Expression<Func<CancellationToken, PageInfo, Action<IEnumerable<T>>, Task>> WalkPagedExpr { get; }
     }
     
     public interface IPagedWalkTunnel<T, TArg> : ITunnel
     {
-        Expression<Func<CancellationToken, PageInfo, TArg, Action<IEnumerable<T>>, Task>> WalkExpr { get; }
+        Expression<Func<CancellationToken, PageInfo, TArg, Action<IEnumerable<T>>, Task>> WalkPagedExpr { get; }
     }
 }

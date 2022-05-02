@@ -1,4 +1,4 @@
-using SharpGlide.Cloud.Yandex.SharedModel;
+using SharpGlide.Cloud.Yandex.Model;
 using SharpGlide.Cloud.Yandex.Tunnels.Profile.Model;
 using SharpGlide.Readers.Interfaces;
 

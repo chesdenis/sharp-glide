@@ -26,7 +26,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
             // Act
             var reader = flowModel.BuildReader(intReader) as ISingleReader<int, int>;
             var readSingle = await 
-                reader.ReadAsync(CancellationToken.None, SourceDataA.ElementAt(5000));
+                reader.ReadSingleAsync(CancellationToken.None, SourceDataA.ElementAt(5000));
     
             // Assert
             readSingle.Should().Be(5001);
@@ -42,7 +42,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
     
             // Act
             var directReaderProxy = flowModel.BuildReader(intReader) as IFilteredReader<int, int>;
-            var readRange = await directReaderProxy.ReadAsync(CancellationToken.None,
+            var readRange = await directReaderProxy.ReadFilteredAsync(CancellationToken.None,
                 SourceDataA.ElementAt(5000), ints => ints.Skip(10).Take(10));
     
             // Assert
@@ -61,7 +61,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
     
             // Act
             var directReaderProxy = flowModel.BuildReader(intReader) as ICollectionReader<int, int>;
-            var readAll = await directReaderProxy.ReadAsync(CancellationToken.None, SourceDataA.ElementAt(5000));
+            var readAll = await directReaderProxy.ReadCollectionAsync(CancellationToken.None, SourceDataA.ElementAt(5000));
     
             // Assert
             readAll.Count().Should().Be(4999);

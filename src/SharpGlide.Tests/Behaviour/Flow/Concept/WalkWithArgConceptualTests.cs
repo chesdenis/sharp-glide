@@ -28,7 +28,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
      
             // Act
             var walkerProxy = flowModel.BuildWalker(walker) as ISingleWalker<int, int>;
-            await walkerProxy.WalkAsync(CancellationToken.None, 5000, i => output.Add(i));
+            await walkerProxy.WalkSingleAsync(CancellationToken.None, 5000, i => output.Add(i));
     
             // Assert
             output.Count.Should().Be(SourceDataA.Count/2 - 1);
@@ -52,7 +52,7 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept
                 PageSize = 10
             };
             
-            await walkerProxy.WalkAsync(CancellationToken.None, pageInfo, 5000,
+            await walkerProxy.WalkPagedAsync(CancellationToken.None, pageInfo, 5000,
                 pageData => output.Add(pageData.ToList()));
     
             // Assert

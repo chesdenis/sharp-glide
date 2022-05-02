@@ -38,12 +38,12 @@ namespace SharpGlide.Tests.Behaviour.Tunnels.Concept
             var writer = model.BuildSingleWriter(animalWriteTunnel) as ISingleWriter<AnimalSingleWriteTunnel.IWritableAnimal>;
 
             // Act
-            await writer.Write(animal1, Route.Default, CancellationToken.None);
-            await writer.Write(animal2, Route.Default, CancellationToken.None);
-            await writer.Write(animal3, Route.Default, CancellationToken.None);
+            await writer.WriteSingle(animal1, Route.Default, CancellationToken.None);
+            await writer.WriteSingle(animal2, Route.Default, CancellationToken.None);
+            await writer.WriteSingle(animal3, Route.Default, CancellationToken.None);
 
             var walkerData = new List<AnimalWalkTunnel.IReadableAnimal>();
-            await walker.WalkAsync(CancellationToken.None,
+            await walker.WalkSingleAsync(CancellationToken.None,
                 (data => { walkerData.Add(data); }));
 
             // Assert

@@ -7,12 +7,12 @@ namespace SharpGlide.Readers.Interfaces
 {
     public interface IPagedReader<T, in TArg>
     {
-        Task<IEnumerable<T>> ReadAsync(CancellationToken cancellationToken, PageInfo pageInfo,
+        Task<IEnumerable<T>> ReadPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo,
             TArg request);
     }
 
     public interface IPagedReader<T>
     {
-        Task<IEnumerable<T>> ReadAsync(CancellationToken cancellationToken, PageInfo pageInfo);
+        Task<IEnumerable<T>> ReadPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo);
     }
 }

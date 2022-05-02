@@ -16,17 +16,16 @@ namespace SharpGlide.Tunnels.Read.Abstractions
     {
         public bool CanExecute { get; set; }
 
-        Expression<Func<CancellationToken, Action<T>, Task>> ISingleWalkTunnel<T>.WalkExpr
+        public Expression<Func<CancellationToken, Action<T>, Task>> WalkSingleExpr
             => (cancellationToken, callback) => SingleWalkImpl(cancellationToken, callback);
 
-        Expression<Func<CancellationToken, Func<CancellationToken, T, Task>, Task>> ISingleAsyncWalkTunnel<T>.WalkExpr
+        public Expression<Func<CancellationToken, Func<CancellationToken, T, Task>, Task>> WalkSingleAsyncExpr
             => (cancellationToken, callback) => SingleAsyncWalkImpl(cancellationToken, callback);
 
-        Expression<Func<CancellationToken, PageInfo, Action<IEnumerable<T>>, Task>> IPagedWalkTunnel<T>.WalkExpr
+        public Expression<Func<CancellationToken, PageInfo, Action<IEnumerable<T>>, Task>> WalkPagedExpr
             => (cancellationToken, pageInfo, callback) => PagedWalkImpl(cancellationToken, pageInfo, callback);
 
-        Expression<Func<CancellationToken, PageInfo, Func<CancellationToken, IEnumerable<T>, Task>, Task>>
-            IPagedAsyncWalkTunnel<T>.WalkExpr
+        public Expression<Func<CancellationToken, PageInfo, Func<CancellationToken, IEnumerable<T>, Task>, Task>> WalkPagedAsyncExpr
             => (cancellationToken, pageInfo, callback) => PagedAsyncWalkImpl(cancellationToken, pageInfo, callback);
 
         protected abstract Task SingleWalkImpl(CancellationToken cancellationToken, Action<T> callback);
@@ -48,17 +47,17 @@ namespace SharpGlide.Tunnels.Read.Abstractions
         IPagedAsyncWalkTunnel<T, TArg>
     {
          public bool CanExecute { get; set; }
-        
-         Expression<Func<CancellationToken, TArg, Action<T>, Task>> ISingleWalkTunnel<T, TArg>.WalkExpr 
+
+         public Expression<Func<CancellationToken, TArg, Action<T>, Task>> WalkSingleExpr 
              => (cancellationToken, request, callback) =>  SingleWalkImpl(cancellationToken, request, callback);
 
-         Expression<Func<CancellationToken, TArg, Func<CancellationToken, T, Task>, Task>> ISingleAsyncWalkTunnel<T, TArg>.WalkExpr 
+         public Expression<Func<CancellationToken, TArg, Func<CancellationToken, T, Task>, Task>> WalkSingleAsyncExpr 
              => (cancellationToken, request, callback) => SingleAsyncWalkImpl(cancellationToken, request, callback);
 
-         Expression<Func<CancellationToken, PageInfo, TArg, Action<IEnumerable<T>>, Task>> IPagedWalkTunnel<T, TArg>.WalkExpr 
+         public Expression<Func<CancellationToken, PageInfo, TArg, Action<IEnumerable<T>>, Task>> WalkPagedExpr 
              => (cancellationToken, pageInfo, request, callback) => PagedWalkImpl(cancellationToken, pageInfo,request, callback);
 
-         Expression<Func<CancellationToken, PageInfo, TArg, Func<CancellationToken, IEnumerable<T>, Task>, Task>> IPagedAsyncWalkTunnel<T, TArg>.WalkExpr 
+         public Expression<Func<CancellationToken, PageInfo, TArg, Func<CancellationToken, IEnumerable<T>, Task>, Task>> WalkPagedAsyncExpr 
              => (cancellationToken, pageInfo, request, callback) => PagedAsyncWalkImpl(cancellationToken, pageInfo, request, callback);
 
         

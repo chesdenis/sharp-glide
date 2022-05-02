@@ -11,15 +11,15 @@ namespace SharpGlide.Tunnels.Write.Abstractions
     {
         public bool CanExecute { get; set; }
 
-        public Expression<Func<TArg, T, IRoute, CancellationToken, Task>> Write =>
-            (arg, data, route, cancellationToken) => WriteImpl(arg, data, route, cancellationToken);
+        public Expression<Func<TArg, T, IRoute, CancellationToken, Task>> WriteSingleExpr =>
+            (arg, data, route, cancellationToken) => WriteSingleImpl(arg, data, route, cancellationToken);
 
-        protected abstract Task WriteImpl(TArg arg, T data, IRoute route, CancellationToken cancellationToken);
+        protected abstract Task WriteSingleImpl(TArg arg, T data, IRoute route, CancellationToken cancellationToken);
 
-        public Expression<Func<TArg, T, IRoute, CancellationToken, Task<T>>> WriteAndReturn
-            => (arg, data, route, cancellationToken) => WriteAndReturnImpl(arg, data, route, cancellationToken);
+        public Expression<Func<TArg, T, IRoute, CancellationToken, Task<T>>> WriteAndReturnSingleExpr
+            => (arg, data, route, cancellationToken) => WriteAndReturnSingleImpl(arg, data, route, cancellationToken);
 
-        protected abstract Task<T> WriteAndReturnImpl(TArg arg, T data, IRoute route,
+        protected abstract Task<T> WriteAndReturnSingleImpl(TArg arg, T data, IRoute route,
             CancellationToken cancellationToken);
     }
 
@@ -27,12 +27,12 @@ namespace SharpGlide.Tunnels.Write.Abstractions
     {
         public bool CanExecute { get; set; }
 
-        public Expression<Func<T, IRoute, CancellationToken, Task>> Write =>
+        public Expression<Func<T, IRoute, CancellationToken, Task>> WriteSingleExpr =>
             (data, route, cancellationToken) => WriteImpl(data, route, cancellationToken);
 
         protected abstract Task WriteImpl(T data, IRoute route, CancellationToken cancellationToken);
 
-        public Expression<Func<T, IRoute, CancellationToken, Task<T>>> WriteAndReturn
+        public Expression<Func<T, IRoute, CancellationToken, Task<T>>> WriteAndReturnExpr
             => (data, route, cancellationToken) => WriteAndReturnImpl(data, route, cancellationToken);
 
         protected abstract Task<T> WriteAndReturnImpl(T data, IRoute route, CancellationToken cancellationToken);

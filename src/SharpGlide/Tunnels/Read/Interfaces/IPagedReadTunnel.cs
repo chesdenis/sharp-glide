@@ -10,11 +10,11 @@ namespace SharpGlide.Tunnels.Read.Interfaces
 {
     public interface IPagedReadTunnel<T, TArg> : ITunnel
     {
-        Expression<Func<CancellationToken, PageInfo, TArg, Task<IEnumerable<T>>>> ReadExpr { get; }
+        Expression<Func<CancellationToken, PageInfo, TArg, Task<IEnumerable<T>>>> ReadPagedExpr { get; }
     }
 
     public interface IPagedReadTunnel<T> : ITunnel
     {
-        Expression<Func<CancellationToken, PageInfo, Task<IEnumerable<T>>>> ReadExpr { get; }
+        Expression<Func<CancellationToken, PageInfo, Task<IEnumerable<T>>>> ReadPagedExpr { get; }
     }
 }

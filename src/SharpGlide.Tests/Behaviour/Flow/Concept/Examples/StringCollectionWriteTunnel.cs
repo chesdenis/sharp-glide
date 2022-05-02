@@ -17,14 +17,14 @@ namespace SharpGlide.Tests.Behaviour.Flow.Concept.Examples
             _storagePointer = storagePointer;
         }
         
-        protected override async Task WriteImpl(IEnumerable<string> dataRange, IRoute route,
+        protected override async Task WriteCollectionImpl(IEnumerable<string> dataRange, IRoute route,
             CancellationToken cancellationToken)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
             _storagePointer().AddRange(dataRange.Select(s => $"{s} -> {route}"));
         }
 
-        protected override async Task<IEnumerable<string>> WriteAndReturnImpl(IEnumerable<string> dataRange,
+        protected override async Task<IEnumerable<string>> WriteAndReturnCollectionImpl(IEnumerable<string> dataRange,
             IRoute route, CancellationToken cancellationToken)
         {
             await Task.Delay(TimeSpan.FromMilliseconds(100), cancellationToken);
