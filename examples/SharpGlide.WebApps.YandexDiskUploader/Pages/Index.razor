@@ -1,13 +1,9 @@
 ﻿@page "/"
-@using SharpGlide.Extensions
 @using SharpGlide.Cloud.Yandex.Readers.Profile
 @using System.Threading
-@using SharpGlide.Cloud.Yandex.Model
-@using SharpGlide.WebApps.YandexDiskUploader.Config
 @using System.IO
 @using System.Text.Json
 @using Microsoft.AspNetCore.SignalR.Client
-@using SharpGlide.IO.Model
 @using SharpGlide.WebApps.YandexDiskUploader.Hubs
 @using SharpGlide.WebApps.YandexDiskUploader.Parts
 @using SharpGlide.WebApps.YandexDiskUploader.Service
@@ -33,7 +29,7 @@ else
             <div class="col">
                 <p>Current directory is <b>@Path.GetFileName(StateRoot.WorkingFolder)</b> (@(StateRoot.WorkingFolder)</p>
                 <p>Modify folder path here: </p>
-                <textarea rows="14" cols="10" wrap="soft" @bind="@(StateRoot.WorkingFolder)" width="800px"></textarea>
+                <textarea rows="14" cols="100" wrap="soft" @bind="@(StateRoot.WorkingFolder)"></textarea>
                 <p>For upload please use buttons below:</p>
             </div>
         </div>
@@ -83,7 +79,10 @@ else
                 </FolderStatComponent>
             </div>
             <div class="col w-50">
-                <FolderStatComponent Header="T1" FilesCount="1" FoldersCount="1" TotalSize="2"></FolderStatComponent>
+                <FolderStatComponent Header="Cloud" 
+                                     FilesCount="@CloudStat.FilesCount" 
+                                     FoldersCount="@CloudStat.FoldersCount" 
+                                     TotalSize="@CloudStat.TotalSize"></FolderStatComponent>
             </div>
         </div>
     </div>
@@ -99,7 +98,8 @@ else
     private string DisplayName { get; set; }
 
     private string ProgressBarText = string.Empty;
-    private readonly UploadToCloudPart.ContentSizeStatistic LocalStat = new();
+    private readonly ContentSizeStatistic LocalStat = new();
+    private readonly ContentSizeStatistic CloudStat = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -130,7 +130,7 @@ else
 
     private async Task LocalFileSystemStatInfo_Receive(string data)
     {
-        var statistic = JsonSerializer.Deserialize<UploadToCloudPart.ContentSizeStatistic>(data);
+        var statistic = JsonSerializer.Deserialize<ContentSizeStatistic>(data);
 
         if (statistic != null)
         {
@@ -142,8 +142,17 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task CloudFileSystemStatInfo_Receive(string json)
+    private async Task CloudFileSystemStatInfo_Receive(string data)
     {
+        var statistic = JsonSerializer.Deserialize<ContentSizeStatistic>(data);
+
+        if (statistic != null)
+        {
+            CloudStat.FilesCount = statistic.FilesCount;
+            CloudStat.FoldersCount = statistic.FoldersCount;
+            CloudStat.TotalSize = statistic.TotalSize;
+        }
+        
         await InvokeAsync(StateHasChanged);
     }
 

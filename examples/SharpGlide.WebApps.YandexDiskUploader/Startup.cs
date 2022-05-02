@@ -11,6 +11,8 @@ using SharpGlide.Cloud.Yandex.Readers.Authorization;
 using SharpGlide.Cloud.Yandex.Readers.Profile;
 using SharpGlide.Cloud.Yandex.Tunnels.Authorization;
 using SharpGlide.Cloud.Yandex.Tunnels.Profile;
+using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk;
+using SharpGlide.Cloud.Yandex.Writers.YandexDisc;
 using SharpGlide.Flow;
 using SharpGlide.IO.Readers;
 using SharpGlide.IO.Tunnels;
@@ -86,6 +88,17 @@ namespace SharpGlide.WebApps.YandexDiskUploader
                 var tunnel = provider.GetService<ProfileReadTunnel>();
                 return new ProfileReader(tunnel.ReadSingleExpr.Compile());
             });
+
+            services.AddTransient<SingleFileUploadTunnel>();
+            services.AddTransient<ISingleFileUploader>(
+                provider =>
+                {
+                    var tunnel = provider.GetService<SingleFileUploadTunnel>();
+                    return new SingleFileUploader(
+                        tunnel.WriteSingleExpr.Compile(),
+                        tunnel.WriteAndReturnSingleExpr.Compile());
+                }
+            );
 
             services.AddSingleton<UploadToCloudPart>();
         }

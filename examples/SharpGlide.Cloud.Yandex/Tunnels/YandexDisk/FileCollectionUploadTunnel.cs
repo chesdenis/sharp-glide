@@ -4,23 +4,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Cloud.Yandex.Model;
 using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions;
+using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Model;
 using SharpGlide.Routing;
 using SharpGlide.Tunnels.Write.Abstractions;
 
 namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
 {
-    public class DiskCollectionFileUploadTunnel : 
-        CollectionWriteTunnel<IDiskFileUploadTunnel.IFileInformation,
-        IAuthorizeTokens>
+    public class FileCollectionUploadTunnel : 
+        CollectionWriteTunnel<ICloudFileInformation,
+        IAuthorizeTokens>,IFileCollectionUploadTunnel
     {
         private readonly HttpClient _httpClient;
 
-        public DiskCollectionFileUploadTunnel(HttpClient httpClient)
+        public FileCollectionUploadTunnel(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
         
-        protected override async Task WriteCollectionImpl(IAuthorizeTokens arg, IEnumerable<IDiskFileUploadTunnel.IFileInformation> data, IRoute route, CancellationToken cancellationToken)
+        protected override async Task WriteCollectionImpl(IAuthorizeTokens arg, IEnumerable<ICloudFileInformation> data, IRoute route, CancellationToken cancellationToken)
         {
             await DiskUploadTunnelExtensions.PopulateUploadUri(
                 _httpClient, arg, 
@@ -28,7 +29,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
                 cancellationToken);
         }
 
-        protected override async Task<IEnumerable<IDiskFileUploadTunnel.IFileInformation>> WriteAndReturnCollectionImpl(IAuthorizeTokens arg, IEnumerable<IDiskFileUploadTunnel.IFileInformation> data, IRoute route, CancellationToken cancellationToken)
+        protected override async Task<IEnumerable<ICloudFileInformation>> WriteAndReturnCollectionImpl(IAuthorizeTokens arg, IEnumerable<ICloudFileInformation> data, IRoute route, CancellationToken cancellationToken)
         {
             await DiskUploadTunnelExtensions.PopulateUploadUri(
                 _httpClient, arg, 

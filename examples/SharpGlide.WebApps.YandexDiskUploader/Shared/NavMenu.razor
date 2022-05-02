@@ -8,10 +8,12 @@
 @using SharpGlide.Cloud.Yandex.Readers.Profile
 @using SharpGlide.Extensions
 @using SharpGlide.WebApps.YandexDiskUploader.Config
+@using SharpGlide.WebApps.YandexDiskUploader.State
 
 @inject IAuthorizeTokenUriReader AuthorizeTokenUriReader
 @inject NavigationManager NavManager
 @inject AppSetting ApplicationSetting
+@inject IStateRoot StateRoot
 
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="@NavManager.Uri">Yandex Disk Uploader</a>
@@ -28,7 +30,7 @@
             </NavLink>
         </li>
         <li class="nav-item px-3">
-            @if (!Authenticated)
+            @if (!StateRoot.Authenticated)
             {
                 <NavLink class="nav-link" href="@YandexDiskSignInUri">
                     <span class="oi oi-sign-in" aria-hidden="true"></span> Sign In
@@ -40,9 +42,6 @@
 
 @code {
     private bool collapseNavMenu = true;
-   
-    private IDictionary<string, string> UriHash => NavManager.Uri.GetUrlEncodedDict('#');
-    private bool Authenticated => UriHash.ContainsKey("access_token");
 
     private string YandexDiskSignInUri { get; set; }
 

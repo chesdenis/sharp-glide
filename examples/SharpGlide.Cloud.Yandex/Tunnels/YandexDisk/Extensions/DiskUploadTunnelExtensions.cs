@@ -20,7 +20,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
         public static async Task PopulateUploadUri(
             HttpClient httpClient,
             IAuthorizeTokens arg,
-            IEnumerable<IDiskFileUploadTunnel.IFileInformation> dataCollection,
+            IEnumerable<ICloudFileInformation> dataCollection,
             CancellationToken cancellationToken)
         {
             httpClient.IncludeAccessToken(arg);

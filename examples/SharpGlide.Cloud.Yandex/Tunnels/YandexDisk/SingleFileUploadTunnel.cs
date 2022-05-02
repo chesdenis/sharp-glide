@@ -5,43 +5,44 @@ using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Cloud.Yandex.Model;
 using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions;
+using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Model;
 using SharpGlide.Routing;
 using SharpGlide.Tunnels.Write.Abstractions;
 
 namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
 {
-    public class DiskSingleFileUploadTunnel : SingleWriteTunnel<IDiskFileUploadTunnel.IFileInformation,
+    public class SingleFileUploadTunnel : SingleWriteTunnel<ICloudFileInformation,
         IAuthorizeTokens>
     {
         private readonly HttpClient _httpClient;
 
-        public DiskSingleFileUploadTunnel(HttpClient httpClient)
+        public SingleFileUploadTunnel(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
 
         protected override async Task WriteSingleImpl(
             IAuthorizeTokens arg,
-            IDiskFileUploadTunnel.IFileInformation data,
+            ICloudFileInformation data,
             IRoute route,
             CancellationToken cancellationToken)
         {
             await DiskUploadTunnelExtensions.PopulateUploadUri(
                 _httpClient, arg, 
-                new List<IDiskFileUploadTunnel.IFileInformation>() { data },
+                new List<ICloudFileInformation>() { data },
                 cancellationToken);
         }
 
-        protected override async Task<IDiskFileUploadTunnel.IFileInformation> WriteAndReturnSingleImpl(
+        protected override async Task<ICloudFileInformation> WriteAndReturnSingleImpl(
             IAuthorizeTokens arg,
-            IDiskFileUploadTunnel.IFileInformation data,
+            ICloudFileInformation data,
             IRoute route,
             CancellationToken cancellationToken)
         {
             await DiskUploadTunnelExtensions.PopulateUploadUri(
                 _httpClient,
                 arg, 
-                new List<IDiskFileUploadTunnel.IFileInformation>() { data },
+                new List<ICloudFileInformation>() { data },
                 cancellationToken);
 
             return data;
