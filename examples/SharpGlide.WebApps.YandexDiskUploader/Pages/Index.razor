@@ -40,16 +40,19 @@ else
     <div class="container ">
         <div class="row">
             <div class="col">
-                <p>Current directory is <b>@Path.GetFileName(StateRoot.WorkingFolder)</b> (@(StateRoot.WorkingFolder)</p>
-                <p>Modify folder path here: </p>
-                <textarea rows="14" cols="100" wrap="soft" @bind="@(StateRoot.WorkingFolder)"></textarea>
+                <p>Current directory is <b>@Path.GetFileName(StateRoot.LocalFolder)</b> (@(StateRoot.LocalFolder)</p>
+                <p>Source Path: </p>
+                <textarea rows="2" cols="70" wrap="soft" @bind="@(StateRoot.LocalFolder)"></textarea>
+
+                <p>Target Path: </p>
+                <textarea rows="2" cols="70" wrap="soft" @bind="@(StateRoot.CloudFolder)"></textarea>
                 <p>For upload please use buttons below:</p>
             </div>
         </div>
         <div class="row ">
             <div class="col">
                 <span>
-                    @if(BackgroundProcess.Started)
+                    @if (BackgroundProcess.Started)
                     {
                         <button type="button" class="btn btn-primary">Started</button>
                         <button type="button" class="btn btn-outline-danger" @onclick="Stop">Stop</button>
@@ -87,10 +90,11 @@ else
                 </FolderStatComponent>
             </div>
             <div class="col w-50">
-                <FolderStatComponent Header="Cloud" 
-                                     FilesCount="@CloudStat.FilesCount" 
-                                     FoldersCount="@CloudStat.FoldersCount" 
-                                     TotalSize="@CloudStat.TotalSize"></FolderStatComponent>
+                <FolderStatComponent Header="Cloud"
+                                     FilesCount="@CloudStat.FilesCount"
+                                     FoldersCount="@CloudStat.FoldersCount"
+                                     TotalSize="@CloudStat.TotalSize">
+                </FolderStatComponent>
             </div>
         </div>
     </div>
@@ -146,7 +150,7 @@ else
             LocalStat.FoldersCount = statistic.FoldersCount;
             LocalStat.TotalSize = statistic.TotalSize;
         }
-        
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -160,7 +164,7 @@ else
             CloudStat.FoldersCount = statistic.FoldersCount;
             CloudStat.TotalSize = statistic.TotalSize;
         }
-        
+
         await InvokeAsync(StateHasChanged);
     }
 

@@ -2,7 +2,8 @@ namespace SharpGlide.WebApps.YandexDiskUploader.State
 {
     public interface IStateRoot
     {
-        string WorkingFolder { get; set; }
+        string LocalFolder { get; set; }
+        string CloudFolder { get; set; }
         
         SecurityState SecuritySection { get; set; }
 

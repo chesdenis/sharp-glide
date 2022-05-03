@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.Http", "..\examp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.IO", "..\examples\SharpGlide.IO\SharpGlide.IO.csproj", "{B25DD8D7-14DB-4848-8AC1-CA2EFAF3B568}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.Cloud.Yandex.Tests", "..\examples\SharpGlide.Cloud.Yandex.Tests\SharpGlide.Cloud.Yandex.Tests.csproj", "{A77D29C1-FBE6-4412-8EDC-9A254FDC9BAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpGlide.WebApps.YandexDiskUploader.Tests", "..\examples\SharpGlide.WebApps.YandexDiskUploader.Tests\SharpGlide.WebApps.YandexDiskUploader.Tests.csproj", "{772B6B2F-E790-44BC-836F-F1A85409BE37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +68,14 @@ Global
 		{B25DD8D7-14DB-4848-8AC1-CA2EFAF3B568}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B25DD8D7-14DB-4848-8AC1-CA2EFAF3B568}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B25DD8D7-14DB-4848-8AC1-CA2EFAF3B568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A77D29C1-FBE6-4412-8EDC-9A254FDC9BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A77D29C1-FBE6-4412-8EDC-9A254FDC9BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A77D29C1-FBE6-4412-8EDC-9A254FDC9BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A77D29C1-FBE6-4412-8EDC-9A254FDC9BAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{772B6B2F-E790-44BC-836F-F1A85409BE37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{772B6B2F-E790-44BC-836F-F1A85409BE37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{772B6B2F-E790-44BC-836F-F1A85409BE37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{772B6B2F-E790-44BC-836F-F1A85409BE37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E4886687-B5B7-463C-B8E4-B8F17027DAC3} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
@@ -73,5 +85,7 @@ Global
 		{CE0141F0-39A1-4DD8-ABB6-521F89D1FE78} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
 		{C3EC5FBB-2367-4788-82E1-BFC4C5B19458} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
 		{B25DD8D7-14DB-4848-8AC1-CA2EFAF3B568} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
+		{A77D29C1-FBE6-4412-8EDC-9A254FDC9BAA} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
+		{772B6B2F-E790-44BC-836F-F1A85409BE37} = {23D07C17-15AA-41AA-B811-06C6E020A56B}
 	EndGlobalSection
 EndGlobal

@@ -124,6 +124,11 @@ namespace SharpGlide.IO.Tunnels
                 var childrenDirectories = directory.GetDirectories();
                 foreach (var childrenDirectory in childrenDirectories)
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        break;
+                    }
+                    
                     await WalkDirectory(new FsEntryInfo()
                         {
                             FullName = childrenDirectory.FullName
@@ -154,6 +159,11 @@ namespace SharpGlide.IO.Tunnels
         {
             foreach (var childrenFile in childrenFiles)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                
                 try
                 {
                     var fileAttributes = MapToFileAttributes(childrenFile);

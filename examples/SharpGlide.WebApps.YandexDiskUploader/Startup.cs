@@ -17,6 +17,7 @@ using SharpGlide.Flow;
 using SharpGlide.IO.Readers;
 using SharpGlide.IO.Tunnels;
 using SharpGlide.WebApps.YandexDiskUploader.Config;
+using SharpGlide.WebApps.YandexDiskUploader.Extensions;
 using SharpGlide.WebApps.YandexDiskUploader.Hubs;
 using SharpGlide.WebApps.YandexDiskUploader.Parts;
 using SharpGlide.WebApps.YandexDiskUploader.Service;
@@ -28,7 +29,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader
     public class Startup
     {
         private static readonly HttpClient HttpClientInstance = new HttpClient();
-       
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -48,15 +49,15 @@ namespace SharpGlide.WebApps.YandexDiskUploader
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
             });
-            
+
             services.AddSingleton(HttpClientInstance);
             services.AddSingleton(Configuration);
             services.AddSingleton<AppSetting>();
             services.AddSingleton<IStateRoot, StateRoot>();
-            
+
             services.AddSingleton<IBackgroundProcess, BackgroundProcess>();
             services.AddTransient<IUploadToCloudPart, UploadToCloudPart>();
-            
+
             services.AddSingleton<FlowModel>();
 
             services.AddTransient<FileSystemWalkTunnel>();
@@ -65,23 +66,23 @@ namespace SharpGlide.WebApps.YandexDiskUploader
                 var tunnel = provider.GetService<FileSystemWalkTunnel>();
 
                 return new FileSystemWalker(
-                    tunnel.WalkSingleExpr.Compile(), 
+                    tunnel.WalkSingleExpr.Compile(),
                     tunnel.WalkSingleAsyncExpr.Compile(),
                     tunnel.WalkPagedExpr.Compile(),
                     tunnel.WalkPagedAsyncExpr.Compile()
                 );
             });
-            
+
             services.AddTransient<AuthorizeTokenUriReadTunnel>();
             services.AddTransient<IAuthorizeTokenUriReader>(
                 provider =>
                 {
                     var tunnel = provider
                         .GetService<AuthorizeTokenUriReadTunnel>();
-            
+
                     return new AuthorizeTokenUriReader(tunnel.ReadSingleExpr.Compile());
                 });
-            
+
             services.AddTransient<ProfileReadTunnel>();
             services.AddTransient<IProfileReader>(provider =>
             {
@@ -100,6 +101,21 @@ namespace SharpGlide.WebApps.YandexDiskUploader
                 }
             );
 
+            services.AddTransient<SingleFolderCreateTunnel>();
+            services.AddTransient<ISingleFolderCreator>(provider =>
+            {
+                var tunnel = provider.GetService<SingleFolderCreateTunnel>();
+                return new SingleFolderCreator(
+                    tunnel.WriteSingleExpr.Compile(),
+                    tunnel.WriteAndReturnSingleExpr.Compile());
+            });
+
+            services.AddTunnel<SingleFolderCreateTunnel, ISingleFolderCreator>(
+                (tunnel) =>
+                    new SingleFolderCreator(
+                        tunnel.WriteSingleExpr.Compile(),
+                        tunnel.WriteAndReturnSingleExpr.Compile()));
+
             services.AddSingleton<UploadToCloudPart>();
         }
 
@@ -114,7 +130,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader
             {
                 app.UseExceptionHandler("/Error");
             }
-            
+
             app.UseStaticFiles();
 
             app.UseRouting();

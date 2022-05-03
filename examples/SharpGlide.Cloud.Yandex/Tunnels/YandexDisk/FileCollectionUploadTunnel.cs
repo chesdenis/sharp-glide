@@ -10,9 +10,9 @@ using SharpGlide.Tunnels.Write.Abstractions;
 
 namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
 {
-    public class FileCollectionUploadTunnel : 
+    public class FileCollectionUploadTunnel :
         CollectionWriteTunnel<ICloudFileInformation,
-        IAuthorizeTokens>,IFileCollectionUploadTunnel
+            IAuthorizeTokens>
     {
         private readonly HttpClient _httpClient;
 
@@ -20,19 +20,22 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
         {
             _httpClient = httpClient;
         }
-        
-        protected override async Task WriteCollectionImpl(IAuthorizeTokens arg, IEnumerable<ICloudFileInformation> data, IRoute route, CancellationToken cancellationToken)
+
+        protected override async Task WriteCollectionImpl(IAuthorizeTokens arg, IEnumerable<ICloudFileInformation> data,
+            IRoute route, CancellationToken cancellationToken)
         {
-            await DiskUploadTunnelExtensions.PopulateUploadUri(
-                _httpClient, arg, 
+            await DiskUploadTunnelExtensions.CalculateFileUploadUri(
+                _httpClient, arg,
                 data,
                 cancellationToken);
         }
 
-        protected override async Task<IEnumerable<ICloudFileInformation>> WriteAndReturnCollectionImpl(IAuthorizeTokens arg, IEnumerable<ICloudFileInformation> data, IRoute route, CancellationToken cancellationToken)
+        protected override async Task<IEnumerable<ICloudFileInformation>> WriteAndReturnCollectionImpl(
+            IAuthorizeTokens arg, IEnumerable<ICloudFileInformation> data, IRoute route,
+            CancellationToken cancellationToken)
         {
-            await DiskUploadTunnelExtensions.PopulateUploadUri(
-                _httpClient, arg, 
+            await DiskUploadTunnelExtensions.CalculateFileUploadUri(
+                _httpClient, arg,
                 data,
                 cancellationToken);
 

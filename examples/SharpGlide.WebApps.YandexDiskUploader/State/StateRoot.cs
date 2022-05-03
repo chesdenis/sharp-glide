@@ -9,11 +9,13 @@ namespace SharpGlide.WebApps.YandexDiskUploader.State
     {
         public StateRoot()
         {
-            WorkingFolder = Environment.CurrentDirectory;
+            LocalFolder = "/Folder1/Subfolder2/";
+            CloudFolder = $"/UploadFolder_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}";
             SecuritySection = new SecurityState();
         }
         
-        public string WorkingFolder { get; set; }
+        public string LocalFolder { get; set; }
+        public string CloudFolder { get; set; }
 
         public SecurityState SecuritySection { get; set; }
 

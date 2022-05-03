@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.Cloud.Yandex.Model;
-using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk;
 using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Model;
 using SharpGlide.Routing;
 using SharpGlide.Writers.Abstractions;

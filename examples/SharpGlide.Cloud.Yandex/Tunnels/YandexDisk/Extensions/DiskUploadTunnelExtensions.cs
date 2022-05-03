@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using SharpGlide.Cloud.Yandex.Extensions;
 using SharpGlide.Cloud.Yandex.Model;
 using SharpGlide.Cloud.Yandex.Tunnels.Authorization.Extensions;
 using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Model;
@@ -17,47 +18,110 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
 {
     public static class DiskUploadTunnelExtensions
     {
-        private const string GetUploadEndpointUri = "https://cloud-api.yandex.net/v1/disk/resources/upload";
-        
-        public static async Task PopulateUploadUri(
+        private const string GetFileUploadEndpointUri = "https://cloud-api.yandex.net/v1/disk/resources/upload";
+        private const string CreateFolderEndpointUri = "https://cloud-api.yandex.net/v1/disk/resources";
+
+        public static async Task CreateFolder(
             HttpClient httpClient,
-            IAuthorizeTokens arg,
-            IEnumerable<ICloudFileInformation> dataCollection,
+            IAuthorizeTokens tokens,
+            IEnumerable<ICloudFolderInformation> dataCollection,
             CancellationToken cancellationToken)
         {
-            httpClient.IncludeAccessToken(arg);
+            httpClient.IncludeAccessToken(tokens);
 
             foreach (var data in dataCollection)
             {
-                var encodedPath = data.FullName
-                    .Replace("C:\\", string.Empty).Replace("\\", "/").TrimStart('/');
-                var uploadUrl = HttpUtility.UrlEncode('/' + encodedPath);
-
-                var response = await httpClient.GetAsync(
-                    GetUploadEndpointUri.BindUriArgs("path", uploadUrl), cancellationToken);
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    var responseBody =
-                        await response.Content.ReadAsStringAsync(cancellationToken);
-
-                    var responseTyped = JsonSerializer.Deserialize<UploadUriResponse>(responseBody);
-
-                    if (responseTyped == null)
-                    {
-                        throw new ArgumentNullException(nameof(responseBody),
-                            $"Unable to deserialize response from api when requesting upload uri for {data.FullName}");
-                    }
-
-                    data.UploadUri = responseTyped.href;
+                    break;
                 }
-                else
+
+                var folderUrl = data.FullName.ToCloudPath();
+                
+                try
                 {
-                    var responseText = await response.Content.ReadAsStringAsync(cancellationToken);
-                    throw new ArgumentOutOfRangeException(nameof(response),
-                        $"Status code is not success when requesting file upload for {data.FullName}. Reason {responseText}");
+                    var response = await httpClient.GetAsync(
+                        CreateFolderEndpointUri.BindUriArgs("path", folderUrl), cancellationToken);
+                    
+                    data.StatusCode = response.StatusCode.ToString();
+                    
+                    var validatedResponse = await ValidateResponseAsync<
+                        ICloudFolderInformation, string, FolderCreatedResponse>(
+                        cancellationToken, response,
+                        data, x => x.FullName);
+                    
+                    data.CloudName = validatedResponse.href;
+                }
+                catch (Exception e)
+                {
+                    data.Reason = e.Message;
                 }
             }
+        }
+
+        public static async Task CalculateFileUploadUri(
+            HttpClient httpClient,
+            IAuthorizeTokens tokens,
+            IEnumerable<ICloudFileInformation> dataCollection,
+            CancellationToken cancellationToken)
+        {
+            httpClient.IncludeAccessToken(tokens);
+
+            foreach (var data in dataCollection)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                var uploadUrl = data.FullName.ToCloudPath();
+
+                try
+                {
+                    var response = await httpClient.GetAsync(
+                        GetFileUploadEndpointUri.BindUriArgs("path", uploadUrl), cancellationToken);
+
+                    data.StatusCode = response.StatusCode.ToString();
+                
+                    var validateResponse = await ValidateResponseAsync<ICloudFileInformation, string, UploadUriResponse>(
+                        cancellationToken,
+                        response,
+                        data, x => x.FullName);
+
+                    data.UploadUri = validateResponse.href;
+                }
+                catch (Exception e)
+                {
+                    data.Reason = e.Message;
+                }
+            }
+        }
+
+        private static async Task<TResponse> ValidateResponseAsync<T, THeader, TResponse>(
+            CancellationToken cancellationToken, HttpResponseMessage response,
+            T data, Func<T, THeader> dataHeader)
+        {
+            if (response.StatusCode == HttpStatusCode.OK
+                ||
+                response.StatusCode == HttpStatusCode.Created)
+            {
+                var responseBody =
+                    await response.Content.ReadAsStringAsync(cancellationToken);
+
+                var responseTyped = JsonSerializer.Deserialize<TResponse>(responseBody);
+
+                if (responseTyped == null)
+                {
+                    throw new ArgumentNullException(nameof(responseBody),
+                        $"Unable to deserialize response for {dataHeader(data)}");
+                }
+
+                return responseTyped;
+            }
+
+            var responseText = await response.Content.ReadAsStringAsync(cancellationToken);
+            throw new ArgumentException(nameof(response),
+                $"Status code is not success for {dataHeader(data)}. Reason {responseText}");
         }
     }
 }
