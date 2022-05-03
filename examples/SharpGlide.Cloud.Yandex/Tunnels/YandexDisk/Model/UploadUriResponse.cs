@@ -4,6 +4,6 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Model
     {
         public string href { get; set; }
         public string method { get; set; }
-        public string templated { get; set; }
+        public bool templated { get; set; }
     }
 }

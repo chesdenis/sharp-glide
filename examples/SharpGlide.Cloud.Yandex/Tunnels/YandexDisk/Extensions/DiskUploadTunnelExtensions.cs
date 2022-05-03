@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -27,7 +29,9 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
 
             foreach (var data in dataCollection)
             {
-                var uploadUrl = HttpUtility.UrlEncode(data.FullName);
+                var encodedPath = data.FullName
+                    .Replace("C:\\", string.Empty).Replace("\\", "/").TrimStart('/');
+                var uploadUrl = HttpUtility.UrlEncode('/' + encodedPath);
 
                 var response = await httpClient.GetAsync(
                     GetUploadEndpointUri.BindUriArgs("path", uploadUrl), cancellationToken);
@@ -35,21 +39,23 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var responseBody =
-                        await response.Content.ReadFromJsonAsync<UploadUriResponse>(
-                            cancellationToken: cancellationToken);
+                        await response.Content.ReadAsStringAsync(cancellationToken);
 
-                    if (responseBody == null)
+                    var responseTyped = JsonSerializer.Deserialize<UploadUriResponse>(responseBody);
+
+                    if (responseTyped == null)
                     {
                         throw new ArgumentNullException(nameof(responseBody),
                             $"Unable to deserialize response from api when requesting upload uri for {data.FullName}");
                     }
 
-                    data.UploadUri = responseBody.href;
+                    data.UploadUri = responseTyped.href;
                 }
                 else
                 {
+                    var responseText = await response.Content.ReadAsStringAsync(cancellationToken);
                     throw new ArgumentOutOfRangeException(nameof(response),
-                        $"Status code is not success when requesting file upload for {data.FullName}");
+                        $"Status code is not success when requesting file upload for {data.FullName}. Reason {responseText}");
                 }
             }
         }
