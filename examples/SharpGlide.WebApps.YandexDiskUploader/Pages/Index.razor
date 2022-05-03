@@ -16,6 +16,19 @@
 
 @implements IAsyncDisposable
 
+@if (IsConnected)
+{
+    <div class="alert alert-success" role="alert">
+        Realtime notifications is active.
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary" role="alert">
+        Realtime notifications is not enabled yet
+    </div>
+}
+
 @if (!StateRoot.Authenticated)
 {
     <h1>Hello, this is Yandex Disk File Uploader!</h1>
@@ -31,11 +44,6 @@ else
                 <p>Modify folder path here: </p>
                 <textarea rows="14" cols="100" wrap="soft" @bind="@(StateRoot.WorkingFolder)"></textarea>
                 <p>For upload please use buttons below:</p>
-            </div>
-        </div>
-        <div class="row ">
-            <div class="col">
-                Notification engine is @(IsConnected ? "Connected" : "Disconnected")
             </div>
         </div>
         <div class="row ">
