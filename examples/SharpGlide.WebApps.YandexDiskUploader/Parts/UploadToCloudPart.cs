@@ -34,6 +34,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
         private readonly ContentSizeStatistic _cloudFilesStatistic = new();
 
         private readonly List<UploaderWorkingFile> _workingFiles = new();
+        private readonly List<UploaderWorkingFolder> _workingFolders = new();
         private readonly Dictionary<string, List<UploaderWorkingFile>> _workingFilesPerFolder = new();
 
         private readonly ParallelOptions _parallelOptions = new ParallelOptions
@@ -69,7 +70,8 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
             try
             {
                 await WalkThroughFiles(cancellationToken);
-                DetectFoldersForUpload(exceptions);
+                CalculatePath(exceptions);
+
                 await UploadFolders(cancellationToken, exceptions);
             }
             catch (Exception e)
@@ -85,21 +87,25 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
 
         private async Task UploadFolders(CancellationToken cancellationToken, List<Exception> exceptions)
         {
-            var foldersToCreate = _workingFilesPerFolder.Keys
-                .Select(s => new UploaderWorkingFolder
-                {
-                    FullName = s
-                }).ToArray();
+            var rootFolder = new UploaderWorkingFolder()
+            {
+                Name = Path.GetFileName(_stateRoot.CloudFolder),
+                FullName = _stateRoot.CloudFolder,
+                CloudRelativePath = "/",
+                CloudAbsolutePath = $"{_stateRoot.CloudFolder}/"
+            };
 
-            foreach (var folder in foldersToCreate)
+            await _singleFolderCreator.WriteSingle(
+                _stateRoot.SecurityTokens, rootFolder, Route.Default, cancellationToken);
+
+            foreach (var folder in _workingFolders)
             {
                 try
                 {
-                    folder.CloudName = folder.FullName.ToCloudPath(_stateRoot.LocalFolder);
-                    await _singleFolderCreator.WriteSingle(_stateRoot.SecuritySection, folder, Route.Default,
+                    await _singleFolderCreator.WriteSingle(_stateRoot.SecurityTokens, folder, Route.Default,
                         cancellationToken);
 
-                    await ProcessFiles(_workingFilesPerFolder[folder.FullName], cancellationToken);
+                    // await ProcessFiles(folder, _workingFilesPerFolder[folder.FullName], cancellationToken);
                 }
                 catch (Exception e)
                 {
@@ -108,14 +114,14 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
             }
         }
 
-        private void DetectFoldersForUpload(List<Exception> exceptions)
+        private void CalculatePath(List<Exception> exceptions)
         {
             var filesPerFolder = _workingFiles
                 .GroupBy(g =>
                 {
                     try
                     {
-                        return Path.GetDirectoryName(((ICloudFileInformation)g).FullName);
+                        return Path.GetDirectoryName(g.FullName);
                     }
                     catch (Exception e)
                     {
@@ -128,8 +134,24 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
 
             foreach (var group in filesPerFolder)
             {
+                foreach (var file in group.ToArray())
+                {
+                    file.RelativePath = file.FullName.CalculateRelativePath(_stateRoot.LocalFolder);
+                    file.CloudRelativePath = file.RelativePath;
+                    file.CloudAbsolutePath = _stateRoot.CloudFolder + file.CloudRelativePath;
+                }
+
                 _workingFilesPerFolder[group.Key] = new List<UploaderWorkingFile>();
-                _workingFilesPerFolder[group.Key].AddRange(group.ToList());
+                _workingFilesPerFolder[group.Key].AddRange(group.ToArray());
+
+                _workingFolders.Add(new UploaderWorkingFolder
+                {
+                    Name = Path.GetFileName(group.Key),
+                    FullName = group.Key,
+                    CloudRelativePath = group.Key.CalculateRelativePath(_stateRoot.LocalFolder),
+                    CloudAbsolutePath = _stateRoot.CloudFolder +
+                        group.Key.CalculateRelativePath(_stateRoot.LocalFolder)
+                });
             }
         }
 
@@ -141,7 +163,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
                     FullName = _stateRoot.LocalFolder,
                     Name = Path.GetFileName(_stateRoot.LocalFolder),
                     Size = 0
-                },  async (token, infos) =>
+                }, async (token, infos) =>
                 {
                     var entryInfos = infos as FsEntryInfo[] ?? infos.ToArray();
 
@@ -152,12 +174,14 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
                     _localFilesStatistic.FoldersCount++;
 
                     var data = JsonSerializer.Serialize(_localFilesStatistic);
-                    await _realtimeUpdatesHub.Clients.All.SendAsync(RealtimeUpdatesHub.ReceiveLocalFileSystemStatInfo, data,
+                    await _realtimeUpdatesHub.Clients.All.SendAsync(RealtimeUpdatesHub.ReceiveLocalFileSystemStatInfo,
+                        data,
                         token);
                 });
         }
 
-        private Task ProcessFiles(List<UploaderWorkingFile> uploaderWorkingFiles,
+        private Task ProcessFiles(UploaderWorkingFolder uploaderWorkingFolder,
+            List<UploaderWorkingFile> uploaderWorkingFiles,
             CancellationToken cancellationToken)
         {
             var concurrentBag = new ConcurrentBag<Exception>();
@@ -166,7 +190,9 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
                 try
                 {
                     var workingFile = uploaderWorkingFiles.ElementAt(i);
-                    var workingFileToProcessOnCloud = _singleFileUploader.WriteAndReturnSingle(_stateRoot.SecuritySection,
+
+                    var workingFileToProcessOnCloud = _singleFileUploader.WriteAndReturnSingle(
+                        _stateRoot.SecurityTokens,
                         workingFile,
                         Route.Default,
                         cancellationToken).GetAwaiter().GetResult();
@@ -181,7 +207,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
             {
                 throw new AggregateException(concurrentBag.ToList());
             }
-            
+
             return Task.CompletedTask;
         }
 

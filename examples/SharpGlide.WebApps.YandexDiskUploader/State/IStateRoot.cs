@@ -5,7 +5,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.State
         string LocalFolder { get; set; }
         string CloudFolder { get; set; }
         
-        SecurityState SecuritySection { get; set; }
+        SecurityTokens SecurityTokens { get; set; }
 
         bool Authenticated { get; }
     }

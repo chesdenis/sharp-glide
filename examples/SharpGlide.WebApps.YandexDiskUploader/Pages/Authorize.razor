@@ -15,7 +15,7 @@
     {
         if (Authenticated)
         {
-            StateRoot.SecuritySection.AccessToken = UriHash["access_token"];
+            StateRoot.SecurityTokens.AccessToken = UriHash["access_token"];
             NavManager.NavigateTo("/", true);
         }
         

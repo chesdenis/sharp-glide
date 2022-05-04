@@ -66,7 +66,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Tests.Behaviour
             };
             foreach (var expectedFolder in expectedFolderOnCloud)
             {
-                createdFolders.Single(w => w.CloudName.UrlDecode() == expectedFolder).Should().NotBeNull();
+                createdFolders.Single(w => w.CloudRelativePath.UrlDecode() == expectedFolder).Should().NotBeNull();
             }
         }
         
@@ -110,7 +110,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Tests.Behaviour
             };
             foreach (var expectedFolder in expectedFolderOnCloud)
             {
-                createdFolders.Single(w => w.CloudName.UrlDecode() == expectedFolder).Should().NotBeNull();
+                createdFolders.Single(w => w.CloudRelativePath.UrlDecode() == expectedFolder).Should().NotBeNull();
             }
         }
 

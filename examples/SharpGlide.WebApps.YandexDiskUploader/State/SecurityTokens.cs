@@ -2,7 +2,7 @@ using SharpGlide.Cloud.Yandex.Model;
 
 namespace SharpGlide.WebApps.YandexDiskUploader.State
 {
-    public class SecurityState : IAuthorizeTokens
+    public class SecurityTokens : IAuthorizeTokens
     {
         public string AccessToken { get; set; }
     }

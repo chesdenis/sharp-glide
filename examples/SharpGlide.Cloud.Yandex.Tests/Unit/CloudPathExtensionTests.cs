@@ -6,50 +6,33 @@ namespace SharpGlide.Cloud.Yandex.Tests.Unit
 {
     public class CloudPathExtensionTests
     {
-        [Fact]
-        public void ShouldEncodeUnixPath()
+        [Theory]
+        [InlineData("C:\\test", "C:\\test\\subfolder2")]
+        [InlineData("C:\\test\\", "C:\\test\\subfolder2\\")]
+        [InlineData("C:\\test\\\\", "C:\\test\\subfolder2\\")]
+        public void ShouldCalculateRelativePathForWindows(string rootPath, string filePath)
         {
             // Arrange
             // Act
-            var result = "/testFolder1/subfolder2".ToCloudPath();
+            var result = filePath.CalculateRelativePath(rootPath);
 
             // Assert
-            result.Should().Be("%2ftestFolder1%2fsubfolder2");
-        } 
-        
-        [Fact]
-        public void ShouldEncodeWindowsPath()
-        {
-            // Arrange
-            // Act
-            var result = "C:\\testfodler\\subfolder2".ToCloudPath();
-
-            // Assert
-            result.Should().Be("C%3a%2ftestfodler%2fsubfolder2");
-        }
-        
-        [Fact]
-        public void ShouldCalculateRelativePathForWindows()
-        {
-            // Arrange
-            var rootPath = "C:\\testfodler";
-            // Act
-            var result = "C:\\testfodler\\subfolder2".CalculateRelativePath(rootPath).ToCloudPath();
-
-            // Assert
-            result.Should().Be("%2fsubfolder2");
+            result.Should().Be("/subfolder2");
         }  
         
-        [Fact]
-        public void ShouldCalculateRelativePathForUnix()
+        [Theory]
+        [InlineData("/test/", "/test/subfolder2")]
+        [InlineData("/test/", "//test/subfolder2/")]
+        [InlineData("/test//", "test/subfolder2")]
+        [InlineData("//test/", "//test/subfolder2")]
+        public void ShouldCalculateRelativePathForUnix(string rootPath, string filePath)
         {
             // Arrange
-            var rootPath = "/testFolder/";
             // Act
-            var result = "/testFolder/subfolder2".CalculateRelativePath(rootPath).ToCloudPath();
+            var result = filePath.CalculateRelativePath(rootPath);
 
             // Assert
-            result.Should().Be("%2fsubfolder2");
+            result.Should().Be("/subfolder2");
         }
     }
 }

@@ -171,7 +171,7 @@ else
 
     private async Task FillProfileData()
     {
-        var profile = await ProfileReader.ReadSingleAsync(CancellationToken.None, StateRoot.SecuritySection);
+        var profile = await ProfileReader.ReadSingleAsync(CancellationToken.None, StateRoot.SecurityTokens);
 
         FirstName = profile.first_name;
         LastName = profile.last_name;

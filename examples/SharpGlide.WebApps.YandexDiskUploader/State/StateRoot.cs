@@ -11,15 +11,15 @@ namespace SharpGlide.WebApps.YandexDiskUploader.State
         {
             LocalFolder = "/Folder1/Subfolder2/";
             CloudFolder = $"/UploadFolder_{DateTime.Now:yyyy-MM-dd-HH-mm-ss}";
-            SecuritySection = new SecurityState();
+            SecurityTokens = new SecurityTokens();
         }
         
         public string LocalFolder { get; set; }
         public string CloudFolder { get; set; }
 
-        public SecurityState SecuritySection { get; set; }
+        public SecurityTokens SecurityTokens { get; set; }
 
-        public bool Authenticated => !string.IsNullOrWhiteSpace(SecuritySection.AccessToken);
+        public bool Authenticated => !string.IsNullOrWhiteSpace(SecurityTokens.AccessToken);
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {

@@ -28,7 +28,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
             CancellationToken cancellationToken)
         {
             httpClient.IncludeAccessToken(tokens);
-
+            
             foreach (var data in dataCollection)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -36,21 +36,19 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
                     break;
                 }
 
-                var folderUrl = data.FullName.ToCloudPath();
+                var folderUrl = data.CloudAbsolutePath;
 
                 try
                 {
-                    var response = await httpClient.GetAsync(
-                        CreateFolderEndpointUri.BindUriArgs("path", folderUrl), cancellationToken);
+                    var response = await httpClient.PutAsync(
+                        CreateFolderEndpointUri.BindUriArgs("path", folderUrl), new StringContent(string.Empty), cancellationToken);
 
                     data.StatusCode = response.StatusCode.ToString();
 
-                    var validatedResponse = await ValidateResponseAsync<
+                    await ValidateResponseAsync<
                         ICloudFolderInformation, string, FolderCreatedResponse>(
                         cancellationToken, response,
                         data, x => x.FullName);
-
-                    data.CloudName = validatedResponse.href;
                 }
                 catch (Exception e)
                 {
@@ -70,7 +68,8 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
 
             try
             {
-                var response = await httpClient.PutAsync(uploadUri, new ByteArrayContent(content.Bytes), cancellationToken);
+                var response =
+                    await httpClient.PutAsync(uploadUri, new ByteArrayContent(content.Bytes), cancellationToken);
                 var validatedResponse = ValidateResponseAsync<ICloudFileBytesRange, string, UploadUriResponse>(
                     cancellationToken, response, content, arg => arg.CloudName);
             }
@@ -95,7 +94,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
                     break;
                 }
 
-                var uploadUrl = data.FullName.ToCloudPath();
+                var uploadUrl = data.CloudRelativePath;
 
                 try
                 {

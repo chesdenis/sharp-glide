@@ -21,6 +21,13 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Model
         public string UploadUri { get; set; }
         public string StatusCode { get; set; }
         public string Reason { get; set; }
+
+        public string RelativePath { get; set; }
+        public string CloudRelativePath { get; set; }
+        
+        public string CloudAbsolutePath { get; set; }
+        public string FullName => _fileSystemSection.FullName;
+        
         string ICloudFileInformation.FullName => _fileSystemSection.FullName;
         string IFileBytesRangeRequest.FullName => _fileSystemSection.FullName;
         
