@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.IO.Model;
-using SharpGlide.IO.Readers;
 using SharpGlide.Tunnels.Read.Abstractions;
 using SharpGlide.Tunnels.Read.Model;
 
@@ -18,11 +17,11 @@ namespace SharpGlide.IO.Tunnels
         {
             var exceptions = new List<Exception>();
 
-            await WalkDirectory(request, 
-                null, 
-                null, 
-                callback, 
-                null, 
+            await WalkDirectory(request,
+                null,
+                null,
+                callback,
+                null,
                 exceptions,
                 cancellationToken);
 
@@ -37,11 +36,11 @@ namespace SharpGlide.IO.Tunnels
         {
             var exceptions = new List<Exception>();
 
-            await WalkDirectory(request, 
-                callback, 
-                null, 
-                null, 
-                null, 
+            await WalkDirectory(request,
+                callback,
+                null,
+                null,
+                null,
                 exceptions,
                 cancellationToken);
 
@@ -56,11 +55,11 @@ namespace SharpGlide.IO.Tunnels
         {
             var exceptions = new List<Exception>();
 
-            await WalkDirectory(request, 
-                null, 
-                null, 
-                null, 
-                callback, 
+            await WalkDirectory(request,
+                null,
+                null,
+                null,
+                callback,
                 exceptions,
                 cancellationToken);
 
@@ -75,11 +74,11 @@ namespace SharpGlide.IO.Tunnels
         {
             var exceptions = new List<Exception>();
 
-            await WalkDirectory(request, 
-                null, 
-                callback, 
-                null, 
-                null, 
+            await WalkDirectory(request,
+                null,
+                callback,
+                null,
+                null,
                 exceptions,
                 cancellationToken);
 
@@ -128,7 +127,7 @@ namespace SharpGlide.IO.Tunnels
                     {
                         break;
                     }
-                    
+
                     await WalkDirectory(new FsEntryInfo()
                         {
                             FullName = childrenDirectory.FullName
@@ -163,7 +162,7 @@ namespace SharpGlide.IO.Tunnels
                 {
                     break;
                 }
-                
+
                 try
                 {
                     var fileAttributes = MapToFileAttributes(childrenFile);

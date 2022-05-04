@@ -3,7 +3,7 @@ using SharpGlide.IO.Model;
 
 namespace SharpGlide.WebApps.YandexDiskUploader.Model
 {
-    public class UploaderWorkingFile : ICloudFileInformation
+    public class UploaderWorkingFile : ICloudFileInformation, IFileBytesRangeRequest
     {
         private readonly FsEntryInfo _fileSystemSection;
 
@@ -21,7 +21,9 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Model
         public string UploadUri { get; set; }
         public string StatusCode { get; set; }
         public string Reason { get; set; }
-        public string FullName => _fileSystemSection.FullName;
+        string ICloudFileInformation.FullName => _fileSystemSection.FullName;
+        string IFileBytesRangeRequest.FullName => _fileSystemSection.FullName;
+        
         public string Name => _fileSystemSection.Name;
         public long Size => _fileSystemSection.Size;
     }

@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -8,8 +9,27 @@ namespace SharpGlide.Cloud.Yandex.Extensions
     {
         public static string CalculateRelativePath(this string localPath, string relativeTo)
         {
-            return localPath.Substring(relativeTo.Length);
+            var localPathTrimmed = localPath.Trim().TrimStart('/', '\\').TrimEnd('/', '\\');
+            var relativePathTrimmer = relativeTo.Trim().TrimStart('/', '\\').TrimEnd('/','\\');
+            
+            var parts = localPathTrimmed
+                .Split(relativePathTrimmer);
+            if (parts.Length > 1)
+            {
+                return string.Join(string.Empty, parts.Skip(1).ToArray());
+            }
+
+            throw new Exception("Unable to calculate relative path");
         }
+
+        public static string ToCloudPath(this string localPath, string relativeTo)
+        {
+            return localPath.CalculateRelativePath(relativeTo).ToCloudPath();
+        }
+
+        public static string UrlEncode(this string path) => HttpUtility.UrlEncode(path);
+
+        public static string UrlDecode(this string path) => HttpUtility.UrlDecode(path);
 
         public static string ToCloudPath(this string localPath)
         {

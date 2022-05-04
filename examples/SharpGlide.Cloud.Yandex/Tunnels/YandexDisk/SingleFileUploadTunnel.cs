@@ -47,7 +47,5 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
 
             return data;
         }
-
-        
     }
 }

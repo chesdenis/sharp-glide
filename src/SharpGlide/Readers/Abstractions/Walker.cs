@@ -29,14 +29,14 @@ namespace SharpGlide.Readers.Abstractions
             _pagedWalkFunc = pagedWalkFunc;
             _pagedAsyncWalkFunc = pagedAsyncWalkFunc;
         }
-        
-        async Task ISingleWalker<T>.WalkSingleAsync(CancellationToken cancellationToken, Action<T> callback) => await _singleWalkFunc(cancellationToken, callback);
 
-        async Task IPagedWalker<T>.WalkPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, Action<IEnumerable<T>> callback) => await _pagedWalkFunc(cancellationToken, pageInfo, callback);
+        public async Task WalkSingleAsync(CancellationToken cancellationToken, Action<T> callback) => await _singleWalkFunc(cancellationToken, callback);
 
-        async Task ISingleAsyncWalker<T>.WalkAsyncSingleAsync(CancellationToken cancellationToken, Func<CancellationToken, T, Task> callbackAsync) => await _singleAsyncWalkFunc(cancellationToken, callbackAsync);
+        public async Task WalkPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, Action<IEnumerable<T>> callback) => await _pagedWalkFunc(cancellationToken, pageInfo, callback);
 
-        async Task IPagedAsyncWalker<T>.WalkAsyncPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, Func<CancellationToken, IEnumerable<T>, Task> callbackAsync) => await _pagedAsyncWalkFunc(cancellationToken, pageInfo, callbackAsync);
+        public async Task WalkAsyncSingleAsync(CancellationToken cancellationToken, Func<CancellationToken, T, Task> callbackAsync) => await _singleAsyncWalkFunc(cancellationToken, callbackAsync);
+
+        public async Task WalkAsyncPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, Func<CancellationToken, IEnumerable<T>, Task> callbackAsync) => await _pagedAsyncWalkFunc(cancellationToken, pageInfo, callbackAsync);
     }
     
     public class Walker<T, TArg> :  
@@ -62,13 +62,13 @@ namespace SharpGlide.Readers.Abstractions
             _pagedWalkFunc = pagedWalkFunc;
             _pagedAsyncWalkFunc = pagedAsyncWalkFunc;
         }
-        
-        async Task ISingleWalker<T, TArg>.WalkSingleAsync(CancellationToken cancellationToken, TArg request, Action<T> callback) => await _singleWalkFunc(cancellationToken, request, callback);
 
-        async Task IPagedWalker<T, TArg>.WalkPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, TArg request, Action<IEnumerable<T>> callback) => await _pagedWalkFunc(cancellationToken, pageInfo, request, callback);
+        public async Task WalkSingleAsync(CancellationToken cancellationToken, TArg request, Action<T> callback) => await _singleWalkFunc(cancellationToken, request, callback);
 
-        async Task ISingleAsyncWalker<T, TArg>.WalkAsyncSingleAsync(CancellationToken cancellationToken, TArg request, Func<CancellationToken, T, Task> callbackAsync) => await _singleAsyncWalkFunc(cancellationToken, request, callbackAsync);
+        public async Task WalkPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, TArg request, Action<IEnumerable<T>> callback) => await _pagedWalkFunc(cancellationToken, pageInfo, request, callback);
 
-        async Task IPagedAsyncWalker<T, TArg>.WalkAsyncPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, TArg request, Func<CancellationToken, IEnumerable<T>, Task> callbackAsync) => await _pagedAsyncWalkFunc(cancellationToken, pageInfo, request, callbackAsync);
+        public async Task WalkAsyncSingleAsync(CancellationToken cancellationToken, TArg request, Func<CancellationToken, T, Task> callbackAsync) => await _singleAsyncWalkFunc(cancellationToken, request, callbackAsync);
+
+        public async Task WalkAsyncPagedAsync(CancellationToken cancellationToken, PageInfo pageInfo, TArg request, Func<CancellationToken, IEnumerable<T>, Task> callbackAsync) => await _pagedAsyncWalkFunc(cancellationToken, pageInfo, request, callbackAsync);
     }
 }

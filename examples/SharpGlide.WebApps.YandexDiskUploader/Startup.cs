@@ -60,55 +60,28 @@ namespace SharpGlide.WebApps.YandexDiskUploader
 
             services.AddSingleton<FlowModel>();
 
-            services.AddTransient<FileSystemWalkTunnel>();
-            services.AddTransient<IFileSystemWalker>(provider =>
-            {
-                var tunnel = provider.GetService<FileSystemWalkTunnel>();
+            services.AddTunnel<FileContentWalkTunnel, IFileContentWalker>(
+                tunnel =>
+                    new FileContentWalker(
+                        tunnel.WalkPagedExpr.Compile(),
+                        tunnel.WalkPagedAsyncExpr.Compile()));
+            
+            services.AddTunnel<FileSystemWalkTunnel, IFileSystemWalker>(tunnel => new FileSystemWalker(
+                tunnel.WalkSingleExpr.Compile(),
+                tunnel.WalkSingleAsyncExpr.Compile(),
+                tunnel.WalkPagedExpr.Compile(),
+                tunnel.WalkPagedAsyncExpr.Compile()));
 
-                return new FileSystemWalker(
-                    tunnel.WalkSingleExpr.Compile(),
-                    tunnel.WalkSingleAsyncExpr.Compile(),
-                    tunnel.WalkPagedExpr.Compile(),
-                    tunnel.WalkPagedAsyncExpr.Compile()
-                );
-            });
+            services.AddTunnel<AuthorizeTokenUriReadTunnel, IAuthorizeTokenUriReader>(tunnel =>
+                new AuthorizeTokenUriReader(tunnel.ReadSingleExpr.Compile()));
 
-            services.AddTransient<AuthorizeTokenUriReadTunnel>();
-            services.AddTransient<IAuthorizeTokenUriReader>(
-                provider =>
-                {
-                    var tunnel = provider
-                        .GetService<AuthorizeTokenUriReadTunnel>();
+            services.AddTunnel<ProfileReadTunnel, IProfileReader>(tunnel =>
+                new ProfileReader(tunnel.ReadSingleExpr.Compile()));
 
-                    return new AuthorizeTokenUriReader(tunnel.ReadSingleExpr.Compile());
-                });
-
-            services.AddTransient<ProfileReadTunnel>();
-            services.AddTransient<IProfileReader>(provider =>
-            {
-                var tunnel = provider.GetService<ProfileReadTunnel>();
-                return new ProfileReader(tunnel.ReadSingleExpr.Compile());
-            });
-
-            services.AddTransient<SingleFileUploadTunnel>();
-            services.AddTransient<ISingleFileUploader>(
-                provider =>
-                {
-                    var tunnel = provider.GetService<SingleFileUploadTunnel>();
-                    return new SingleFileUploader(
-                        tunnel.WriteSingleExpr.Compile(),
-                        tunnel.WriteAndReturnSingleExpr.Compile());
-                }
-            );
-
-            services.AddTransient<SingleFolderCreateTunnel>();
-            services.AddTransient<ISingleFolderCreator>(provider =>
-            {
-                var tunnel = provider.GetService<SingleFolderCreateTunnel>();
-                return new SingleFolderCreator(
+            services.AddTunnel<SingleFileUploadTunnel, ISingleFileUploader>(tunnel =>
+                new SingleFileUploader(
                     tunnel.WriteSingleExpr.Compile(),
-                    tunnel.WriteAndReturnSingleExpr.Compile());
-            });
+                    tunnel.WriteAndReturnSingleExpr.Compile()));
 
             services.AddTunnel<SingleFolderCreateTunnel, ISingleFolderCreator>(
                 (tunnel) =>

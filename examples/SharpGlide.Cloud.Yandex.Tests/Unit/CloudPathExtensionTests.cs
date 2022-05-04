@@ -46,7 +46,7 @@ namespace SharpGlide.Cloud.Yandex.Tests.Unit
             // Arrange
             var rootPath = "/testFolder/";
             // Act
-            var result = "/testfodler/subfolder2".CalculateRelativePath(rootPath).ToCloudPath();
+            var result = "/testFolder/subfolder2".CalculateRelativePath(rootPath).ToCloudPath();
 
             // Assert
             result.Should().Be("%2fsubfolder2");

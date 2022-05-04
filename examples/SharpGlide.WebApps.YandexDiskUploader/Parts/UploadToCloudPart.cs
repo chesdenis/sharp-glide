@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -5,6 +7,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using SharpGlide.Cloud.Yandex.Extensions;
+using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Model;
 using SharpGlide.Cloud.Yandex.Writers.YandexDisc;
 using SharpGlide.IO.Model;
 using SharpGlide.IO.Readers;
@@ -16,18 +20,12 @@ using SharpGlide.WebApps.YandexDiskUploader.State;
 
 namespace SharpGlide.WebApps.YandexDiskUploader.Parts
 {
-    public class ContentSizeStatistic
-    {
-        public long FilesCount { get; set; }
-        public long FoldersCount { get; set; }
-        public long TotalSize { get; set; }
-    }
-
     public class UploadToCloudPart : IUploadToCloudPart
     {
         private readonly IStateRoot _stateRoot;
         private readonly IHubContext<RealtimeUpdatesHub> _realtimeUpdatesHub;
         private readonly IFileSystemWalker _fileSystemWalker;
+        private readonly IFileContentWalker _fileContentWalker;
         private readonly ISingleFileUploader _singleFileUploader;
         private readonly ISingleFolderCreator _singleFolderCreator;
         public string Name { get; set; }
@@ -43,10 +41,13 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
             MaxDegreeOfParallelism = 5
         };
 
+        private readonly PageInfo _defaultFileContentSize = new() { PageSize = 10000000 }; // 10Mb step
+
         public UploadToCloudPart(
             IStateRoot stateRoot,
             IHubContext<RealtimeUpdatesHub> realtimeUpdatesHub,
             IFileSystemWalker fileSystemWalker,
+            IFileContentWalker fileContentWalker,
             ISingleFileUploader singleFileUploader,
             ISingleFolderCreator singleFolderCreator
         )
@@ -54,6 +55,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
             _stateRoot = stateRoot;
             _realtimeUpdatesHub = realtimeUpdatesHub;
             _fileSystemWalker = fileSystemWalker;
+            _fileContentWalker = fileContentWalker;
             _singleFileUploader = singleFileUploader;
             _singleFolderCreator = singleFolderCreator;
         }
@@ -62,37 +64,127 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
         {
             ResetInternalState();
 
-            await _fileSystemWalker.WalkAsyncPagedAsync(cancellationToken, PageInfo.Default,
-                new FsEntryInfo()
+            var exceptions = new List<Exception>();
+
+            try
+            {
+                await WalkThroughFiles(cancellationToken);
+                DetectFoldersForUpload(exceptions);
+                await UploadFolders(cancellationToken, exceptions);
+            }
+            catch (Exception e)
+            {
+                exceptions.Add(e);
+            }
+
+            if (exceptions.Count > 0)
+            {
+                throw new AggregateException(exceptions);
+            }
+        }
+
+        private async Task UploadFolders(CancellationToken cancellationToken, List<Exception> exceptions)
+        {
+            var foldersToCreate = _workingFilesPerFolder.Keys
+                .Select(s => new UploaderWorkingFolder
                 {
-                    FullName = _stateRoot.LocalFolder,
-                    Name = Path.GetFileName(_stateRoot.LocalFolder),
-                    Size = 0
-                }, OnFileVisit);
+                    FullName = s
+                }).ToArray();
 
+            foreach (var folder in foldersToCreate)
+            {
+                try
+                {
+                    folder.CloudName = folder.FullName.ToCloudPath(_stateRoot.LocalFolder);
+                    await _singleFolderCreator.WriteSingle(_stateRoot.SecuritySection, folder, Route.Default,
+                        cancellationToken);
 
+                    await ProcessFiles(_workingFilesPerFolder[folder.FullName], cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    exceptions.Add(e);
+                }
+            }
+        }
+
+        private void DetectFoldersForUpload(List<Exception> exceptions)
+        {
             var filesPerFolder = _workingFiles
-                .GroupBy(g => Path.GetDirectoryName(g.FullName));
+                .GroupBy(g =>
+                {
+                    try
+                    {
+                        return Path.GetDirectoryName(((ICloudFileInformation)g).FullName);
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                        return string.Empty;
+                    }
+                })
+                .Where(w => w.Key != null)
+                .ToArray();
 
             foreach (var group in filesPerFolder)
             {
                 _workingFilesPerFolder[group.Key] = new List<UploaderWorkingFile>();
                 _workingFilesPerFolder[group.Key].AddRange(group.ToList());
             }
-
-            foreach (var folderKey in _workingFilesPerFolder.Keys)
-            {
-            }
-
-            // Parallel.For(0, _listOfUploaderFiles.Count, _parallelOptions, async l =>
-            // {
-            //     var workingFile = _listOfUploaderFiles.ElementAt(l);
-            //
-            //     // var uploadedFile = await _singleFileUploader.WriteAndReturnSingle(_stateRoot.SecuritySection,
-            //     //     workingFile, Route.Default,
-            //     //     cancellationToken);
-            // });
         }
+
+        private async Task WalkThroughFiles(CancellationToken cancellationToken)
+        {
+            await _fileSystemWalker.WalkAsyncPagedAsync(cancellationToken, PageInfo.Default,
+                new FsEntryInfo()
+                {
+                    FullName = _stateRoot.LocalFolder,
+                    Name = Path.GetFileName(_stateRoot.LocalFolder),
+                    Size = 0
+                },  async (token, infos) =>
+                {
+                    var entryInfos = infos as FsEntryInfo[] ?? infos.ToArray();
+
+                    _workingFiles.AddRange(entryInfos.Select(s => new UploaderWorkingFile(s)).ToArray());
+
+                    _localFilesStatistic.FilesCount += entryInfos.Count();
+                    _localFilesStatistic.TotalSize += entryInfos.Select(s => s.Size).Sum();
+                    _localFilesStatistic.FoldersCount++;
+
+                    var data = JsonSerializer.Serialize(_localFilesStatistic);
+                    await _realtimeUpdatesHub.Clients.All.SendAsync(RealtimeUpdatesHub.ReceiveLocalFileSystemStatInfo, data,
+                        token);
+                });
+        }
+
+        private Task ProcessFiles(List<UploaderWorkingFile> uploaderWorkingFiles,
+            CancellationToken cancellationToken)
+        {
+            var concurrentBag = new ConcurrentBag<Exception>();
+            Parallel.For(0, uploaderWorkingFiles.Count, _parallelOptions, i =>
+            {
+                try
+                {
+                    var workingFile = uploaderWorkingFiles.ElementAt(i);
+                    var workingFileToProcessOnCloud = _singleFileUploader.WriteAndReturnSingle(_stateRoot.SecuritySection,
+                        workingFile,
+                        Route.Default,
+                        cancellationToken).GetAwaiter().GetResult();
+                }
+                catch (Exception e)
+                {
+                    concurrentBag.Add(e);
+                }
+            });
+
+            if (concurrentBag.Count > 0)
+            {
+                throw new AggregateException(concurrentBag.ToList());
+            }
+            
+            return Task.CompletedTask;
+        }
+
 
         private void ResetInternalState()
         {
@@ -106,21 +198,6 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
 
             _workingFiles.Clear();
             _workingFilesPerFolder.Clear();
-        }
-
-        private async Task OnFileVisit(CancellationToken cancellationToken, IEnumerable<FsEntryInfo> fsEntryInfos)
-        {
-            var entryInfos = fsEntryInfos as FsEntryInfo[] ?? fsEntryInfos.ToArray();
-
-            _workingFiles.AddRange(entryInfos.Select(s => new UploaderWorkingFile(s)).ToArray());
-
-            _localFilesStatistic.FilesCount += entryInfos.Count();
-            _localFilesStatistic.TotalSize += entryInfos.Select(s => s.Size).Sum();
-            _localFilesStatistic.FoldersCount++;
-
-            var data = JsonSerializer.Serialize(_localFilesStatistic);
-            await _realtimeUpdatesHub.Clients.All.SendAsync(RealtimeUpdatesHub.ReceiveLocalFileSystemStatInfo, data,
-                cancellationToken: cancellationToken);
         }
     }
 }
