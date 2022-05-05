@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SharpGlide.WebApps.YandexDiskUploader.Parts;
@@ -12,6 +13,8 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Service
 
         public bool Started { get; set; }
 
+        private Task processTask;
+
         public BackgroundProcess(IUploadToCloudPart uploadToCloudPart)
         {
             _uploadToCloudPart = uploadToCloudPart;
@@ -25,11 +28,12 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Service
             }
 
             _cancellationTokenSource = new CancellationTokenSource();
-
-#pragma warning disable CS4014
-            _uploadToCloudPart.ProcessAsync(_cancellationTokenSource.Token);
-#pragma warning restore CS4014
-
+            
+            processTask = Task.Run(async () =>
+            {
+                await _uploadToCloudPart.ProcessAsync(_cancellationTokenSource.Token);
+            }, _cancellationTokenSource.Token);
+            
             Started = true;
         }
 

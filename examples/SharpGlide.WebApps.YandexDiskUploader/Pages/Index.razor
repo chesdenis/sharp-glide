@@ -98,6 +98,9 @@ else
                 </FolderStatComponent>
             </div>
         </div>
+        <div class="row">
+              <textarea rows="50" cols="70" wrap="soft" @bind="@Messages"></textarea>
+        </div>
     </div>
 }
 
@@ -113,6 +116,8 @@ else
     private string ProgressBarText = string.Empty;
     private readonly ContentSizeStatistic LocalStat = new();
     private readonly ContentSizeStatistic CloudStat = new();
+    private readonly List<string> MessagesList = new();
+    private string Messages { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,8 +142,17 @@ else
 
         hubConnection.On<string>(RealtimeUpdatesHub.ReceiveLocalFileSystemStatInfo, LocalFileSystemStatInfo_Receive);
         hubConnection.On<string>(RealtimeUpdatesHub.ReceiveCloudFileSystemStatInfo, CloudFileSystemStatInfo_Receive);
+        hubConnection.On<string>(RealtimeUpdatesHub.ReceiveExceptionOrConflicts, Exceptions_Receive);
 
         await hubConnection.StartAsync();
+    }
+
+    private async Task Exceptions_Receive(string data)
+    {
+        MessagesList.Add(data);
+        Messages = string.Join("\n", MessagesList);
+        
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task LocalFileSystemStatInfo_Receive(string data)

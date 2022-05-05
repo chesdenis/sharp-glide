@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -41,7 +42,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
                 try
                 {
                     var response = await httpClient.PutAsync(
-                        CreateFolderEndpointUri.BindUriArgs("path", folderUrl), new StringContent(string.Empty), cancellationToken);
+                        CreateFolderEndpointUri.BindUriArgs("path", folderUrl.UrlEncode()), new StringContent(string.Empty), cancellationToken);
 
                     data.StatusCode = response.StatusCode.ToString();
 
@@ -56,30 +57,51 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
                 }
             }
         }
-
-        public static async Task UploadFileBytes(
+        
+        public static async Task UploadFiles(
             HttpClient httpClient,
             IAuthorizeTokens tokens,
-            string uploadUri,
-            ICloudFileBytesRange content,
+            IEnumerable<ICloudFileInformation> dataCollection,
+            CancellationToken cancellationToken)
+        {
+            await CalculateFileUploadUri(httpClient, tokens, dataCollection, cancellationToken);
+            await UploadFileBytes(httpClient, tokens, dataCollection, cancellationToken);
+        }
+
+        private static async Task UploadFileBytes(
+            HttpClient httpClient,
+            IAuthorizeTokens tokens,
+            IEnumerable<ICloudFileInformation> dataCollection,
             CancellationToken cancellationToken)
         {
             httpClient.IncludeAccessToken(tokens);
 
-            try
+            foreach (var data in dataCollection)
             {
-                var response =
-                    await httpClient.PutAsync(uploadUri, new ByteArrayContent(content.Bytes), cancellationToken);
-                var validatedResponse = ValidateResponseAsync<ICloudFileBytesRange, string, UploadUriResponse>(
-                    cancellationToken, response, content, arg => arg.CloudName);
-            }
-            catch (Exception e)
-            {
-                content.Reason = e.Message;
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                
+                try
+                {
+                    var fileBytes = await File.ReadAllBytesAsync(data.FullName, cancellationToken);
+                    var response =
+                        await httpClient.PutAsync(data.UploadUri, new ByteArrayContent(fileBytes), cancellationToken);
+                    
+                    data.StatusCode = response.StatusCode.ToString();
+                    
+                    var validatedResponse = ValidateResponseAsync<ICloudFileInformation, string, UploadUriResponse>(
+                        cancellationToken, response, data, arg => arg.CloudAbsolutePath);
+                }
+                catch (Exception e)
+                {
+                    data.Reason = e.Message;
+                }
             }
         }
 
-        public static async Task CalculateFileUploadUri(
+        private static async Task CalculateFileUploadUri(
             HttpClient httpClient,
             IAuthorizeTokens tokens,
             IEnumerable<ICloudFileInformation> dataCollection,
@@ -94,12 +116,12 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Extensions
                     break;
                 }
 
-                var uploadUrl = data.CloudRelativePath;
+                var uploadUrl = data.CloudAbsolutePath;
 
                 try
                 {
                     var response = await httpClient.GetAsync(
-                        GetFileUploadEndpointUri.BindUriArgs("path", uploadUrl), cancellationToken);
+                        GetFileUploadEndpointUri.BindUriArgs("path", uploadUrl.UrlEncode()), cancellationToken);
 
                     data.StatusCode = response.StatusCode.ToString();
 

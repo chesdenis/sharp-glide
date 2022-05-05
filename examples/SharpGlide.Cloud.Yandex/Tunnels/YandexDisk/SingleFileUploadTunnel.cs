@@ -27,7 +27,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
             IRoute route,
             CancellationToken cancellationToken)
         {
-            await DiskUploadTunnelExtensions.CalculateFileUploadUri(
+            await DiskUploadTunnelExtensions.UploadFiles(
                 _httpClient, arg, 
                 new [] { data },
                 cancellationToken);
@@ -39,7 +39,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
             IRoute route,
             CancellationToken cancellationToken)
         {
-            await DiskUploadTunnelExtensions.CalculateFileUploadUri(
+            await DiskUploadTunnelExtensions.UploadFiles(
                 _httpClient,
                 arg, 
                 new [] { data },

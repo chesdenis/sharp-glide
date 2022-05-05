@@ -49,7 +49,10 @@ namespace SharpGlide.Extensions
                 {
                     var fields = row.Split('=');
 
-                    retVal.Add(fields[0], fields[1]);
+                    if (fields.Length > 1)
+                    {
+                        retVal.Add(fields[0], fields[1]);
+                    }
                 }
             }
             catch

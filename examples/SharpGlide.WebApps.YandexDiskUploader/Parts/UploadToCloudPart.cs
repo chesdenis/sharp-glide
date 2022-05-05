@@ -63,12 +63,11 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
 
         public async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            ResetInternalState();
-
             var exceptions = new List<Exception>();
 
             try
             {
+                ResetInternalState();
                 await WalkThroughFiles(cancellationToken);
                 CalculatePath(exceptions);
 
@@ -81,7 +80,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
 
             if (exceptions.Count > 0)
             {
-                throw new AggregateException(exceptions);
+                Console.WriteLine(string.Join(Environment.NewLine, exceptions.Select((s => s.Message)).ToArray()));
             }
         }
 
@@ -105,10 +104,25 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
                     await _singleFolderCreator.WriteSingle(_stateRoot.SecurityTokens, folder, Route.Default,
                         cancellationToken);
 
-                    // await ProcessFiles(folder, _workingFilesPerFolder[folder.FullName], cancellationToken);
+                    _cloudFilesStatistic.FoldersCount++;
+
+                    await _realtimeUpdatesHub.SendCloudStatInfo(_cloudFilesStatistic, cancellationToken);
                 }
                 catch (Exception e)
                 {
+                    await _realtimeUpdatesHub.SendException(e.Message,
+                        cancellationToken);
+                    exceptions.Add(e);
+                }
+
+                try
+                {
+                    await UploadFiles(_workingFilesPerFolder[folder.FullName], cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    await _realtimeUpdatesHub.SendException(e.Message,
+                        cancellationToken);
                     exceptions.Add(e);
                 }
             }
@@ -150,7 +164,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
                     FullName = group.Key,
                     CloudRelativePath = group.Key.CalculateRelativePath(_stateRoot.LocalFolder),
                     CloudAbsolutePath = _stateRoot.CloudFolder +
-                        group.Key.CalculateRelativePath(_stateRoot.LocalFolder)
+                                        group.Key.CalculateRelativePath(_stateRoot.LocalFolder)
                 });
             }
         }
@@ -173,29 +187,33 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
                     _localFilesStatistic.TotalSize += entryInfos.Select(s => s.Size).Sum();
                     _localFilesStatistic.FoldersCount++;
 
-                    var data = JsonSerializer.Serialize(_localFilesStatistic);
-                    await _realtimeUpdatesHub.Clients.All.SendAsync(RealtimeUpdatesHub.ReceiveLocalFileSystemStatInfo,
-                        data,
-                        token);
+                    await _realtimeUpdatesHub.SendLocalStatInfo(_localFilesStatistic, cancellationToken);
                 });
         }
 
-        private Task ProcessFiles(UploaderWorkingFolder uploaderWorkingFolder,
-            List<UploaderWorkingFile> uploaderWorkingFiles,
+        private Task UploadFiles(List<UploaderWorkingFile> uploaderWorkingFiles,
             CancellationToken cancellationToken)
         {
             var concurrentBag = new ConcurrentBag<Exception>();
             Parallel.For(0, uploaderWorkingFiles.Count, _parallelOptions, i =>
             {
+                var workingFile = uploaderWorkingFiles.ElementAt(i);
                 try
                 {
-                    var workingFile = uploaderWorkingFiles.ElementAt(i);
-
                     var workingFileToProcessOnCloud = _singleFileUploader.WriteAndReturnSingle(
                         _stateRoot.SecurityTokens,
                         workingFile,
                         Route.Default,
                         cancellationToken).GetAwaiter().GetResult();
+
+                    lock (_cloudFilesStatistic)
+                    {
+                        _cloudFilesStatistic.FilesCount++;
+                        _cloudFilesStatistic.TotalSize += workingFile.Size;
+                    }
+
+                    _realtimeUpdatesHub.SendCloudStatInfo(_cloudFilesStatistic, cancellationToken)
+                        .Wait(cancellationToken);
                 }
                 catch (Exception e)
                 {

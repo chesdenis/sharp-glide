@@ -24,7 +24,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
         protected override async Task WriteCollectionImpl(IAuthorizeTokens arg, IEnumerable<ICloudFileInformation> data,
             IRoute route, CancellationToken cancellationToken)
         {
-            await DiskUploadTunnelExtensions.CalculateFileUploadUri(
+            await DiskUploadTunnelExtensions.UploadFiles(
                 _httpClient, arg,
                 data,
                 cancellationToken);
@@ -34,7 +34,7 @@ namespace SharpGlide.Cloud.Yandex.Tunnels.YandexDisk
             IAuthorizeTokens arg, IEnumerable<ICloudFileInformation> data, IRoute route,
             CancellationToken cancellationToken)
         {
-            await DiskUploadTunnelExtensions.CalculateFileUploadUri(
+            await DiskUploadTunnelExtensions.UploadFiles(
                 _httpClient, arg,
                 data,
                 cancellationToken);
