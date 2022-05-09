@@ -1,0 +1,25 @@
+<div class="card" style="width: 18rem;">
+    <div class="card-header">
+        @Header
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Speed, MB/sec: @Math.Round(SpeedMbPerSec, 2)</li>
+        <li class="list-group-item">Time spent: @TimeSpan.FromSeconds(TimeSpentSec).ToString("g")</li>
+        <li class="list-group-item">Finish in: @TimeSpan.FromSeconds(FinishInSec).ToString("g")</li>
+    </ul>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Header { get; set; }
+
+    [Parameter]
+    public double SpeedMbPerSec { get; set; }
+
+    [Parameter]
+    public long TimeSpentSec { get; set; } 
+    
+    [Parameter]
+    public long FinishInSec { get; set; }
+}

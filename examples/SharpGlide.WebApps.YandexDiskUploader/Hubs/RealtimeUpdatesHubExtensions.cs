@@ -39,7 +39,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Hubs
         {
             var dataAsString = JsonSerializer.Serialize(data);
             await hub.Clients.All.SendAsync(method,
-                data,
+                dataAsString,
                 cancellationToken);
         }
     }

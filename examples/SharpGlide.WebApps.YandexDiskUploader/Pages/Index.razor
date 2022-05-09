@@ -68,38 +68,46 @@ else
         </div>
         <div class="row ">
             <div class="col ">
-                <p>@ProgressBarText</p>
-                <br/>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar"
-                         style="width: 25%;"
-                         aria-valuenow="25"
-                         aria-valuemin="0"
-                         aria-valuemax="100">
-                        25%
-                    </div>
-                </div>
-                <br/>
+                <ProgressBarComponent Header="Files"
+                             CurrentValue="@CloudStat.FilesCount"
+                             MaximumValue="@LocalStat.FilesCount">
+                </ProgressBarComponent>
+            </div>
+            <div class="col ">
+                <ProgressBarComponent Header="Folders"
+                             CurrentValue="@CloudStat.FoldersCount"
+                             MaximumValue="@LocalStat.FoldersCount">
+                </ProgressBarComponent>
+            </div>
+            <div class="col">
+                <ProgressBarComponent Header="Size"
+                             CurrentValue="@CloudStat.TotalSize"
+                             MaximumValue="@LocalStat.TotalSize">
+                </ProgressBarComponent>
             </div>
         </div>
         <div class="row ">
-            <div class="col w-50">
+            <div class="col">
+                <SpeedComponent Header="Upload Progress"
+                                SpeedMbPerSec="@CloudStat.SpeedMbPerSec"
+                                TimeSpentSec="@CloudStat.TimeSpentSec"
+                                FinishInSec="@CloudStat.FinishInSec">
+                </SpeedComponent>
+            </div>
+            <div class="col">
                 <FolderStatComponent Header="Local"
                                      FilesCount="@LocalStat.FilesCount"
                                      FoldersCount="@LocalStat.FoldersCount"
                                      TotalSize="@LocalStat.TotalSize">
                 </FolderStatComponent>
             </div>
-            <div class="col w-50">
+            <div class="col">
                 <FolderStatComponent Header="Cloud"
                                      FilesCount="@CloudStat.FilesCount"
                                      FoldersCount="@CloudStat.FoldersCount"
                                      TotalSize="@CloudStat.TotalSize">
                 </FolderStatComponent>
             </div>
-        </div>
-        <div class="row">
-              <textarea rows="50" cols="70" wrap="soft" @bind="@Messages"></textarea>
         </div>
     </div>
 }
@@ -113,11 +121,8 @@ else
     private string RealName { get; set; }
     private string DisplayName { get; set; }
 
-    private string ProgressBarText = string.Empty;
-    private readonly ContentSizeStatistic LocalStat = new();
-    private readonly ContentSizeStatistic CloudStat = new();
-    private readonly List<string> MessagesList = new();
-    private string Messages { get; set; }
+    private readonly ContentFlowStatistic LocalStat = new();
+    private readonly ContentFlowStatistic CloudStat = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -149,15 +154,12 @@ else
 
     private async Task Exceptions_Receive(string data)
     {
-        MessagesList.Add(data);
-        Messages = string.Join("\n", MessagesList);
-        
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task LocalFileSystemStatInfo_Receive(string data)
     {
-        var statistic = JsonSerializer.Deserialize<ContentSizeStatistic>(data);
+        var statistic = JsonSerializer.Deserialize<ContentFlowStatistic>(data);
 
         if (statistic != null)
         {
@@ -171,7 +173,7 @@ else
 
     private async Task CloudFileSystemStatInfo_Receive(string data)
     {
-        var statistic = JsonSerializer.Deserialize<ContentSizeStatistic>(data);
+        var statistic = JsonSerializer.Deserialize<ContentFlowStatistic>(data);
 
         if (statistic != null)
         {
