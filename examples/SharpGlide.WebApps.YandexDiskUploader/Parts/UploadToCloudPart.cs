@@ -13,6 +13,7 @@ using SharpGlide.Cloud.Yandex.Tunnels.YandexDisk.Model;
 using SharpGlide.Cloud.Yandex.Writers.YandexDisc;
 using SharpGlide.IO.Model;
 using SharpGlide.IO.Readers;
+using SharpGlide.Processing;
 using SharpGlide.Routing;
 using SharpGlide.Tunnels.Read.Model;
 using SharpGlide.WebApps.YandexDiskUploader.Hubs;
@@ -29,6 +30,10 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
         private readonly IFileContentWalker _fileContentWalker;
         private readonly ISingleFileUploader _singleFileUploader;
         private readonly ISingleFolderCreator _singleFolderCreator;
+
+        private readonly ISpeedMeasurePart _filesSpeedMeasurePart = new SpeedMeasurePart();
+        private readonly ISpeedMeasurePart _sizeSpeedMeasurePart = new SpeedMeasurePart();
+
         public string Name { get; set; }
 
         private readonly ContentFlowStatistic _localFilesStatistic = new();
@@ -40,14 +45,14 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
 
         private readonly Stopwatch _stopWatch = new Stopwatch();
         private readonly List<long> _foldersUploadWatchMark = new List<long>();
-        private  readonly List<long> _filesUploadWatchMark = new List<long>();
+        private readonly List<long> _filesUploadWatchMark = new List<long>();
         private readonly List<Tuple<long, long>> _fileSizesUploadWatchMark = new List<Tuple<long, long>>();
 
         private readonly ParallelOptions _parallelOptions = new ParallelOptions
         {
             MaxDegreeOfParallelism = 5
         };
-            
+
         public UploadToCloudPart(
             IStateRoot stateRoot,
             IHubContext<RealtimeUpdatesHub> realtimeUpdatesHub,
@@ -72,9 +77,9 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
             try
             {
                 ResetInternalState();
-                
+
                 _stopWatch.Start();
-                
+
                 await WalkThroughFiles(cancellationToken);
                 CalculatePath(exceptions);
                 await UploadFolders(cancellationToken, exceptions);
@@ -113,7 +118,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
                 {
                     await _singleFolderCreator.WriteSingle(_stateRoot.SecurityTokens, folder, Route.Default,
                         cancellationToken);
-                    
+
                     _foldersUploadWatchMark.Add(_stopWatch.ElapsedMilliseconds);
 
                     _cloudFilesStatistic.FoldersCount++;
@@ -139,7 +144,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
                 }
             }
         }
-        
+
         private async Task WalkThroughFiles(CancellationToken cancellationToken)
         {
             await _fileSystemWalker.WalkAsyncPagedAsync(cancellationToken, PageInfo.Default,
@@ -220,16 +225,38 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
                         workingFile,
                         Route.Default,
                         cancellationToken).GetAwaiter().GetResult();
-                    
+
                     lock (_cloudFilesStatistic)
                     {
                         _filesUploadWatchMark.Add(_stopWatch.ElapsedMilliseconds);
-                        _fileSizesUploadWatchMark.Add(new Tuple<long, long>(_stopWatch.ElapsedMilliseconds, workingFile.Size));
-                        
+                        _fileSizesUploadWatchMark.Add(new Tuple<long, long>(_stopWatch.ElapsedMilliseconds,
+                            workingFile.Size));
+
                         _cloudFilesStatistic.FilesCount++;
                         _cloudFilesStatistic.TotalSize += workingFile.Size;
-                        
-                        CalculateFlowStat();
+
+                        var filesSpeed = _filesSpeedMeasurePart.TransformAsync(new SpeedMeasurePart.Metric
+                        {
+                            Current = _cloudFilesStatistic.FilesCount,
+                            Total = _localFilesStatistic.FilesCount,
+                            ElapsedMs = _stopWatch.ElapsedMilliseconds
+                        }, cancellationToken).Result;
+
+                        var sizeSpeed = _sizeSpeedMeasurePart.TransformAsync(new SpeedMeasurePart.Metric
+                        {
+                            Current = _cloudFilesStatistic.TotalSize,
+                            Total = _localFilesStatistic.TotalSize,
+                            ElapsedMs = _stopWatch.ElapsedMilliseconds
+                        }, cancellationToken).Result;
+
+                        _cloudFilesStatistic.SpeedFilesPerSec = Math.Round(filesSpeed.SpeedSec, 2);
+                        _cloudFilesStatistic.SpeedBytesPerSec = Math.Round(sizeSpeed.SpeedSec, 2);
+
+                        _cloudFilesStatistic.TimeSpentSec = filesSpeed.TimeSpent.TotalSeconds;
+                        _cloudFilesStatistic.FinishInSec = filesSpeed.FinishIn.TotalSeconds;
+
+                        _cloudFilesStatistic.FilesProgress = Math.Round(filesSpeed.Progress, 2);
+                        _cloudFilesStatistic.SizeProgress = Math.Round(sizeSpeed.Progress, 2);
                     }
 
                     _realtimeUpdatesHub.SendCloudStatInfo(_cloudFilesStatistic, cancellationToken)
@@ -249,42 +276,13 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
             return Task.CompletedTask;
         }
 
-        private void CalculateFlowStat()
-        {
-            try
-            {
-                _cloudFilesStatistic.SpeedFilesPerSec =
-                    _filesUploadWatchMark.Count() / (_filesUploadWatchMark.Max() / 1000.0);
-                _cloudFilesStatistic.SpeedMbPerSec = (_fileSizesUploadWatchMark.Sum(s => s.Item2)
-                                                      / (_fileSizesUploadWatchMark.Max(s => s.Item1) / 1000.0)) /
-                                                     1024.0 / 1024.0;
-                _cloudFilesStatistic.TimeSpentSec = _stopWatch.ElapsedMilliseconds / 1000;
-
-                if (_cloudFilesStatistic.SpeedFilesPerSec > 0)
-                {
-                    _cloudFilesStatistic.FinishInSec =
-                        (long)Math.Round((_localFilesStatistic.FilesCount - _cloudFilesStatistic.FilesCount) /
-                                   _cloudFilesStatistic.SpeedFilesPerSec, 0);
-                }
-                else
-                {
-                    _cloudFilesStatistic.FinishInSec = 0;
-                }
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-
         private void ResetInternalState()
         {
             _stopWatch.Reset();
-            
+
             _filesUploadWatchMark.Clear();
             _foldersUploadWatchMark.Clear();
-            
+
             _localFilesStatistic.FilesCount = 0;
             _localFilesStatistic.FoldersCount = 0;
             _localFilesStatistic.TotalSize = 0;
@@ -292,6 +290,10 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Parts
             _cloudFilesStatistic.FilesCount = 0;
             _cloudFilesStatistic.FoldersCount = 0;
             _cloudFilesStatistic.TotalSize = 0;
+            _cloudFilesStatistic.FinishInSec = 0;
+            _cloudFilesStatistic.TimeSpentSec = 0;
+            _cloudFilesStatistic.SpeedBytesPerSec = 0;
+            _cloudFilesStatistic.SpeedFilesPerSec = 0;
 
             _workingFolders.Clear();
             _workingFiles.Clear();

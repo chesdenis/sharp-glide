@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SharpGlide.Parts;
 
 namespace SharpGlide.Processing
 {
-    public class CalculateProcessingSpeedTransformPart : ITransformPart<CalculateProcessingSpeedTransformPart.Metric,
-        CalculateProcessingSpeedTransformPart.TimeAndSpeed>
+    public class SpeedMeasurePart : ISpeedMeasurePart
+       
     {
         public struct Metric
         {

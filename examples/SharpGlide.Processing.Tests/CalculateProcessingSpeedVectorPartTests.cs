@@ -13,7 +13,7 @@ namespace SharpGlide.Processing.Tests
         public async Task ShouldSupportGeneralCalculation()
         {
             // Arrange
-            var flowMetrics = new CalculateProcessingSpeedTransformPart.Metric[]
+            var flowMetrics = new SpeedMeasurePart.Metric[]
             {
                 new() { Current = 10, Total = 100, ElapsedMs = 100 },
                 new() { Current = 20, Total = 100, ElapsedMs = 200 },
@@ -23,8 +23,8 @@ namespace SharpGlide.Processing.Tests
             };
 
             // Act
-            var sut = new CalculateProcessingSpeedTransformPart();
-            var outputData = new List<CalculateProcessingSpeedTransformPart.TimeAndSpeed>();
+            var sut = new SpeedMeasurePart();
+            var outputData = new List<SpeedMeasurePart.TimeAndSpeed>();
 
             foreach (var flowMetric in flowMetrics)
             {

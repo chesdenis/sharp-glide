@@ -41,7 +41,7 @@ else
     <div class="container ">
         <div class="row">
             <div class="col">
-                <p>Current directory is <b>@Path.GetFileName(StateRoot.LocalFolder)</b> (@(StateRoot.LocalFolder)</p>
+                <p>Current directory is <b>@Path.GetFileName(StateRoot.LocalFolder)</b> (@(StateRoot.LocalFolder))</p>
                 <p>Source Path: </p>
                 <textarea rows="2" cols="70" wrap="soft" @bind="@(StateRoot.LocalFolder)"></textarea>
 
@@ -69,31 +69,16 @@ else
         <div class="row ">
             <div class="col ">
                 <ProgressBarComponent Header="Files"
-                             CurrentValue="@CloudStat.FilesCount"
-                             MaximumValue="@LocalStat.FilesCount">
-                </ProgressBarComponent>
-            </div>
-            <div class="col ">
-                <ProgressBarComponent Header="Folders"
-                             CurrentValue="@CloudStat.FoldersCount"
-                             MaximumValue="@LocalStat.FoldersCount">
+                                      Percent="@CloudStat.FilesProgress">
                 </ProgressBarComponent>
             </div>
             <div class="col">
                 <ProgressBarComponent Header="Size"
-                             CurrentValue="@CloudStat.TotalSize"
-                             MaximumValue="@LocalStat.TotalSize">
+                                      Percent="@CloudStat.SizeProgress">
                 </ProgressBarComponent>
             </div>
         </div>
         <div class="row ">
-            <div class="col">
-                <SpeedComponent Header="Upload Progress"
-                                SpeedMbPerSec="@CloudStat.SpeedMbPerSec"
-                                TimeSpentSec="@CloudStat.TimeSpentSec"
-                                FinishInSec="@CloudStat.FinishInSec">
-                </SpeedComponent>
-            </div>
             <div class="col">
                 <FolderStatComponent Header="Local"
                                      FilesCount="@LocalStat.FilesCount"
@@ -107,6 +92,12 @@ else
                                      FoldersCount="@CloudStat.FoldersCount"
                                      TotalSize="@CloudStat.TotalSize">
                 </FolderStatComponent>
+            </div>
+            <div class="col">
+                <SpeedComponent Header="Upload Progress"
+                                TimeSpentSec="@CloudStat.TimeSpentSec"
+                                FinishInSec="@CloudStat.FinishInSec">
+                </SpeedComponent>
             </div>
         </div>
     </div>
@@ -180,6 +171,15 @@ else
             CloudStat.FilesCount = statistic.FilesCount;
             CloudStat.FoldersCount = statistic.FoldersCount;
             CloudStat.TotalSize = statistic.TotalSize;
+
+            CloudStat.FilesProgress = statistic.FilesProgress;
+            CloudStat.SizeProgress = statistic.SizeProgress;
+            
+            CloudStat.FinishInSec = statistic.FinishInSec;
+            CloudStat.TimeSpentSec = statistic.TimeSpentSec;
+            
+            CloudStat.SpeedBytesPerSec = statistic.SpeedBytesPerSec;
+            CloudStat.SpeedFilesPerSec = statistic.SpeedFilesPerSec;
         }
 
         await InvokeAsync(StateHasChanged);

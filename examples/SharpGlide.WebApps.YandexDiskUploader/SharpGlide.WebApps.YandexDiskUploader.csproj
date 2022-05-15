@@ -8,6 +8,7 @@
     <ItemGroup>
       <ProjectReference Include="..\SharpGlide.Cloud.Yandex\SharpGlide.Cloud.Yandex.csproj" />
       <ProjectReference Include="..\SharpGlide.IO\SharpGlide.IO.csproj" />
+      <ProjectReference Include="..\SharpGlide.Processing\SharpGlide.Processing.csproj" />
     </ItemGroup>
 
     <ItemGroup>

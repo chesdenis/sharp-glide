@@ -14,6 +14,7 @@ using SharpGlide.Cloud.Yandex.Writers.YandexDisc;
 using SharpGlide.IO.Model;
 using SharpGlide.IO.Readers;
 using SharpGlide.IO.Tunnels;
+using SharpGlide.Processing;
 using SharpGlide.Routing;
 using SharpGlide.Tunnels.Read.Abstractions;
 using SharpGlide.Tunnels.Read.Model;
@@ -43,6 +44,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Tests.Behaviour
             var createdFolders = ConfigureSingleFolderCreator(out var mockSingleFolderCreator);
             var singleFileUploader = new Mock<ISingleFileUploader>();
             var fileContentsWalker = new Mock<IFileContentWalker>();
+            var speedMetric = new Mock<ISpeedMeasurePart>();
             
             var sut = new UploadToCloudPart(
                 mockStateRoot.Object,
@@ -87,6 +89,7 @@ namespace SharpGlide.WebApps.YandexDiskUploader.Tests.Behaviour
             var createdFolders = ConfigureSingleFolderCreator(out var mockSingleFolderCreator);
             var singleFileUploader = new Mock<ISingleFileUploader>();
             var fileContentsWalker = new Mock<IFileContentWalker>();
+            var speedMetric = new Mock<ISpeedMeasurePart>();
 
             var sut = new UploadToCloudPart(
                 mockStateRoot.Object,

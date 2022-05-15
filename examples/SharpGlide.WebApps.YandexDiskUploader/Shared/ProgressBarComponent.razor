@@ -12,31 +12,10 @@
 <br/>
 
 @code {
-    private int Percent
-    {
-        get
-        {
-            if (this.MaximumValue == 0)
-            {
-                return 0;
-            }
-        
-            var difference = this.MaximumValue - this.CurrentValue;
-
-            double percent = 1.0 - ((double)difference / (double)this.MaximumValue);
-
-            percent *= 100;
-
-            return (int)(Math.Round(percent, 0));
-        }
-    }
 
     [Parameter]
     public string Header { get; set; }
 
     [Parameter]
-    public long MaximumValue { get; set; }
-
-    [Parameter]
-    public long CurrentValue { get; set; }
+    public double Percent { get; set; }
 }
